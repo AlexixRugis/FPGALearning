@@ -1,0 +1,10 @@
+module SevenSegmentInd(
+
+	input [3:0]data,
+	output [6:0]out
+
+);
+
+
+
+endmodule

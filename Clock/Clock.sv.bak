@@ -1,0 +1,22 @@
+module Clock(
+	
+	input clk,
+	
+	output [3:0]sec0,
+	output [3:0]sec1,
+	output [3:0]min0,
+	output [3:0]min1
+
+);
+
+reg [3:0]counter;
+
+always @(posedge clk) begin
+
+	counter <= counter + 1;
+
+end
+
+assign sec0 = counter;
+
+endmodule

@@ -1,0 +1,24 @@
+module ClockDivider(
+	input inpClk,
+	input reset,
+	output outClk
+);
+
+reg [25:0] counter;
+
+always @(posedge inpClk or posedge reset) begin
+
+	if (reset)
+		counter <= 26'd0;
+	else
+	if (counter == 26'd49999999)
+		counter <= 26'd0;
+	else
+		counter <= counter + 1'd1;
+	
+
+end
+
+assign outClk = (counter == 26'd49999999);
+
+endmodule

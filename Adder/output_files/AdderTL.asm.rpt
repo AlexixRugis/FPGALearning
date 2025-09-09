@@ -1,0 +1,104 @@
+Assembler report for AdderTL
+Mon Sep  8 12:52:02 2025
+Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Assembler Summary
+  3. Assembler Settings
+  4. Assembler Generated Files
+  5. Assembler Device Options: C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.sof
+  6. Assembler Device Options: C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.pof
+  7. Assembler Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2023  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++---------------------------------------------------------------+
+; Assembler Summary                                             ;
++-----------------------+---------------------------------------+
+; Assembler Status      ; Successful - Mon Sep  8 12:52:02 2025 ;
+; Revision Name         ; AdderTL                               ;
+; Top-level Entity Name ; baseline_c5gx                         ;
+; Family                ; Cyclone V                             ;
+; Device                ; 5CGXFC5C6F27C7                        ;
++-----------------------+---------------------------------------+
+
+
++----------------------------------+
+; Assembler Settings               ;
++--------+---------+---------------+
+; Option ; Setting ; Default Value ;
++--------+---------+---------------+
+
+
++-------------------------------------------------------------------+
+; Assembler Generated Files                                         ;
++-------------------------------------------------------------------+
+; File Name                                                         ;
++-------------------------------------------------------------------+
+; C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.sof ;
+; C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.pof ;
++-------------------------------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------+
+; Assembler Device Options: C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.sof ;
++----------------+----------------------------------------------------------------------------+
+; Option         ; Setting                                                                    ;
++----------------+----------------------------------------------------------------------------+
+; JTAG usercode  ; 0x00791FBE                                                                 ;
+; Checksum       ; 0x00791FBE                                                                 ;
++----------------+----------------------------------------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------+
+; Assembler Device Options: C:/intelFPGA_lite/22.1std/Projects/Adder/output_files/AdderTL.pof ;
++--------------------+------------------------------------------------------------------------+
+; Option             ; Setting                                                                ;
++--------------------+------------------------------------------------------------------------+
+; JTAG usercode      ; 0x00000000                                                             ;
+; Checksum           ; 0xECE29784                                                             ;
+; Compression Ratio  ; 3                                                                      ;
++--------------------+------------------------------------------------------------------------+
+
+
++--------------------+
+; Assembler Messages ;
++--------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Assembler
+    Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
+    Info: Processing started: Mon Sep  8 12:51:56 2025
+Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off AdderTL -c AdderTL
+Info (125069): Default assignment values were changed in the current version of the Quartus Prime software -- changes to default assignments values are contained in file c:/intelfpga_lite/22.1std/quartus/bin64/assignment_defaults.qdf
+Info (115030): Assembler is generating device programming files
+Info: Quartus Prime Assembler was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 4860 megabytes
+    Info: Processing ended: Mon Sep  8 12:52:02 2025
+    Info: Elapsed time: 00:00:06
+    Info: Total CPU time (on all processors): 00:00:06
+
+
