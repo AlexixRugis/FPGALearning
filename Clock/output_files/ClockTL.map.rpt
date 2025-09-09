@@ -1,5 +1,5 @@
 Analysis & Synthesis report for ClockTL
-Mon Sep  8 14:28:18 2025
+Tue Sep  9 12:11:48 2025
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -14,10 +14,16 @@ Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
   8. General Register Statistics
-  9. Parameter Settings for User Entity Instance: ClockDivider:cd
- 10. Post-Synthesis Netlist Statistics for Top Partition
- 11. Elapsed Time Per Partition
- 12. Analysis & Synthesis Messages
+  9. Parameter Settings for User Entity Instance: Counter:cd
+ 10. Parameter Settings for User Entity Instance: Clock:clock|Counter:cntSec0
+ 11. Parameter Settings for User Entity Instance: Clock:clock|Counter:cntSec1
+ 12. Parameter Settings for User Entity Instance: Clock:clock|Counter:cntMin0
+ 13. Parameter Settings for User Entity Instance: Clock:clock|Counter:cntMin1
+ 14. Port Connectivity Checks: "Clock:clock|Counter:cntMin1"
+ 15. Port Connectivity Checks: "Counter:cd"
+ 16. Post-Synthesis Netlist Statistics for Top Partition
+ 17. Elapsed Time Per Partition
+ 18. Analysis & Synthesis Messages
 
 
 
@@ -44,13 +50,13 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +---------------------------------+------------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Mon Sep  8 14:28:18 2025          ;
+; Analysis & Synthesis Status     ; Successful - Tue Sep  9 12:11:48 2025          ;
 ; Quartus Prime Version           ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                   ; ClockTL                                        ;
 ; Top-level Entity Name           ; baseline_c5gx                                  ;
 ; Family                          ; Cyclone V                                      ;
 ; Logic utilization (in ALMs)     ; N/A                                            ;
-; Total registers                 ; 42                                             ;
+; Total registers                 ; 46                                             ;
 ; Total pins                      ; 236                                            ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 0                                              ;
@@ -169,58 +175,62 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------+-------------+
 
 
-+-----------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                    ;
-+----------------------------------+-----------------+------------------------------+-------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type                    ; File Name with Absolute Path                                ; Library ;
-+----------------------------------+-----------------+------------------------------+-------------------------------------------------------------+---------+
-; baseline_c5gx.v                  ; yes             ; User Verilog HDL File        ; C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v    ;         ;
-; SevenSegmentInd.sv               ; yes             ; User SystemVerilog HDL File  ; C:/intelFPGA_lite/22.1std/Projects/Clock/SevenSegmentInd.sv ;         ;
-; ClockDivider.sv                  ; yes             ; User SystemVerilog HDL File  ; C:/intelFPGA_lite/22.1std/Projects/Clock/ClockDivider.sv    ;         ;
-; Clock.sv                         ; yes             ; User SystemVerilog HDL File  ; C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv           ;         ;
-+----------------------------------+-----------------+------------------------------+-------------------------------------------------------------+---------+
++-----------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                              ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type                    ; File Name with Absolute Path                          ; Library ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------+---------+
+; Counter.sv                       ; yes             ; User SystemVerilog HDL File  ; C:/GitHub_Repos/FPGALearning/Clock/Counter.sv         ;         ;
+; baseline_c5gx.v                  ; yes             ; User Verilog HDL File        ; C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v    ;         ;
+; SevenSegmentInd.sv               ; yes             ; User SystemVerilog HDL File  ; C:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv ;         ;
+; Clock.sv                         ; yes             ; User SystemVerilog HDL File  ; C:/GitHub_Repos/FPGALearning/Clock/Clock.sv           ;         ;
++----------------------------------+-----------------+------------------------------+-------------------------------------------------------+---------+
 
 
-+----------------------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary                          ;
-+---------------------------------------------+------------------------+
-; Resource                                    ; Usage                  ;
-+---------------------------------------------+------------------------+
-; Estimate of Logic utilization (ALMs needed) ; 43                     ;
-;                                             ;                        ;
-; Combinational ALUT usage for logic          ; 80                     ;
-;     -- 7 input functions                    ; 0                      ;
-;     -- 6 input functions                    ; 6                      ;
-;     -- 5 input functions                    ; 2                      ;
-;     -- 4 input functions                    ; 39                     ;
-;     -- <=3 input functions                  ; 33                     ;
-;                                             ;                        ;
-; Dedicated logic registers                   ; 42                     ;
-;                                             ;                        ;
-; I/O pins                                    ; 236                    ;
-;                                             ;                        ;
-; Total DSP Blocks                            ; 0                      ;
-;                                             ;                        ;
-; Maximum fan-out node                        ; ClockDivider:cd|Equal0 ;
-; Maximum fan-out                             ; 42                     ;
-; Total fan-out                               ; 787                    ;
-; Average fan-out                             ; 1.14                   ;
-+---------------------------------------------+------------------------+
++------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                ;
++---------------------------------------------+--------------+
+; Resource                                    ; Usage        ;
++---------------------------------------------+--------------+
+; Estimate of Logic utilization (ALMs needed) ; 42           ;
+;                                             ;              ;
+; Combinational ALUT usage for logic          ; 78           ;
+;     -- 7 input functions                    ; 0            ;
+;     -- 6 input functions                    ; 5            ;
+;     -- 5 input functions                    ; 0            ;
+;     -- 4 input functions                    ; 40           ;
+;     -- <=3 input functions                  ; 33           ;
+;                                             ;              ;
+; Dedicated logic registers                   ; 46           ;
+;                                             ;              ;
+; I/O pins                                    ; 236          ;
+;                                             ;              ;
+; Total DSP Blocks                            ; 0            ;
+;                                             ;              ;
+; Maximum fan-out node                        ; KEY[0]~input ;
+; Maximum fan-out                             ; 46           ;
+; Total fan-out                               ; 779          ;
+; Average fan-out                             ; 1.12         ;
++---------------------------------------------+--------------+
 
 
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                        ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------+-----------------+--------------+
-; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                 ; Entity Name     ; Library Name ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------+-----------------+--------------+
-; |baseline_c5gx             ; 80 (0)              ; 42 (0)                    ; 0                 ; 0          ; 236  ; 0            ; |baseline_c5gx                      ; baseline_c5gx   ; work         ;
-;    |Clock:clock|           ; 21 (21)             ; 16 (16)                   ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock          ; Clock           ; work         ;
-;    |ClockDivider:cd|       ; 31 (31)             ; 26 (26)                   ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|ClockDivider:cd      ; ClockDivider    ; work         ;
-;    |SevenSegmentInd:ind1|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind1 ; SevenSegmentInd ; work         ;
-;    |SevenSegmentInd:ind2|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind2 ; SevenSegmentInd ; work         ;
-;    |SevenSegmentInd:ind3|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind3 ; SevenSegmentInd ; work         ;
-;    |SevenSegmentInd:ind4|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind4 ; SevenSegmentInd ; work         ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------+-----------------+--------------+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                               ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+--------------------------------------------+-----------------+--------------+
+; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                        ; Entity Name     ; Library Name ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+--------------------------------------------+-----------------+--------------+
+; |baseline_c5gx             ; 78 (0)              ; 46 (0)                    ; 0                 ; 0          ; 236  ; 0            ; |baseline_c5gx                             ; baseline_c5gx   ; work         ;
+;    |Clock:clock|           ; 19 (0)              ; 19 (0)                    ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock                 ; Clock           ; work         ;
+;       |Counter:cntMin0|    ; 5 (5)               ; 5 (5)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock|Counter:cntMin0 ; Counter         ; work         ;
+;       |Counter:cntMin1|    ; 4 (4)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock|Counter:cntMin1 ; Counter         ; work         ;
+;       |Counter:cntSec0|    ; 5 (5)               ; 5 (5)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock|Counter:cntSec0 ; Counter         ; work         ;
+;       |Counter:cntSec1|    ; 5 (5)               ; 5 (5)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Clock:clock|Counter:cntSec1 ; Counter         ; work         ;
+;    |Counter:cd|            ; 31 (31)             ; 27 (27)                   ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|Counter:cd                  ; Counter         ; work         ;
+;    |SevenSegmentInd:ind1|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind1        ; SevenSegmentInd ; work         ;
+;    |SevenSegmentInd:ind2|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind2        ; SevenSegmentInd ; work         ;
+;    |SevenSegmentInd:ind3|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind3        ; SevenSegmentInd ; work         ;
+;    |SevenSegmentInd:ind4|  ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |baseline_c5gx|SevenSegmentInd:ind4        ; SevenSegmentInd ; work         ;
++----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+--------------------------------------------+-----------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
 
@@ -229,25 +239,87 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 42    ;
+; Total registers                              ; 46    ;
 ; Number of registers using Synchronous Clear  ; 26    ;
 ; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 42    ;
+; Number of registers using Asynchronous Clear ; 46    ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 9     ;
+; Number of registers using Clock Enable       ; 0     ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
 
-+--------------------------------------------------------------+
-; Parameter Settings for User Entity Instance: ClockDivider:cd ;
-+----------------+----------+----------------------------------+
-; Parameter Name ; Value    ; Type                             ;
-+----------------+----------+----------------------------------+
-; WIDTH          ; 26       ; Signed Integer                   ;
-; RESET_VAL      ; 49999999 ; Signed Integer                   ;
-+----------------+----------+----------------------------------+
++---------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Counter:cd       ;
++----------------+----------------------------+-----------------+
+; Parameter Name ; Value                      ; Type            ;
++----------------+----------------------------+-----------------+
+; WIDTH          ; 26                         ; Signed Integer  ;
+; MAX_VAL        ; 10111110101111000001111111 ; Unsigned Binary ;
++----------------+----------------------------+-----------------+
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Clock:clock|Counter:cntSec0 ;
++----------------+-------+-------------------------------------------------+
+; Parameter Name ; Value ; Type                                            ;
++----------------+-------+-------------------------------------------------+
+; WIDTH          ; 4     ; Signed Integer                                  ;
+; MAX_VAL        ; 1001  ; Unsigned Binary                                 ;
++----------------+-------+-------------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Clock:clock|Counter:cntSec1 ;
++----------------+-------+-------------------------------------------------+
+; Parameter Name ; Value ; Type                                            ;
++----------------+-------+-------------------------------------------------+
+; WIDTH          ; 4     ; Signed Integer                                  ;
+; MAX_VAL        ; 0101  ; Unsigned Binary                                 ;
++----------------+-------+-------------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Clock:clock|Counter:cntMin0 ;
++----------------+-------+-------------------------------------------------+
+; Parameter Name ; Value ; Type                                            ;
++----------------+-------+-------------------------------------------------+
+; WIDTH          ; 4     ; Signed Integer                                  ;
+; MAX_VAL        ; 1001  ; Unsigned Binary                                 ;
++----------------+-------+-------------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: Clock:clock|Counter:cntMin1 ;
++----------------+-------+-------------------------------------------------+
+; Parameter Name ; Value ; Type                                            ;
++----------------+-------+-------------------------------------------------+
+; WIDTH          ; 4     ; Signed Integer                                  ;
+; MAX_VAL        ; 1001  ; Unsigned Binary                                 ;
++----------------+-------+-------------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "Clock:clock|Counter:cntMin1"                                                                                 ;
++----------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; Port     ; Type   ; Severity ; Details                                                                                                  ;
++----------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; overflow ; Output ; Warning  ; Declared by entity but not connected by instance. Logic that only feeds a dangling port will be removed. ;
++----------+--------+----------+----------------------------------------------------------------------------------------------------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "Counter:cd"                                                                                              ;
++------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; Port ; Type   ; Severity ; Details                                                                                                  ;
++------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; out  ; Output ; Warning  ; Declared by entity but not connected by instance. Logic that only feeds a dangling port will be removed. ;
++------+--------+----------+----------------------------------------------------------------------------------------------------------+
 
 
 +-----------------------------------------------------+
@@ -255,26 +327,23 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; arriav_ff             ; 42                          ;
-;     CLR               ; 7                           ;
+; arriav_ff             ; 46                          ;
+;     CLR               ; 20                          ;
 ;     CLR SCLR          ; 26                          ;
-;     ENA CLR           ; 9                           ;
 ; arriav_io_obuf        ; 97                          ;
-; arriav_lcell_comb     ; 85                          ;
+; arriav_lcell_comb     ; 83                          ;
 ;     arith             ; 26                          ;
 ;         1 data inputs ; 26                          ;
-;     normal            ; 59                          ;
+;     normal            ; 57                          ;
 ;         0 data inputs ; 1                           ;
 ;         1 data inputs ; 8                           ;
-;         2 data inputs ; 1                           ;
-;         3 data inputs ; 2                           ;
-;         4 data inputs ; 39                          ;
-;         5 data inputs ; 2                           ;
-;         6 data inputs ; 6                           ;
+;         3 data inputs ; 3                           ;
+;         4 data inputs ; 40                          ;
+;         6 data inputs ; 5                           ;
 ; boundary_port         ; 236                         ;
 ;                       ;                             ;
 ; Max LUT depth         ; 3.50                        ;
-; Average LUT depth     ; 1.28                        ;
+; Average LUT depth     ; 1.23                        ;
 +-----------------------+-----------------------------+
 
 
@@ -293,271 +362,271 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
-    Info: Processing started: Mon Sep  8 14:28:12 2025
+    Info: Processing started: Tue Sep  9 12:11:42 2025
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off Clock -c ClockTL
-Info (125069): Default assignment values were changed in the current version of the Quartus Prime software -- changes to default assignments values are contained in file c:/intelfpga_lite/22.1std/quartus/bin64/assignment_defaults.qdf
 Info (20030): Parallel compilation is enabled and will use 16 of the 16 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file counter.sv
+    Info (12023): Found entity 1: Counter File: C:/GitHub_Repos/FPGALearning/Clock/Counter.sv Line: 1
 Info (12021): Found 1 design units, including 1 entities, in source file baseline_c5gx.v
-    Info (12023): Found entity 1: baseline_c5gx File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 38
+    Info (12023): Found entity 1: baseline_c5gx File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 38
 Info (12021): Found 1 design units, including 1 entities, in source file sevensegmentind.sv
-    Info (12023): Found entity 1: SevenSegmentInd File: C:/intelFPGA_lite/22.1std/Projects/Clock/SevenSegmentInd.sv Line: 1
-Info (12021): Found 1 design units, including 1 entities, in source file clockdivider.sv
-    Info (12023): Found entity 1: ClockDivider File: C:/intelFPGA_lite/22.1std/Projects/Clock/ClockDivider.sv Line: 1
+    Info (12023): Found entity 1: SevenSegmentInd File: C:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv Line: 1
 Info (12021): Found 1 design units, including 1 entities, in source file clock.sv
-    Info (12023): Found entity 1: Clock File: C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv Line: 1
+    Info (12023): Found entity 1: Clock File: C:/GitHub_Repos/FPGALearning/Clock/Clock.sv Line: 1
 Info (12127): Elaborating entity "baseline_c5gx" for the top level hierarchy
-Warning (10034): Output port "HDMI_TX_D" at baseline_c5gx.v(93) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-Warning (10034): Output port "HSMC_CLKOUT_n" at baseline_c5gx.v(111) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 111
-Warning (10034): Output port "HSMC_CLKOUT_p" at baseline_c5gx.v(112) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 112
-Warning (10034): Output port "LEDG" at baseline_c5gx.v(132) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-Warning (10034): Output port "LEDR" at baseline_c5gx.v(135) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-Warning (10034): Output port "SRAM_A" at baseline_c5gx.v(155) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-Warning (10034): Output port "ADC_CONVST" at baseline_c5gx.v(41) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 41
-Warning (10034): Output port "ADC_SCK" at baseline_c5gx.v(42) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 42
-Warning (10034): Output port "ADC_SDI" at baseline_c5gx.v(43) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 43
-Warning (10034): Output port "AUD_DACDAT" at baseline_c5gx.v(50) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 50
-Warning (10034): Output port "AUD_XCK" at baseline_c5gx.v(52) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 52
-Warning (10034): Output port "HDMI_TX_CLK" at baseline_c5gx.v(92) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 92
-Warning (10034): Output port "HDMI_TX_DE" at baseline_c5gx.v(94) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 94
-Warning (10034): Output port "HDMI_TX_HS" at baseline_c5gx.v(95) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 95
-Warning (10034): Output port "HDMI_TX_VS" at baseline_c5gx.v(97) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 97
-Warning (10034): Output port "HSMC_CLKOUT0" at baseline_c5gx.v(110) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 110
-Warning (10034): Output port "I2C_SCL" at baseline_c5gx.v(125) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 125
-Warning (10034): Output port "SD_CLK" at baseline_c5gx.v(144) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 144
-Warning (10034): Output port "SRAM_CE_n" at baseline_c5gx.v(156) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 156
-Warning (10034): Output port "SRAM_LB_n" at baseline_c5gx.v(158) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 158
-Warning (10034): Output port "SRAM_OE_n" at baseline_c5gx.v(159) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 159
-Warning (10034): Output port "SRAM_UB_n" at baseline_c5gx.v(160) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 160
-Warning (10034): Output port "SRAM_WE_n" at baseline_c5gx.v(161) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 161
-Warning (10034): Output port "UART_TX" at baseline_c5gx.v(171) has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 171
-Info (12128): Elaborating entity "ClockDivider" for hierarchy "ClockDivider:cd" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 182
-Warning (10230): Verilog HDL assignment warning at ClockDivider.sv(22): truncated value with size 32 to match size of target (26) File: C:/intelFPGA_lite/22.1std/Projects/Clock/ClockDivider.sv Line: 22
-Info (12128): Elaborating entity "Clock" for hierarchy "Clock:clock" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 183
-Warning (10230): Verilog HDL assignment warning at Clock.sv(34): truncated value with size 32 to match size of target (4) File: C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv Line: 34
-Warning (10230): Verilog HDL assignment warning at Clock.sv(37): truncated value with size 32 to match size of target (4) File: C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv Line: 37
-Warning (10230): Verilog HDL assignment warning at Clock.sv(40): truncated value with size 32 to match size of target (4) File: C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv Line: 40
-Warning (10230): Verilog HDL assignment warning at Clock.sv(44): truncated value with size 32 to match size of target (4) File: C:/intelFPGA_lite/22.1std/Projects/Clock/Clock.sv Line: 44
-Info (12128): Elaborating entity "SevenSegmentInd" for hierarchy "SevenSegmentInd:ind1" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 185
+Warning (10034): Output port "HDMI_TX_D" at baseline_c5gx.v(93) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+Warning (10034): Output port "HSMC_CLKOUT_n" at baseline_c5gx.v(111) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 111
+Warning (10034): Output port "HSMC_CLKOUT_p" at baseline_c5gx.v(112) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 112
+Warning (10034): Output port "LEDG" at baseline_c5gx.v(132) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+Warning (10034): Output port "LEDR" at baseline_c5gx.v(135) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+Warning (10034): Output port "SRAM_A" at baseline_c5gx.v(155) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+Warning (10034): Output port "ADC_CONVST" at baseline_c5gx.v(41) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 41
+Warning (10034): Output port "ADC_SCK" at baseline_c5gx.v(42) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 42
+Warning (10034): Output port "ADC_SDI" at baseline_c5gx.v(43) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 43
+Warning (10034): Output port "AUD_DACDAT" at baseline_c5gx.v(50) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 50
+Warning (10034): Output port "AUD_XCK" at baseline_c5gx.v(52) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 52
+Warning (10034): Output port "HDMI_TX_CLK" at baseline_c5gx.v(92) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 92
+Warning (10034): Output port "HDMI_TX_DE" at baseline_c5gx.v(94) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 94
+Warning (10034): Output port "HDMI_TX_HS" at baseline_c5gx.v(95) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 95
+Warning (10034): Output port "HDMI_TX_VS" at baseline_c5gx.v(97) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 97
+Warning (10034): Output port "HSMC_CLKOUT0" at baseline_c5gx.v(110) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 110
+Warning (10034): Output port "I2C_SCL" at baseline_c5gx.v(125) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 125
+Warning (10034): Output port "SD_CLK" at baseline_c5gx.v(144) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 144
+Warning (10034): Output port "SRAM_CE_n" at baseline_c5gx.v(156) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 156
+Warning (10034): Output port "SRAM_LB_n" at baseline_c5gx.v(158) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 158
+Warning (10034): Output port "SRAM_OE_n" at baseline_c5gx.v(159) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 159
+Warning (10034): Output port "SRAM_UB_n" at baseline_c5gx.v(160) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 160
+Warning (10034): Output port "SRAM_WE_n" at baseline_c5gx.v(161) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 161
+Warning (10034): Output port "UART_TX" at baseline_c5gx.v(171) has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 171
+Info (12128): Elaborating entity "Counter" for hierarchy "Counter:cd" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 182
+Warning (10230): Verilog HDL assignment warning at Counter.sv(25): truncated value with size 32 to match size of target (26) File: C:/GitHub_Repos/FPGALearning/Clock/Counter.sv Line: 25
+Info (12128): Elaborating entity "Clock" for hierarchy "Clock:clock" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 183
+Info (12128): Elaborating entity "Counter" for hierarchy "Clock:clock|Counter:cntSec0" File: C:/GitHub_Repos/FPGALearning/Clock/Clock.sv Line: 15
+Warning (10230): Verilog HDL assignment warning at Counter.sv(25): truncated value with size 32 to match size of target (4) File: C:/GitHub_Repos/FPGALearning/Clock/Counter.sv Line: 25
+Info (12128): Elaborating entity "Counter" for hierarchy "Clock:clock|Counter:cntSec1" File: C:/GitHub_Repos/FPGALearning/Clock/Clock.sv Line: 16
+Warning (10230): Verilog HDL assignment warning at Counter.sv(25): truncated value with size 32 to match size of target (4) File: C:/GitHub_Repos/FPGALearning/Clock/Counter.sv Line: 25
+Info (12128): Elaborating entity "SevenSegmentInd" for hierarchy "SevenSegmentInd:ind1" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 185
+Warning (12241): 2 hierarchies have connectivity warnings - see the Connectivity Checks report folder
 Warning (13039): The following bidirectional pins have no drivers
-    Warning (13040): bidirectional pin "AUD_ADCLRCK" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 48
-    Warning (13040): bidirectional pin "AUD_BCLK" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 49
-    Warning (13040): bidirectional pin "AUD_DACLRCK" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 51
-    Warning (13040): bidirectional pin "HSMC_D[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 113
-    Warning (13040): bidirectional pin "HSMC_D[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 113
-    Warning (13040): bidirectional pin "HSMC_D[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 113
-    Warning (13040): bidirectional pin "HSMC_D[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 113
-    Warning (13040): bidirectional pin "HSMC_RX_n[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[4]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[5]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[6]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[7]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[8]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[9]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[10]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[11]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[12]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[13]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[14]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[15]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_n[16]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 118
-    Warning (13040): bidirectional pin "HSMC_RX_p[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[4]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[5]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[6]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[7]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[8]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[9]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[10]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[11]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[12]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[13]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[14]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[15]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_RX_p[16]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 119
-    Warning (13040): bidirectional pin "HSMC_TX_n[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[4]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[5]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[6]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[7]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[8]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[9]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[10]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[11]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[12]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[13]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[14]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[15]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_n[16]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 120
-    Warning (13040): bidirectional pin "HSMC_TX_p[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[4]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[5]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[6]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[7]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[8]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[9]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[10]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[11]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[12]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[13]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[14]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[15]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "HSMC_TX_p[16]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 121
-    Warning (13040): bidirectional pin "I2C_SDA" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 126
-    Warning (13040): bidirectional pin "SD_CMD" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 145
-    Warning (13040): bidirectional pin "SD_DAT[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 146
-    Warning (13040): bidirectional pin "SD_DAT[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 146
-    Warning (13040): bidirectional pin "SD_DAT[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 146
-    Warning (13040): bidirectional pin "SD_DAT[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 146
-    Warning (13040): bidirectional pin "SRAM_D[0]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[1]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[2]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[3]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[4]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[5]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[6]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[7]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[8]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[9]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[10]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[11]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[12]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[13]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[14]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
-    Warning (13040): bidirectional pin "SRAM_D[15]" has no driver File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "AUD_ADCLRCK" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 48
+    Warning (13040): bidirectional pin "AUD_BCLK" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 49
+    Warning (13040): bidirectional pin "AUD_DACLRCK" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 51
+    Warning (13040): bidirectional pin "HSMC_D[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 113
+    Warning (13040): bidirectional pin "HSMC_D[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 113
+    Warning (13040): bidirectional pin "HSMC_D[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 113
+    Warning (13040): bidirectional pin "HSMC_D[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 113
+    Warning (13040): bidirectional pin "HSMC_RX_n[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[4]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[5]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[6]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[7]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[8]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[9]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[10]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[11]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[12]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[13]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[14]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[15]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_n[16]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 118
+    Warning (13040): bidirectional pin "HSMC_RX_p[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[4]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[5]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[6]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[7]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[8]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[9]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[10]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[11]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[12]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[13]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[14]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[15]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_RX_p[16]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 119
+    Warning (13040): bidirectional pin "HSMC_TX_n[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[4]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[5]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[6]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[7]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[8]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[9]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[10]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[11]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[12]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[13]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[14]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[15]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_n[16]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 120
+    Warning (13040): bidirectional pin "HSMC_TX_p[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[4]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[5]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[6]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[7]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[8]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[9]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[10]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[11]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[12]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[13]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[14]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[15]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "HSMC_TX_p[16]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 121
+    Warning (13040): bidirectional pin "I2C_SDA" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 126
+    Warning (13040): bidirectional pin "SD_CMD" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 145
+    Warning (13040): bidirectional pin "SD_DAT[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 146
+    Warning (13040): bidirectional pin "SD_DAT[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 146
+    Warning (13040): bidirectional pin "SD_DAT[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 146
+    Warning (13040): bidirectional pin "SD_DAT[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 146
+    Warning (13040): bidirectional pin "SRAM_D[0]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[1]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[2]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[3]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[4]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[5]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[6]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[7]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[8]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[9]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[10]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[11]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[12]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[13]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[14]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
+    Warning (13040): bidirectional pin "SRAM_D[15]" has no driver File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 157
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "ADC_CONVST" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 41
-    Warning (13410): Pin "ADC_SCK" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 42
-    Warning (13410): Pin "ADC_SDI" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 43
-    Warning (13410): Pin "AUD_DACDAT" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 50
-    Warning (13410): Pin "AUD_XCK" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 52
-    Warning (13410): Pin "HDMI_TX_CLK" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 92
-    Warning (13410): Pin "HDMI_TX_D[0]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[3]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[4]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[5]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[6]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[7]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[8]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[9]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[10]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[11]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[12]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[13]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[14]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[15]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[16]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[17]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[18]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[19]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[20]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[21]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[22]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_D[23]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 93
-    Warning (13410): Pin "HDMI_TX_DE" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 94
-    Warning (13410): Pin "HDMI_TX_HS" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 95
-    Warning (13410): Pin "HDMI_TX_VS" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 97
-    Warning (13410): Pin "HSMC_CLKOUT0" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 110
-    Warning (13410): Pin "HSMC_CLKOUT_n[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 111
-    Warning (13410): Pin "HSMC_CLKOUT_n[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 111
-    Warning (13410): Pin "HSMC_CLKOUT_p[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 112
-    Warning (13410): Pin "HSMC_CLKOUT_p[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 112
-    Warning (13410): Pin "I2C_SCL" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 125
-    Warning (13410): Pin "LEDG[0]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[3]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[4]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[5]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[6]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDG[7]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 132
-    Warning (13410): Pin "LEDR[0]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[3]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[4]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[5]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[7]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[8]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "LEDR[9]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 135
-    Warning (13410): Pin "SD_CLK" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 144
-    Warning (13410): Pin "SRAM_A[0]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[1]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[2]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[3]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[4]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[5]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[6]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[7]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[8]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[9]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[10]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[11]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[12]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[13]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[14]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[15]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[16]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_A[17]" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 155
-    Warning (13410): Pin "SRAM_CE_n" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 156
-    Warning (13410): Pin "SRAM_LB_n" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 158
-    Warning (13410): Pin "SRAM_OE_n" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 159
-    Warning (13410): Pin "SRAM_UB_n" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 160
-    Warning (13410): Pin "SRAM_WE_n" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 161
-    Warning (13410): Pin "UART_TX" is stuck at GND File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 171
+    Warning (13410): Pin "ADC_CONVST" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 41
+    Warning (13410): Pin "ADC_SCK" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 42
+    Warning (13410): Pin "ADC_SDI" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 43
+    Warning (13410): Pin "AUD_DACDAT" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 50
+    Warning (13410): Pin "AUD_XCK" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 52
+    Warning (13410): Pin "HDMI_TX_CLK" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 92
+    Warning (13410): Pin "HDMI_TX_D[0]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[3]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[4]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[5]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[6]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[7]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[8]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[9]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[10]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[11]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[12]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[13]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[14]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[15]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[16]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[17]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[18]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[19]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[20]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[21]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[22]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_D[23]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 93
+    Warning (13410): Pin "HDMI_TX_DE" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 94
+    Warning (13410): Pin "HDMI_TX_HS" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 95
+    Warning (13410): Pin "HDMI_TX_VS" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 97
+    Warning (13410): Pin "HSMC_CLKOUT0" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 110
+    Warning (13410): Pin "HSMC_CLKOUT_n[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 111
+    Warning (13410): Pin "HSMC_CLKOUT_n[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 111
+    Warning (13410): Pin "HSMC_CLKOUT_p[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 112
+    Warning (13410): Pin "HSMC_CLKOUT_p[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 112
+    Warning (13410): Pin "I2C_SCL" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 125
+    Warning (13410): Pin "LEDG[0]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[3]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[4]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[5]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[6]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDG[7]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 132
+    Warning (13410): Pin "LEDR[0]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[3]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[4]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[5]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[7]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[8]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "LEDR[9]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 135
+    Warning (13410): Pin "SD_CLK" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 144
+    Warning (13410): Pin "SRAM_A[0]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[1]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[2]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[3]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[4]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[5]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[6]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[7]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[8]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[9]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[10]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[11]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[12]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[13]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[14]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[15]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[16]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_A[17]" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 155
+    Warning (13410): Pin "SRAM_CE_n" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 156
+    Warning (13410): Pin "SRAM_LB_n" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 158
+    Warning (13410): Pin "SRAM_OE_n" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 159
+    Warning (13410): Pin "SRAM_UB_n" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 160
+    Warning (13410): Pin "SRAM_WE_n" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 161
+    Warning (13410): Pin "UART_TX" is stuck at GND File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 171
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
 Warning (21074): Design contains 27 input pin(s) that do not drive logic
-    Warning (15610): No output dependent on input pin "ADC_SDO" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 44
-    Warning (15610): No output dependent on input pin "AUD_ADCDAT" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 47
-    Warning (15610): No output dependent on input pin "CLOCK_125_p" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 55
-    Warning (15610): No output dependent on input pin "CLOCK_50_B5B" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 56
-    Warning (15610): No output dependent on input pin "CLOCK_50_B6A" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 57
-    Warning (15610): No output dependent on input pin "CLOCK_50_B8A" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 59
-    Warning (15610): No output dependent on input pin "CPU_RESET_n" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 62
-    Warning (15610): No output dependent on input pin "HDMI_TX_INT" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 96
-    Warning (15610): No output dependent on input pin "HSMC_CLKIN0" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 107
-    Warning (15610): No output dependent on input pin "HSMC_CLKIN_n[1]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 108
-    Warning (15610): No output dependent on input pin "HSMC_CLKIN_n[2]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 108
-    Warning (15610): No output dependent on input pin "HSMC_CLKIN_p[1]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 109
-    Warning (15610): No output dependent on input pin "HSMC_CLKIN_p[2]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 109
-    Warning (15610): No output dependent on input pin "KEY[1]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 129
-    Warning (15610): No output dependent on input pin "KEY[2]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 129
-    Warning (15610): No output dependent on input pin "KEY[3]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 129
-    Warning (15610): No output dependent on input pin "SW[0]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[1]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[2]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[3]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[4]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[5]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[6]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[7]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[8]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "SW[9]" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 164
-    Warning (15610): No output dependent on input pin "UART_RX" File: C:/intelFPGA_lite/22.1std/Projects/Clock/baseline_c5gx.v Line: 167
-Info (21057): Implemented 316 device resources after synthesis - the final resource count might be different
+    Warning (15610): No output dependent on input pin "ADC_SDO" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 44
+    Warning (15610): No output dependent on input pin "AUD_ADCDAT" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 47
+    Warning (15610): No output dependent on input pin "CLOCK_125_p" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 55
+    Warning (15610): No output dependent on input pin "CLOCK_50_B5B" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 56
+    Warning (15610): No output dependent on input pin "CLOCK_50_B6A" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 57
+    Warning (15610): No output dependent on input pin "CLOCK_50_B8A" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 59
+    Warning (15610): No output dependent on input pin "CPU_RESET_n" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 62
+    Warning (15610): No output dependent on input pin "HDMI_TX_INT" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 96
+    Warning (15610): No output dependent on input pin "HSMC_CLKIN0" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 107
+    Warning (15610): No output dependent on input pin "HSMC_CLKIN_n[1]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 108
+    Warning (15610): No output dependent on input pin "HSMC_CLKIN_n[2]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 108
+    Warning (15610): No output dependent on input pin "HSMC_CLKIN_p[1]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 109
+    Warning (15610): No output dependent on input pin "HSMC_CLKIN_p[2]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 109
+    Warning (15610): No output dependent on input pin "KEY[1]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 129
+    Warning (15610): No output dependent on input pin "KEY[2]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 129
+    Warning (15610): No output dependent on input pin "KEY[3]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 129
+    Warning (15610): No output dependent on input pin "SW[0]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[1]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[2]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[3]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[4]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[5]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[6]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[7]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[8]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "SW[9]" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 164
+    Warning (15610): No output dependent on input pin "UART_RX" File: C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v Line: 167
+Info (21057): Implemented 315 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 29 input pins
     Info (21059): Implemented 110 output pins
     Info (21060): Implemented 97 bidirectional pins
-    Info (21061): Implemented 80 logic cells
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 238 warnings
+    Info (21061): Implemented 79 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 237 warnings
     Info: Peak virtual memory: 4877 megabytes
-    Info: Processing ended: Mon Sep  8 14:28:18 2025
+    Info: Processing ended: Tue Sep  9 12:11:48 2025
     Info: Elapsed time: 00:00:06
     Info: Total CPU time (on all processors): 00:00:09
 

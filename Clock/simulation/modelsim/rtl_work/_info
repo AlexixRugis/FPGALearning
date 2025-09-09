@@ -1,0 +1,143 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/GitHub_Repos/FPGALearning/Clock/simulation/modelsim
+vbaseline_c5gx
+Z1 !s110 1757408782
+!i10b 1
+!s100 4zD69[zEJONE3f46=?iWW3
+Z2 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I1:[_CzdA1QO_fM]GN9OBW1
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1757407546
+8C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v
+FC:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v
+!i122 0
+L0 38 153
+Z4 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z5 !s108 1757408782.000000
+!s107 C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/GitHub_Repos/FPGALearning/Clock|C:/GitHub_Repos/FPGALearning/Clock/baseline_c5gx.v|
+!i113 1
+o-vlog01compat -work work
+!s92 -vlog01compat -work work +incdir+C:/GitHub_Repos/FPGALearning/Clock
+Z6 tCvgOpt 0
+vClock
+Z7 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+R1
+!i10b 1
+!s100 7Om@ZDR[=Kl0?WP^M;Ek`0
+R2
+I3m^9`Lc1=Qi6bH0bMOcVe1
+R3
+S1
+R0
+Z8 w1757408673
+Z9 8C:/GitHub_Repos/FPGALearning/Clock/Clock.sv
+Z10 FC:/GitHub_Repos/FPGALearning/Clock/Clock.sv
+!i122 3
+L0 1 20
+R4
+r1
+!s85 0
+31
+R5
+!s107 C:/GitHub_Repos/FPGALearning/Clock/Clock.sv|
+Z11 !s90 -reportprogress|300|-sv|-work|work|+incdir+C:/GitHub_Repos/FPGALearning/Clock|C:/GitHub_Repos/FPGALearning/Clock/Clock.sv|
+!i113 1
+Z12 o-sv -work work
+Z13 !s92 -sv -work work +incdir+C:/GitHub_Repos/FPGALearning/Clock
+R6
+n@clock
+vClock_tb
+R7
+R1
+!i10b 1
+!s100 VbK?h767MbP>b<kj@QOg41
+R2
+I0;9LS_1?cXM2AF2CjF>zW2
+R3
+S1
+R0
+R8
+R9
+R10
+!i122 3
+L0 24 38
+R4
+r1
+!s85 0
+31
+R5
+Z14 !s107 C:/GitHub_Repos/FPGALearning/Clock/Clock.sv|
+R11
+!i113 1
+R12
+R13
+R6
+n@clock_tb
+vCounter
+R7
+R1
+!i10b 1
+!s100 K?>LH_4=Ag9Ym2ghM^Llg2
+R2
+IPb3B@B]f6aP;LI6>O31TN2
+R3
+S1
+R0
+w1757407587
+8C:/GitHub_Repos/FPGALearning/Clock/Counter.sv
+FC:/GitHub_Repos/FPGALearning/Clock/Counter.sv
+!i122 1
+L0 1 31
+R4
+r1
+!s85 0
+31
+R5
+!s107 C:/GitHub_Repos/FPGALearning/Clock/Counter.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+C:/GitHub_Repos/FPGALearning/Clock|C:/GitHub_Repos/FPGALearning/Clock/Counter.sv|
+!i113 1
+R12
+R13
+R6
+n@counter
+vSevenSegmentInd
+R7
+R1
+!i10b 1
+!s100 <RGHUSg33Ib6_?l^0Wdh=1
+R2
+IjhelMQN0i8OET1>C?DhYo1
+R3
+S1
+R0
+w1757329651
+8C:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv
+FC:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv
+!i122 2
+L0 1 29
+R4
+r1
+!s85 0
+31
+R5
+!s107 C:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+C:/GitHub_Repos/FPGALearning/Clock|C:/GitHub_Repos/FPGALearning/Clock/SevenSegmentInd.sv|
+!i113 1
+R12
+R13
+R6
+n@seven@segment@ind

@@ -3,46 +3,18 @@ module Clock(
 	input clk,
 	input reset,
 	
-	output reg [3:0]sec0,
-	output reg [3:0]sec1,
-	output reg [3:0]min0,
-	output reg [3:0]min1
+	output [3:0]sec0,
+	output [3:0]sec1,
+	output [3:0]min0,
+	output [3:0]min1
 
 );
 
-always @(posedge clk or posedge reset) begin
+wire clkSec1, clkMin0, clkMin1;
 
-	if (reset) begin
-		sec0 <= 0;
-		sec1 <= 0;
-		min0 <= 0;
-		min1 <= 0;
-	end
-	else
-	if (sec0 == 9) begin
-		sec0 <= 0;
-		
-		if (sec1 == 5) begin
-			sec1 <= 0;
-			
-			if (min0 == 9) begin
-				min0 <= 0;
-				
-				if (min1 == 9)
-					min1 <= 0;
-				else
-					min1 <= min1 + 1;
-			end
-			else
-				min0 <= min0 + 1;
-		end
-		else
-			sec1 <= sec1 + 1;
-		
-	end
-	else
-		sec0 <= sec0 + 1;
-
-end
+Counter #(4, 4'd9) cntSec0(.clk(clk), .reset(reset), .out(sec0), .overflow(clkSec1));
+Counter #(4, 4'd5) cntSec1(.clk(clkSec1), .reset(reset), .out(sec1), .overflow(clkMin0));
+Counter #(4, 4'd9) cntMin0(.clk(clkMin0), .reset(reset), .out(min0), .overflow(clkMin1));
+Counter #(4, 4'd9) cntMin1(.clk(clkMin1), .reset(reset), .out(min1));
 
 endmodule

@@ -1,5 +1,5 @@
 Timing Analyzer report for ClockTL
-Mon Sep  8 14:29:01 2025
+Tue Sep  9 12:12:33 2025
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -100,7 +100,7 @@ https://fpgasoftware.intel.com/eula.
 ; Number detected on machine ; 16          ;
 ; Maximum allowed            ; 16          ;
 ;                            ;             ;
-; Average used               ; 1.10        ;
+; Average used               ; 1.11        ;
 ; Maximum used               ; 16          ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
@@ -110,28 +110,35 @@ https://fpgasoftware.intel.com/eula.
 ;     Processor 4            ;   1.1%      ;
 ;     Processor 5            ;   1.1%      ;
 ;     Processor 6            ;   1.1%      ;
-;     Processors 7-16        ;   0.4%      ;
+;     Processor 7            ;   1.1%      ;
+;     Processors 8-16        ;   0.4%      ;
 +----------------------------+-------------+
 
 
-+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Clocks                                                                                                                                                                                                                 ;
-+----------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+--------------------------------+
-; Clock Name                 ; Type ; Period ; Frequency  ; Rise  ; Fall  ; Duty Cycle ; Divide by ; Multiply by ; Phase ; Offset ; Edge List ; Edge Shift ; Inverted ; Master ; Source ; Targets                        ;
-+----------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+--------------------------------+
-; CLOCK_50_B7A               ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { CLOCK_50_B7A }               ;
-; ClockDivider:cd|counter[0] ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { ClockDivider:cd|counter[0] } ;
-+----------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+--------------------------------+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Clocks                                                                                                                                                                                                                                     ;
++--------------------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+------------------------------------------+
+; Clock Name                           ; Type ; Period ; Frequency  ; Rise  ; Fall  ; Duty Cycle ; Divide by ; Multiply by ; Phase ; Offset ; Edge List ; Edge Shift ; Inverted ; Master ; Source ; Targets                                  ;
++--------------------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+------------------------------------------+
+; Clock:clock|Counter:cntMin0|overflow ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { Clock:clock|Counter:cntMin0|overflow } ;
+; Clock:clock|Counter:cntSec0|overflow ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { Clock:clock|Counter:cntSec0|overflow } ;
+; Clock:clock|Counter:cntSec1|overflow ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { Clock:clock|Counter:cntSec1|overflow } ;
+; CLOCK_50_B7A                         ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { CLOCK_50_B7A }                         ;
+; Counter:cd|overflow                  ; Base ; 1.000  ; 1000.0 MHz ; 0.000 ; 0.500 ;            ;           ;             ;       ;        ;           ;            ;          ;        ;        ; { Counter:cd|overflow }                  ;
++--------------------------------------+------+--------+------------+-------+-------+------------+-----------+-------------+-------+--------+-----------+------------+----------+--------+--------+------------------------------------------+
 
 
-+------------------------------------------------------------------+
-; Slow 1100mV 85C Model Fmax Summary                               ;
-+------------+-----------------+----------------------------+------+
-; Fmax       ; Restricted Fmax ; Clock Name                 ; Note ;
-+------------+-----------------+----------------------------+------+
-; 134.93 MHz ; 134.93 MHz      ; CLOCK_50_B7A               ;      ;
-; 277.7 MHz  ; 277.7 MHz       ; ClockDivider:cd|counter[0] ;      ;
-+------------+-----------------+----------------------------+------+
++----------------------------------------------------------------------------+
+; Slow 1100mV 85C Model Fmax Summary                                         ;
++------------+-----------------+--------------------------------------+------+
+; Fmax       ; Restricted Fmax ; Clock Name                           ; Note ;
++------------+-----------------+--------------------------------------+------+
+; 247.4 MHz  ; 247.4 MHz       ; CLOCK_50_B7A                         ;      ;
+; 357.65 MHz ; 357.65 MHz      ; Clock:clock|Counter:cntSec1|overflow ;      ;
+; 365.9 MHz  ; 365.9 MHz       ; Counter:cd|overflow                  ;      ;
+; 388.5 MHz  ; 388.5 MHz       ; Clock:clock|Counter:cntMin0|overflow ;      ;
+; 394.63 MHz ; 394.63 MHz      ; Clock:clock|Counter:cntSec0|overflow ;      ;
++------------+-----------------+--------------------------------------+------+
 This panel reports FMAX for every clock in the design, regardless of the user-specified clock periods.  FMAX is only computed for paths where the source and destination registers or ports are driven by the same clock.  Paths of different clocks, including generated clocks, are ignored.  For paths between a clock and its inversion, FMAX is computed as if the rising and falling edges are scaled along with FMAX, such that the duty cycle (in terms of a percentage) is maintained. Altera recommends that you always use clock constraints and other slack reports for sign-off analysis.
 
 
@@ -141,24 +148,30 @@ This panel reports FMAX for every clock in the design, regardless of the user-sp
 HTML report is unavailable in plain text report export.
 
 
-+-----------------------------------------------------+
-; Slow 1100mV 85C Model Setup Summary                 ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -6.411 ; -166.161      ;
-; ClockDivider:cd|counter[0] ; -2.601 ; -36.808       ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Slow 1100mV 85C Model Setup Summary                           ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -3.042 ; -90.982       ;
+; Clock:clock|Counter:cntSec1|overflow ; -1.796 ; -7.701        ;
+; Counter:cd|overflow                  ; -1.733 ; -10.453       ;
+; Clock:clock|Counter:cntMin0|overflow ; -1.574 ; -5.224        ;
+; Clock:clock|Counter:cntSec0|overflow ; -1.534 ; -10.993       ;
++--------------------------------------+--------+---------------+
 
 
-+----------------------------------------------------+
-; Slow 1100mV 85C Model Hold Summary                 ;
-+----------------------------+-------+---------------+
-; Clock                      ; Slack ; End Point TNS ;
-+----------------------------+-------+---------------+
-; CLOCK_50_B7A               ; 0.437 ; 0.000         ;
-; ClockDivider:cd|counter[0] ; 0.773 ; 0.000         ;
-+----------------------------+-------+---------------+
++--------------------------------------------------------------+
+; Slow 1100mV 85C Model Hold Summary                           ;
++--------------------------------------+-------+---------------+
+; Clock                                ; Slack ; End Point TNS ;
++--------------------------------------+-------+---------------+
+; CLOCK_50_B7A                         ; 0.445 ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.698 ; 0.000         ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.699 ; 0.000         ;
+; Counter:cd|overflow                  ; 0.855 ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.885 ; 0.000         ;
++--------------------------------------+-------+---------------+
 
 
 ------------------------------------------
@@ -173,14 +186,17 @@ No paths to report.
 No paths to report.
 
 
-+-----------------------------------------------------+
-; Slow 1100mV 85C Model Minimum Pulse Width Summary   ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -0.538 ; -20.008       ;
-; ClockDivider:cd|counter[0] ; -0.538 ; -13.305       ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Slow 1100mV 85C Model Minimum Pulse Width Summary             ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -0.538 ; -24.772       ;
+; Counter:cd|overflow                  ; -0.538 ; -7.027        ;
+; Clock:clock|Counter:cntSec0|overflow ; -0.538 ; -6.258        ;
+; Clock:clock|Counter:cntSec1|overflow ; -0.538 ; -4.613        ;
+; Clock:clock|Counter:cntMin0|overflow ; -0.538 ; -3.152        ;
++--------------------------------------+--------+---------------+
 
 
 -----------------------------------------------
@@ -189,35 +205,44 @@ No paths to report.
 No synchronizer chains to report.
 
 
-+-----------------------------------------------------------------+
-; Slow 1100mV 0C Model Fmax Summary                               ;
-+-----------+-----------------+----------------------------+------+
-; Fmax      ; Restricted Fmax ; Clock Name                 ; Note ;
-+-----------+-----------------+----------------------------+------+
-; 137.8 MHz ; 137.8 MHz       ; CLOCK_50_B7A               ;      ;
-; 279.1 MHz ; 279.1 MHz       ; ClockDivider:cd|counter[0] ;      ;
-+-----------+-----------------+----------------------------+------+
++----------------------------------------------------------------------------+
+; Slow 1100mV 0C Model Fmax Summary                                          ;
++------------+-----------------+--------------------------------------+------+
+; Fmax       ; Restricted Fmax ; Clock Name                           ; Note ;
++------------+-----------------+--------------------------------------+------+
+; 227.84 MHz ; 227.84 MHz      ; CLOCK_50_B7A                         ;      ;
+; 354.36 MHz ; 354.36 MHz      ; Clock:clock|Counter:cntSec1|overflow ;      ;
+; 365.9 MHz  ; 365.9 MHz       ; Counter:cd|overflow                  ;      ;
+; 380.81 MHz ; 380.81 MHz      ; Clock:clock|Counter:cntMin0|overflow ;      ;
+; 387.15 MHz ; 387.15 MHz      ; Clock:clock|Counter:cntSec0|overflow ;      ;
++------------+-----------------+--------------------------------------+------+
 This panel reports FMAX for every clock in the design, regardless of the user-specified clock periods.  FMAX is only computed for paths where the source and destination registers or ports are driven by the same clock.  Paths of different clocks, including generated clocks, are ignored.  For paths between a clock and its inversion, FMAX is computed as if the rising and falling edges are scaled along with FMAX, such that the duty cycle (in terms of a percentage) is maintained. Altera recommends that you always use clock constraints and other slack reports for sign-off analysis.
 
 
-+-----------------------------------------------------+
-; Slow 1100mV 0C Model Setup Summary                  ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -6.257 ; -162.108      ;
-; ClockDivider:cd|counter[0] ; -2.583 ; -36.116       ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Slow 1100mV 0C Model Setup Summary                            ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -3.389 ; -91.875       ;
+; Clock:clock|Counter:cntSec1|overflow ; -1.822 ; -7.805        ;
+; Counter:cd|overflow                  ; -1.733 ; -10.612       ;
+; Clock:clock|Counter:cntMin0|overflow ; -1.626 ; -5.391        ;
+; Clock:clock|Counter:cntSec0|overflow ; -1.583 ; -11.196       ;
++--------------------------------------+--------+---------------+
 
 
-+----------------------------------------------------+
-; Slow 1100mV 0C Model Hold Summary                  ;
-+----------------------------+-------+---------------+
-; Clock                      ; Slack ; End Point TNS ;
-+----------------------------+-------+---------------+
-; CLOCK_50_B7A               ; 0.153 ; 0.000         ;
-; ClockDivider:cd|counter[0] ; 0.768 ; 0.000         ;
-+----------------------------+-------+---------------+
++--------------------------------------------------------------+
+; Slow 1100mV 0C Model Hold Summary                            ;
++--------------------------------------+-------+---------------+
+; Clock                                ; Slack ; End Point TNS ;
++--------------------------------------+-------+---------------+
+; CLOCK_50_B7A                         ; 0.448 ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.686 ; 0.000         ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.688 ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.858 ; 0.000         ;
+; Counter:cd|overflow                  ; 0.882 ; 0.000         ;
++--------------------------------------+-------+---------------+
 
 
 -----------------------------------------
@@ -232,14 +257,17 @@ No paths to report.
 No paths to report.
 
 
-+-----------------------------------------------------+
-; Slow 1100mV 0C Model Minimum Pulse Width Summary    ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -0.538 ; -20.936       ;
-; ClockDivider:cd|counter[0] ; -0.538 ; -13.524       ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Slow 1100mV 0C Model Minimum Pulse Width Summary              ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -0.538 ; -27.307       ;
+; Counter:cd|overflow                  ; -0.538 ; -7.301        ;
+; Clock:clock|Counter:cntSec0|overflow ; -0.538 ; -6.210        ;
+; Clock:clock|Counter:cntSec1|overflow ; -0.538 ; -4.630        ;
+; Clock:clock|Counter:cntMin0|overflow ; -0.538 ; -3.122        ;
++--------------------------------------+--------+---------------+
 
 
 ----------------------------------------------
@@ -248,24 +276,30 @@ No paths to report.
 No synchronizer chains to report.
 
 
-+-----------------------------------------------------+
-; Fast 1100mV 85C Model Setup Summary                 ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -3.215 ; -83.254       ;
-; ClockDivider:cd|counter[0] ; -0.860 ; -11.479       ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Fast 1100mV 85C Model Setup Summary                           ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -1.242 ; -30.735       ;
+; Clock:clock|Counter:cntSec1|overflow ; -0.604 ; -2.098        ;
+; Counter:cd|overflow                  ; -0.587 ; -3.259        ;
+; Clock:clock|Counter:cntSec0|overflow ; -0.534 ; -3.089        ;
+; Clock:clock|Counter:cntMin0|overflow ; -0.508 ; -1.361        ;
++--------------------------------------+--------+---------------+
 
 
-+----------------------------------------------------+
-; Fast 1100mV 85C Model Hold Summary                 ;
-+----------------------------+-------+---------------+
-; Clock                      ; Slack ; End Point TNS ;
-+----------------------------+-------+---------------+
-; CLOCK_50_B7A               ; 0.197 ; 0.000         ;
-; ClockDivider:cd|counter[0] ; 0.351 ; 0.000         ;
-+----------------------------+-------+---------------+
++--------------------------------------------------------------+
+; Fast 1100mV 85C Model Hold Summary                           ;
++--------------------------------------+-------+---------------+
+; Clock                                ; Slack ; End Point TNS ;
++--------------------------------------+-------+---------------+
+; CLOCK_50_B7A                         ; 0.203 ; 0.000         ;
+; Counter:cd|overflow                  ; 0.293 ; 0.000         ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.300 ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.320 ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.345 ; 0.000         ;
++--------------------------------------+-------+---------------+
 
 
 ------------------------------------------
@@ -280,14 +314,17 @@ No paths to report.
 No paths to report.
 
 
-+-----------------------------------------------------+
-; Fast 1100mV 85C Model Minimum Pulse Width Summary   ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -0.101 ; -2.569        ;
-; ClockDivider:cd|counter[0] ; 0.081  ; 0.000         ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Fast 1100mV 85C Model Minimum Pulse Width Summary             ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -0.396 ; -2.546        ;
+; Counter:cd|overflow                  ; -0.140 ; -0.823        ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.131  ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.143  ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.148  ; 0.000         ;
++--------------------------------------+--------+---------------+
 
 
 -----------------------------------------------
@@ -296,24 +333,30 @@ No paths to report.
 No synchronizer chains to report.
 
 
-+-----------------------------------------------------+
-; Fast 1100mV 0C Model Setup Summary                  ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -2.741 ; -70.916       ;
-; ClockDivider:cd|counter[0] ; -0.755 ; -9.640        ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Fast 1100mV 0C Model Setup Summary                            ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -1.200 ; -26.547       ;
+; Clock:clock|Counter:cntSec1|overflow ; -0.525 ; -1.734        ;
+; Counter:cd|overflow                  ; -0.488 ; -2.722        ;
+; Clock:clock|Counter:cntMin0|overflow ; -0.417 ; -1.106        ;
+; Clock:clock|Counter:cntSec0|overflow ; -0.415 ; -2.532        ;
++--------------------------------------+--------+---------------+
 
 
-+----------------------------------------------------+
-; Fast 1100mV 0C Model Hold Summary                  ;
-+----------------------------+-------+---------------+
-; Clock                      ; Slack ; End Point TNS ;
-+----------------------------+-------+---------------+
-; CLOCK_50_B7A               ; 0.187 ; 0.000         ;
-; ClockDivider:cd|counter[0] ; 0.315 ; 0.000         ;
-+----------------------------+-------+---------------+
++--------------------------------------------------------------+
+; Fast 1100mV 0C Model Hold Summary                            ;
++--------------------------------------+-------+---------------+
+; Clock                                ; Slack ; End Point TNS ;
++--------------------------------------+-------+---------------+
+; CLOCK_50_B7A                         ; 0.192 ; 0.000         ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.266 ; 0.000         ;
+; Counter:cd|overflow                  ; 0.274 ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.288 ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.305 ; 0.000         ;
++--------------------------------------+-------+---------------+
 
 
 -----------------------------------------
@@ -328,14 +371,17 @@ No paths to report.
 No paths to report.
 
 
-+-----------------------------------------------------+
-; Fast 1100mV 0C Model Minimum Pulse Width Summary    ;
-+----------------------------+--------+---------------+
-; Clock                      ; Slack  ; End Point TNS ;
-+----------------------------+--------+---------------+
-; CLOCK_50_B7A               ; -0.098 ; -2.508        ;
-; ClockDivider:cd|counter[0] ; 0.114  ; 0.000         ;
-+----------------------------+--------+---------------+
++---------------------------------------------------------------+
+; Fast 1100mV 0C Model Minimum Pulse Width Summary              ;
++--------------------------------------+--------+---------------+
+; Clock                                ; Slack  ; End Point TNS ;
++--------------------------------------+--------+---------------+
+; CLOCK_50_B7A                         ; -0.395 ; -2.651        ;
+; Counter:cd|overflow                  ; -0.107 ; -0.632        ;
+; Clock:clock|Counter:cntMin0|overflow ; 0.136  ; 0.000         ;
+; Clock:clock|Counter:cntSec1|overflow ; 0.143  ; 0.000         ;
+; Clock:clock|Counter:cntSec0|overflow ; 0.149  ; 0.000         ;
++--------------------------------------+--------+---------------+
 
 
 ----------------------------------------------
@@ -344,18 +390,24 @@ No paths to report.
 No synchronizer chains to report.
 
 
-+-------------------------------------------------------------------------------------------+
-; Multicorner Timing Analysis Summary                                                       ;
-+-----------------------------+----------+-------+----------+---------+---------------------+
-; Clock                       ; Setup    ; Hold  ; Recovery ; Removal ; Minimum Pulse Width ;
-+-----------------------------+----------+-------+----------+---------+---------------------+
-; Worst-case Slack            ; -6.411   ; 0.153 ; N/A      ; N/A     ; -0.538              ;
-;  CLOCK_50_B7A               ; -6.411   ; 0.153 ; N/A      ; N/A     ; -0.538              ;
-;  ClockDivider:cd|counter[0] ; -2.601   ; 0.315 ; N/A      ; N/A     ; -0.538              ;
-; Design-wide TNS             ; -202.969 ; 0.0   ; 0.0      ; 0.0     ; -34.46              ;
-;  CLOCK_50_B7A               ; -166.161 ; 0.000 ; N/A      ; N/A     ; -20.936             ;
-;  ClockDivider:cd|counter[0] ; -36.808  ; 0.000 ; N/A      ; N/A     ; -13.524             ;
-+-----------------------------+----------+-------+----------+---------+---------------------+
++-----------------------------------------------------------------------------------------------------+
+; Multicorner Timing Analysis Summary                                                                 ;
++---------------------------------------+----------+-------+----------+---------+---------------------+
+; Clock                                 ; Setup    ; Hold  ; Recovery ; Removal ; Minimum Pulse Width ;
++---------------------------------------+----------+-------+----------+---------+---------------------+
+; Worst-case Slack                      ; -3.389   ; 0.192 ; N/A      ; N/A     ; -0.538              ;
+;  CLOCK_50_B7A                         ; -3.389   ; 0.192 ; N/A      ; N/A     ; -0.538              ;
+;  Clock:clock|Counter:cntMin0|overflow ; -1.626   ; 0.266 ; N/A      ; N/A     ; -0.538              ;
+;  Clock:clock|Counter:cntSec0|overflow ; -1.583   ; 0.305 ; N/A      ; N/A     ; -0.538              ;
+;  Clock:clock|Counter:cntSec1|overflow ; -1.822   ; 0.288 ; N/A      ; N/A     ; -0.538              ;
+;  Counter:cd|overflow                  ; -1.733   ; 0.274 ; N/A      ; N/A     ; -0.538              ;
+; Design-wide TNS                       ; -126.879 ; 0.0   ; 0.0      ; 0.0     ; -48.57              ;
+;  CLOCK_50_B7A                         ; -91.875  ; 0.000 ; N/A      ; N/A     ; -27.307             ;
+;  Clock:clock|Counter:cntMin0|overflow ; -5.391   ; 0.000 ; N/A      ; N/A     ; -3.152              ;
+;  Clock:clock|Counter:cntSec0|overflow ; -11.196  ; 0.000 ; N/A      ; N/A     ; -6.258              ;
+;  Clock:clock|Counter:cntSec1|overflow ; -7.805   ; 0.000 ; N/A      ; N/A     ; -4.630              ;
+;  Counter:cd|overflow                  ; -10.612  ; 0.000 ; N/A      ; N/A     ; -7.301              ;
++---------------------------------------+----------+-------+----------+---------+---------------------+
 
 
 +---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -1568,27 +1620,31 @@ No synchronizer chains to report.
 +------------------+--------------+---------------------+---------------------+------------------------------+------------------------------+---------------------+---------------------+--------------------------------------+--------------------------------------+-----------------------------+-----------------------------+----------------------------+----------------------------+-----------------------------+-----------------------------+--------------------+--------------------+-------------------------------------+-------------------------------------+----------------------------+----------------------------+---------------------------+---------------------------+
 
 
-+-----------------------------------------------------------------------------------------------------+
-; Setup Transfers                                                                                     ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
-; From Clock                 ; To Clock                   ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
-; CLOCK_50_B7A               ; CLOCK_50_B7A               ; 975      ; 0        ; 0        ; 0        ;
-; ClockDivider:cd|counter[0] ; CLOCK_50_B7A               ; 52       ; 52       ; 0        ; 0        ;
-; ClockDivider:cd|counter[0] ; ClockDivider:cd|counter[0] ; 158      ; 0        ; 0        ; 0        ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
++-------------------------------------------------------------------------------------------------------------------------+
+; Setup Transfers                                                                                                         ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
+; From Clock                           ; To Clock                             ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
+; Clock:clock|Counter:cntMin0|overflow ; Clock:clock|Counter:cntMin0|overflow ; 12       ; 0        ; 0        ; 0        ;
+; Clock:clock|Counter:cntSec0|overflow ; Clock:clock|Counter:cntSec0|overflow ; 26       ; 0        ; 0        ; 0        ;
+; Clock:clock|Counter:cntSec1|overflow ; Clock:clock|Counter:cntSec1|overflow ; 17       ; 0        ; 0        ; 0        ;
+; CLOCK_50_B7A                         ; CLOCK_50_B7A                         ; 1214     ; 0        ; 0        ; 0        ;
+; Counter:cd|overflow                  ; Counter:cd|overflow                  ; 20       ; 0        ; 0        ; 0        ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
 
-+-----------------------------------------------------------------------------------------------------+
-; Hold Transfers                                                                                      ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
-; From Clock                 ; To Clock                   ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
-; CLOCK_50_B7A               ; CLOCK_50_B7A               ; 975      ; 0        ; 0        ; 0        ;
-; ClockDivider:cd|counter[0] ; CLOCK_50_B7A               ; 52       ; 52       ; 0        ; 0        ;
-; ClockDivider:cd|counter[0] ; ClockDivider:cd|counter[0] ; 158      ; 0        ; 0        ; 0        ;
-+----------------------------+----------------------------+----------+----------+----------+----------+
++-------------------------------------------------------------------------------------------------------------------------+
+; Hold Transfers                                                                                                          ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
+; From Clock                           ; To Clock                             ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
+; Clock:clock|Counter:cntMin0|overflow ; Clock:clock|Counter:cntMin0|overflow ; 12       ; 0        ; 0        ; 0        ;
+; Clock:clock|Counter:cntSec0|overflow ; Clock:clock|Counter:cntSec0|overflow ; 26       ; 0        ; 0        ; 0        ;
+; Clock:clock|Counter:cntSec1|overflow ; Clock:clock|Counter:cntSec1|overflow ; 17       ; 0        ; 0        ; 0        ;
+; CLOCK_50_B7A                         ; CLOCK_50_B7A                         ; 1214     ; 0        ; 0        ; 0        ;
+; Counter:cd|overflow                  ; Counter:cd|overflow                  ; 20       ; 0        ; 0        ; 0        ;
++--------------------------------------+--------------------------------------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
 
@@ -1612,20 +1668,23 @@ No non-DPA dedicated SERDES Receiver circuitry present in device or used in desi
 ; Illegal Clocks                  ; 0     ; 0    ;
 ; Unconstrained Clocks            ; 0     ; 0    ;
 ; Unconstrained Input Ports       ; 1     ; 1    ;
-; Unconstrained Input Port Paths  ; 43    ; 43   ;
+; Unconstrained Input Port Paths  ; 57    ; 57   ;
 ; Unconstrained Output Ports      ; 28    ; 28   ;
 ; Unconstrained Output Port Paths ; 112   ; 112  ;
 +---------------------------------+-------+------+
 
 
-+------------------------------------------------------------------------------+
-; Clock Status Summary                                                         ;
-+----------------------------+----------------------------+------+-------------+
-; Target                     ; Clock                      ; Type ; Status      ;
-+----------------------------+----------------------------+------+-------------+
-; CLOCK_50_B7A               ; CLOCK_50_B7A               ; Base ; Constrained ;
-; ClockDivider:cd|counter[0] ; ClockDivider:cd|counter[0] ; Base ; Constrained ;
-+----------------------------+----------------------------+------+-------------+
++--------------------------------------------------------------------------------------------------+
+; Clock Status Summary                                                                             ;
++--------------------------------------+--------------------------------------+------+-------------+
+; Target                               ; Clock                                ; Type ; Status      ;
++--------------------------------------+--------------------------------------+------+-------------+
+; CLOCK_50_B7A                         ; CLOCK_50_B7A                         ; Base ; Constrained ;
+; Clock:clock|Counter:cntMin0|overflow ; Clock:clock|Counter:cntMin0|overflow ; Base ; Constrained ;
+; Clock:clock|Counter:cntSec0|overflow ; Clock:clock|Counter:cntSec0|overflow ; Base ; Constrained ;
+; Clock:clock|Counter:cntSec1|overflow ; Clock:clock|Counter:cntSec1|overflow ; Base ; Constrained ;
+; Counter:cd|overflow                  ; Counter:cd|overflow                  ; Base ; Constrained ;
++--------------------------------------+--------------------------------------+------+-------------+
 
 
 +---------------------------------------------------------------------------------------------------+
@@ -1724,7 +1783,7 @@ No non-DPA dedicated SERDES Receiver circuitry present in device or used in desi
 Info: *******************************************************************
 Info: Running Quartus Prime Timing Analyzer
     Info: Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
-    Info: Processing started: Mon Sep  8 14:28:55 2025
+    Info: Processing started: Tue Sep  9 12:12:27 2025
 Info: Command: quartus_sta Clock -c ClockTL
 Info: qsta_default_script.tcl version: #1
 Info (20030): Parallel compilation is enabled and will use 16 of the 16 processors detected
@@ -1734,102 +1793,141 @@ Critical Warning (332012): Synopsys Design Constraints File file not found: 'Clo
 Info (332142): No user constrained base clocks found in the design. Calling "derive_clocks -period 1.0"
 Info (332105): Deriving Clocks
     Info (332105): create_clock -period 1.000 -name CLOCK_50_B7A CLOCK_50_B7A
-    Info (332105): create_clock -period 1.000 -name ClockDivider:cd|counter[0] ClockDivider:cd|counter[0]
+    Info (332105): create_clock -period 1.000 -name Clock:clock|Counter:cntSec1|overflow Clock:clock|Counter:cntSec1|overflow
+    Info (332105): create_clock -period 1.000 -name Clock:clock|Counter:cntSec0|overflow Clock:clock|Counter:cntSec0|overflow
+    Info (332105): create_clock -period 1.000 -name Counter:cd|overflow Counter:cd|overflow
+    Info (332105): create_clock -period 1.000 -name Clock:clock|Counter:cntMin0|overflow Clock:clock|Counter:cntMin0|overflow
 Info (332143): No user constrained clock uncertainty found in the design. Calling "derive_clock_uncertainty"
 Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
 Info: Found TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS = ON
 Info: Analyzing Slow 1100mV 85C Model
 Critical Warning (332148): Timing requirements not met
     Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
-Info (332146): Worst-case setup slack is -6.411
+Info (332146): Worst-case setup slack is -3.042
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -6.411            -166.161 CLOCK_50_B7A 
-    Info (332119):    -2.601             -36.808 ClockDivider:cd|counter[0] 
-Info (332146): Worst-case hold slack is 0.437
+    Info (332119):    -3.042             -90.982 CLOCK_50_B7A 
+    Info (332119):    -1.796              -7.701 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -1.733             -10.453 Counter:cd|overflow 
+    Info (332119):    -1.574              -5.224 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):    -1.534             -10.993 Clock:clock|Counter:cntSec0|overflow 
+Info (332146): Worst-case hold slack is 0.445
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):     0.437               0.000 CLOCK_50_B7A 
-    Info (332119):     0.773               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):     0.445               0.000 CLOCK_50_B7A 
+    Info (332119):     0.698               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.699               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.855               0.000 Counter:cd|overflow 
+    Info (332119):     0.885               0.000 Clock:clock|Counter:cntSec0|overflow 
 Info (332140): No Recovery paths to report
 Info (332140): No Removal paths to report
 Info (332146): Worst-case minimum pulse width slack is -0.538
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -0.538             -20.008 CLOCK_50_B7A 
-    Info (332119):    -0.538             -13.305 ClockDivider:cd|counter[0] 
+    Info (332119):    -0.538             -24.772 CLOCK_50_B7A 
+    Info (332119):    -0.538              -7.027 Counter:cd|overflow 
+    Info (332119):    -0.538              -6.258 Clock:clock|Counter:cntSec0|overflow 
+    Info (332119):    -0.538              -4.613 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -0.538              -3.152 Clock:clock|Counter:cntMin0|overflow 
 Info: Analyzing Slow 1100mV 0C Model
 Info (334003): Started post-fitting delay annotation
 Info (334004): Delay annotation completed successfully
 Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
 Critical Warning (332148): Timing requirements not met
     Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
-Info (332146): Worst-case setup slack is -6.257
+Info (332146): Worst-case setup slack is -3.389
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -6.257            -162.108 CLOCK_50_B7A 
-    Info (332119):    -2.583             -36.116 ClockDivider:cd|counter[0] 
-Info (332146): Worst-case hold slack is 0.153
+    Info (332119):    -3.389             -91.875 CLOCK_50_B7A 
+    Info (332119):    -1.822              -7.805 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -1.733             -10.612 Counter:cd|overflow 
+    Info (332119):    -1.626              -5.391 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):    -1.583             -11.196 Clock:clock|Counter:cntSec0|overflow 
+Info (332146): Worst-case hold slack is 0.448
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):     0.153               0.000 CLOCK_50_B7A 
-    Info (332119):     0.768               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):     0.448               0.000 CLOCK_50_B7A 
+    Info (332119):     0.686               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.688               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.858               0.000 Clock:clock|Counter:cntSec0|overflow 
+    Info (332119):     0.882               0.000 Counter:cd|overflow 
 Info (332140): No Recovery paths to report
 Info (332140): No Removal paths to report
 Info (332146): Worst-case minimum pulse width slack is -0.538
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -0.538             -20.936 CLOCK_50_B7A 
-    Info (332119):    -0.538             -13.524 ClockDivider:cd|counter[0] 
+    Info (332119):    -0.538             -27.307 CLOCK_50_B7A 
+    Info (332119):    -0.538              -7.301 Counter:cd|overflow 
+    Info (332119):    -0.538              -6.210 Clock:clock|Counter:cntSec0|overflow 
+    Info (332119):    -0.538              -4.630 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -0.538              -3.122 Clock:clock|Counter:cntMin0|overflow 
 Info: Analyzing Fast 1100mV 85C Model
 Info (334003): Started post-fitting delay annotation
 Info (334004): Delay annotation completed successfully
 Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
 Critical Warning (332148): Timing requirements not met
     Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
-Info (332146): Worst-case setup slack is -3.215
+Info (332146): Worst-case setup slack is -1.242
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -3.215             -83.254 CLOCK_50_B7A 
-    Info (332119):    -0.860             -11.479 ClockDivider:cd|counter[0] 
-Info (332146): Worst-case hold slack is 0.197
+    Info (332119):    -1.242             -30.735 CLOCK_50_B7A 
+    Info (332119):    -0.604              -2.098 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -0.587              -3.259 Counter:cd|overflow 
+    Info (332119):    -0.534              -3.089 Clock:clock|Counter:cntSec0|overflow 
+    Info (332119):    -0.508              -1.361 Clock:clock|Counter:cntMin0|overflow 
+Info (332146): Worst-case hold slack is 0.203
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):     0.197               0.000 CLOCK_50_B7A 
-    Info (332119):     0.351               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):     0.203               0.000 CLOCK_50_B7A 
+    Info (332119):     0.293               0.000 Counter:cd|overflow 
+    Info (332119):     0.300               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.320               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.345               0.000 Clock:clock|Counter:cntSec0|overflow 
 Info (332140): No Recovery paths to report
 Info (332140): No Removal paths to report
-Info (332146): Worst-case minimum pulse width slack is -0.101
+Info (332146): Worst-case minimum pulse width slack is -0.396
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -0.101              -2.569 CLOCK_50_B7A 
-    Info (332119):     0.081               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):    -0.396              -2.546 CLOCK_50_B7A 
+    Info (332119):    -0.140              -0.823 Counter:cd|overflow 
+    Info (332119):     0.131               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.143               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.148               0.000 Clock:clock|Counter:cntSec0|overflow 
 Info: Analyzing Fast 1100mV 0C Model
 Info (332123): Deriving Clock Uncertainty. Please refer to report_sdc in the Timing Analyzer to see clock uncertainties.
 Critical Warning (332148): Timing requirements not met
     Info (11105): For recommendations on closing timing, run Report Timing Closure Recommendations in the Timing Analyzer.
-Info (332146): Worst-case setup slack is -2.741
+Info (332146): Worst-case setup slack is -1.200
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -2.741             -70.916 CLOCK_50_B7A 
-    Info (332119):    -0.755              -9.640 ClockDivider:cd|counter[0] 
-Info (332146): Worst-case hold slack is 0.187
+    Info (332119):    -1.200             -26.547 CLOCK_50_B7A 
+    Info (332119):    -0.525              -1.734 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):    -0.488              -2.722 Counter:cd|overflow 
+    Info (332119):    -0.417              -1.106 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):    -0.415              -2.532 Clock:clock|Counter:cntSec0|overflow 
+Info (332146): Worst-case hold slack is 0.192
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):     0.187               0.000 CLOCK_50_B7A 
-    Info (332119):     0.315               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):     0.192               0.000 CLOCK_50_B7A 
+    Info (332119):     0.266               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.274               0.000 Counter:cd|overflow 
+    Info (332119):     0.288               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.305               0.000 Clock:clock|Counter:cntSec0|overflow 
 Info (332140): No Recovery paths to report
 Info (332140): No Removal paths to report
-Info (332146): Worst-case minimum pulse width slack is -0.098
+Info (332146): Worst-case minimum pulse width slack is -0.395
     Info (332119):     Slack       End Point TNS Clock 
     Info (332119): ========= =================== =====================
-    Info (332119):    -0.098              -2.508 CLOCK_50_B7A 
-    Info (332119):     0.114               0.000 ClockDivider:cd|counter[0] 
+    Info (332119):    -0.395              -2.651 CLOCK_50_B7A 
+    Info (332119):    -0.107              -0.632 Counter:cd|overflow 
+    Info (332119):     0.136               0.000 Clock:clock|Counter:cntMin0|overflow 
+    Info (332119):     0.143               0.000 Clock:clock|Counter:cntSec1|overflow 
+    Info (332119):     0.149               0.000 Clock:clock|Counter:cntSec0|overflow 
 Info (332102): Design is not fully constrained for setup requirements
 Info (332102): Design is not fully constrained for hold requirements
 Info: Quartus Prime Timing Analyzer was successful. 0 errors, 5 warnings
-    Info: Peak virtual memory: 5281 megabytes
-    Info: Processing ended: Mon Sep  8 14:29:01 2025
+    Info: Peak virtual memory: 5282 megabytes
+    Info: Processing ended: Tue Sep  9 12:12:33 2025
     Info: Elapsed time: 00:00:06
     Info: Total CPU time (on all processors): 00:00:05
 

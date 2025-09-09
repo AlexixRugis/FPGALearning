@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Mon Sep  8 14:28:18 2025
+Analysis & Synthesis Status : Successful - Tue Sep  9 12:11:48 2025
 Quartus Prime Version : 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 Revision Name : ClockTL
 Top-level Entity Name : baseline_c5gx
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 42
+Total registers : 46
 Total pins : 236
 Total virtual pins : 0
 Total block memory bits : 0

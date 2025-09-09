@@ -179,7 +179,7 @@ wire [3:0]min1;
 
 not Not1(nReset, KEY[0]);
 
-ClockDivider cd(.inClk(CLOCK_50_B7A), .outClk(oneHz), .reset(nReset));
+Counter #(26, 26'd49999999) cd(.clk(CLOCK_50_B7A), .overflow(oneHz), .reset(nReset));
 Clock clock(.clk(oneHz), .sec0(sec0), .sec1(sec1), .min0(min0), .min1(min1), .reset(nReset));
 
 SevenSegmentInd ind1(.digit(sec0), .out(HEX0));

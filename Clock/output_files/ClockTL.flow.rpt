@@ -1,5 +1,5 @@
 Flow report for ClockTL
-Mon Sep  8 14:29:02 2025
+Tue Sep  9 12:12:35 2025
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -41,15 +41,15 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +---------------------------------+------------------------------------------------+
-; Flow Status                     ; Successful - Mon Sep  8 14:29:02 2025          ;
+; Flow Status                     ; Successful - Tue Sep  9 12:12:35 2025          ;
 ; Quartus Prime Version           ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                   ; ClockTL                                        ;
 ; Top-level Entity Name           ; baseline_c5gx                                  ;
 ; Family                          ; Cyclone V                                      ;
 ; Device                          ; 5CGXFC5C6F27C7                                 ;
 ; Timing Models                   ; Final                                          ;
-; Logic utilization (in ALMs)     ; 44 / 29,080 ( < 1 % )                          ;
-; Total registers                 ; 43                                             ;
+; Logic utilization (in ALMs)     ; 42 / 29,080 ( < 1 % )                          ;
+; Total registers                 ; 57                                             ;
 ; Total pins                      ; 237 / 364 ( 65 % )                             ;
 ; Total virtual pins              ; 0                                              ;
 ; Total block memory bits         ; 0 / 4,567,040 ( 0 % )                          ;
@@ -68,7 +68,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 09/08/2025 14:28:13 ;
+; Start date & time ; 09/09/2025 12:11:42 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; ClockTL             ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name   ; Section Id                        ;
 +-------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID               ; 1098664890952.175733089302416          ; --            ; --            ; --                                ;
+; COMPILER_SIGNATURE_ID               ; 1098664890952.175740910202488          ; --            ; --            ; --                                ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_timing           ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_boundary_scan    ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_signal_integrity ;
@@ -109,12 +109,12 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:06     ; 1.0                     ; 4877 MB             ; 00:00:09                           ;
-; Fitter               ; 00:00:29     ; 1.0                     ; 7697 MB             ; 00:01:28                           ;
-; Assembler            ; 00:00:05     ; 1.0                     ; 4889 MB             ; 00:00:05                           ;
-; Timing Analyzer      ; 00:00:06     ; 1.1                     ; 5281 MB             ; 00:00:05                           ;
-; EDA Netlist Writer   ; 00:00:00     ; 1.0                     ; 4731 MB             ; 00:00:01                           ;
-; Total                ; 00:00:46     ; --                      ; --                  ; 00:01:48                           ;
+; Analysis & Synthesis ; 00:00:06     ; 1.0                     ; 4877 MB             ; 00:00:08                           ;
+; Fitter               ; 00:00:31     ; 1.0                     ; 7697 MB             ; 00:01:32                           ;
+; Assembler            ; 00:00:06     ; 1.0                     ; 4877 MB             ; 00:00:05                           ;
+; Timing Analyzer      ; 00:00:06     ; 1.1                     ; 5282 MB             ; 00:00:05                           ;
+; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 4731 MB             ; 00:00:01                           ;
+; Total                ; 00:00:50     ; --                      ; --                  ; 00:01:51                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
