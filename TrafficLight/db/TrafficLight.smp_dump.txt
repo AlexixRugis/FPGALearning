@@ -1,0 +1,8 @@
+
+State Machine - |baseline_c5gx|TrafficLight:tl|state
+Name state.blink state.red state.redyellow state.green state.yellow 
+state.green 0 0 0 0 0 
+state.redyellow 0 0 1 1 0 
+state.red 0 1 0 1 0 
+state.blink 1 0 0 1 0 
+state.yellow 0 0 0 1 1 
