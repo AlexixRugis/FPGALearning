@@ -1,5 +1,5 @@
 Flow report for TrafficLight
-Mon Sep 15 12:31:39 2025
+Sun Sep 21 00:31:33 2025
 Quartus Prime Version 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 
 
@@ -41,25 +41,25 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +---------------------------------+------------------------------------------------+
-; Flow Status                     ; Successful - Mon Sep 15 12:31:39 2025          ;
+; Flow Status                     ; Successful - Sun Sep 21 00:31:33 2025          ;
 ; Quartus Prime Version           ; 22.1std.2 Build 922 07/20/2023 SC Lite Edition ;
 ; Revision Name                   ; TrafficLight                                   ;
 ; Top-level Entity Name           ; baseline_c5gx                                  ;
 ; Family                          ; Cyclone V                                      ;
 ; Device                          ; 5CGXFC5C6F27C7                                 ;
 ; Timing Models                   ; Final                                          ;
-; Logic utilization (in ALMs)     ; 33 / 29,080 ( < 1 % )                          ;
-; Total registers                 ; 36                                             ;
-; Total pins                      ; 237 / 364 ( 65 % )                             ;
+; Logic utilization (in ALMs)     ; N/A                                            ;
+; Total registers                 ; 39                                             ;
+; Total pins                      ; 236                                            ;
 ; Total virtual pins              ; 0                                              ;
-; Total block memory bits         ; 0 / 4,567,040 ( 0 % )                          ;
-; Total DSP Blocks                ; 0 / 150 ( 0 % )                                ;
-; Total HSSI RX PCSs              ; 0 / 6 ( 0 % )                                  ;
-; Total HSSI PMA RX Deserializers ; 0 / 6 ( 0 % )                                  ;
-; Total HSSI TX PCSs              ; 0 / 6 ( 0 % )                                  ;
-; Total HSSI PMA TX Serializers   ; 0 / 6 ( 0 % )                                  ;
-; Total PLLs                      ; 0 / 12 ( 0 % )                                 ;
-; Total DLLs                      ; 0 / 4 ( 0 % )                                  ;
+; Total block memory bits         ; 0                                              ;
+; Total DSP Blocks                ; 0                                              ;
+; Total HSSI RX PCSs              ; 0                                              ;
+; Total HSSI PMA RX Deserializers ; 0                                              ;
+; Total HSSI TX PCSs              ; 0                                              ;
+; Total HSSI PMA TX Serializers   ; 0                                              ;
+; Total PLLs                      ; 0                                              ;
+; Total DLLs                      ; 0                                              ;
 +---------------------------------+------------------------------------------------+
 
 
@@ -68,40 +68,46 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 09/15/2025 12:30:25 ;
+; Start date & time ; 09/21/2025 00:31:27 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; TrafficLight        ;
 +-------------------+---------------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------------------------------+
-; Flow Non-Default Global Settings                                                                                                                 ;
-+-------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
-; Assignment Name                     ; Value                                  ; Default Value ; Entity Name   ; Section Id                        ;
-+-------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID               ; 1098664890952.175792862503004          ; --            ; --            ; --                                ;
-; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_timing           ;
-; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_boundary_scan    ;
-; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_signal_integrity ;
-; EDA_GENERATE_FUNCTIONAL_NETLIST     ; Off                                    ; --            ; --            ; eda_board_design_symbol           ;
-; EDA_OUTPUT_DATA_FORMAT              ; Systemverilog Hdl                      ; --            ; --            ; eda_simulation                    ;
-; EDA_SIMULATION_TOOL                 ; ModelSim (SystemVerilog)               ; <None>        ; --            ; --                                ;
-; EDA_TIME_SCALE                      ; 1 ps                                   ; --            ; --            ; eda_simulation                    ;
-; FITTER_EFFORT                       ; Standard Fit                           ; Auto Fit      ; --            ; --                                ;
-; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --            ; --                                ;
-; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --            ; --                                ;
-; OUTPUT_IO_TIMING_FAR_END_VMEAS      ; Half Signal Swing                      ; --            ; --            ; --                                ;
-; OUTPUT_IO_TIMING_FAR_END_VMEAS      ; Half Signal Swing                      ; --            ; --            ; --                                ;
-; OUTPUT_IO_TIMING_NEAR_END_VMEAS     ; Half Vccio                             ; --            ; --            ; --                                ;
-; OUTPUT_IO_TIMING_NEAR_END_VMEAS     ; Half Vccio                             ; --            ; --            ; --                                ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
-; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                    ; --            ; --            ; --                                ;
-; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --            ; --                                ;
-; PROJECT_OUTPUT_DIRECTORY            ; output_files                           ; --            ; --            ; --                                ;
-; TOP_LEVEL_ENTITY                    ; baseline_c5gx                          ; TrafficLight  ; --            ; --                                ;
-+-------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
++---------------------------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                                                  ;
++--------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
+; Assignment Name                      ; Value                                  ; Default Value ; Entity Name   ; Section Id                        ;
++--------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
+; COMPILER_SIGNATURE_ID                ; 1098664890952.175840388703520          ; --            ; --            ; --                                ;
+; EDA_DESIGN_INSTANCE_NAME             ; NA                                     ; --            ; --            ; TrafficLightControl_tb            ;
+; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --            ; eda_board_design_timing           ;
+; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --            ; eda_board_design_boundary_scan    ;
+; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --            ; eda_board_design_signal_integrity ;
+; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --            ; --            ; eda_board_design_symbol           ;
+; EDA_NATIVELINK_SIMULATION_TEST_BENCH ; TrafficLightControl_tb                 ; --            ; --            ; eda_simulation                    ;
+; EDA_OUTPUT_DATA_FORMAT               ; Systemverilog Hdl                      ; --            ; --            ; eda_simulation                    ;
+; EDA_SIMULATION_TOOL                  ; ModelSim (SystemVerilog)               ; <None>        ; --            ; --                                ;
+; EDA_TEST_BENCH_ENABLE_STATUS         ; TEST_BENCH_MODE                        ; --            ; --            ; eda_simulation                    ;
+; EDA_TEST_BENCH_FILE                  ; TrafficLightControl_tb.sv              ; --            ; --            ; TrafficLightControl_tb            ;
+; EDA_TEST_BENCH_MODULE_NAME           ; TrafficLightControl_tb                 ; --            ; --            ; TrafficLightControl_tb            ;
+; EDA_TEST_BENCH_NAME                  ; TrafficLightControl_tb                 ; --            ; --            ; eda_simulation                    ;
+; EDA_TIME_SCALE                       ; 1 ps                                   ; --            ; --            ; eda_simulation                    ;
+; FITTER_EFFORT                        ; Standard Fit                           ; Auto Fit      ; --            ; --                                ;
+; MAX_CORE_JUNCTION_TEMP               ; 85                                     ; --            ; --            ; --                                ;
+; MIN_CORE_JUNCTION_TEMP               ; 0                                      ; --            ; --            ; --                                ;
+; OUTPUT_IO_TIMING_FAR_END_VMEAS       ; Half Signal Swing                      ; --            ; --            ; --                                ;
+; OUTPUT_IO_TIMING_FAR_END_VMEAS       ; Half Signal Swing                      ; --            ; --            ; --                                ;
+; OUTPUT_IO_TIMING_NEAR_END_VMEAS      ; Half Vccio                             ; --            ; --            ; --                                ;
+; OUTPUT_IO_TIMING_NEAR_END_VMEAS      ; Half Vccio                             ; --            ; --            ; --                                ;
+; PARTITION_COLOR                      ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
+; PARTITION_FITTER_PRESERVATION_LEVEL  ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
+; PARTITION_NETLIST_TYPE               ; -- (Not supported for targeted family) ; --            ; baseline_c5gx ; Top                               ;
+; POWER_BOARD_THERMAL_MODEL            ; None (CONSERVATIVE)                    ; --            ; --            ; --                                ;
+; POWER_PRESET_COOLING_SOLUTION        ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --            ; --                                ;
+; PROJECT_OUTPUT_DIRECTORY             ; output_files                           ; --            ; --            ; --                                ;
+; TOP_LEVEL_ENTITY                     ; baseline_c5gx                          ; TrafficLight  ; --            ; --                                ;
++--------------------------------------+----------------------------------------+---------------+---------------+-----------------------------------+
 
 
 +--------------------------------------------------------------------------------------------------------------------------+
@@ -109,12 +115,8 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:10     ; 1.0                     ; 4885 MB             ; 00:00:13                           ;
-; Fitter               ; 00:00:45     ; 1.0                     ; 7693 MB             ; 00:01:55                           ;
-; Assembler            ; 00:00:06     ; 1.0                     ; 4873 MB             ; 00:00:05                           ;
-; Timing Analyzer      ; 00:00:07     ; 1.1                     ; 5284 MB             ; 00:00:05                           ;
-; EDA Netlist Writer   ; 00:00:01     ; 1.0                     ; 4731 MB             ; 00:00:01                           ;
-; Total                ; 00:01:09     ; --                      ; --                  ; 00:02:19                           ;
+; Analysis & Synthesis ; 00:00:06     ; 1.0                     ; 4876 MB             ; 00:00:09                           ;
+; Total                ; 00:00:06     ; --                      ; --                  ; 00:00:09                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -124,10 +126,6 @@ https://fpgasoftware.intel.com/eula.
 ; Module Name          ; Machine Hostname ; OS Name    ; OS Version ; Processor type ;
 +----------------------+------------------+------------+------------+----------------+
 ; Analysis & Synthesis ; DESKTOP-P1VQT7K  ; Windows 10 ; 10.0       ; x86_64         ;
-; Fitter               ; DESKTOP-P1VQT7K  ; Windows 10 ; 10.0       ; x86_64         ;
-; Assembler            ; DESKTOP-P1VQT7K  ; Windows 10 ; 10.0       ; x86_64         ;
-; Timing Analyzer      ; DESKTOP-P1VQT7K  ; Windows 10 ; 10.0       ; x86_64         ;
-; EDA Netlist Writer   ; DESKTOP-P1VQT7K  ; Windows 10 ; 10.0       ; x86_64         ;
 +----------------------+------------------+------------+------------+----------------+
 
 
@@ -135,10 +133,6 @@ https://fpgasoftware.intel.com/eula.
 ; Flow Log ;
 ------------
 quartus_map --read_settings_files=on --write_settings_files=off TrafficLight -c TrafficLight
-quartus_fit --read_settings_files=off --write_settings_files=off TrafficLight -c TrafficLight
-quartus_asm --read_settings_files=off --write_settings_files=off TrafficLight -c TrafficLight
-quartus_sta TrafficLight -c TrafficLight
-quartus_eda --read_settings_files=off --write_settings_files=off TrafficLight -c TrafficLight
 
 
 

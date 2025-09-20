@@ -1,0 +1,16 @@
+`timescale 1ns/100ps
+
+module Button_tb;
+
+reg clk;
+
+initial begin
+	clk <= 'd0;
+end
+
+always begin
+	
+end
+
+
+endmodule

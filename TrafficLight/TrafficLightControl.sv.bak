@@ -1,0 +1,35 @@
+module TrafficLightControl(
+	input clk,
+	input reset,
+	input waitBtn,
+	output reg [4:0]timeToNextState,
+	output reg curState
+);
+
+enum int unsigned { SCars = 0, SPeople = 1 } state, nextState;
+
+always begin : next_state_logic
+	next_state = S0;
+	case(state)
+		SCars:
+			if (timeToNextState == 5'b0 | waitBtn)
+				nextState = SPeople;
+		SPeople:
+			if (timeToNextState == 5'b0)
+				nextState = SCars;
+	endcase
+end
+
+always begin
+
+	curState = state;
+	
+end
+
+always @(posedge clk or posedge reset) begin
+	if(reset)
+		state <= SCars;
+	else
+		state <= nextState;
+	end
+endmodule

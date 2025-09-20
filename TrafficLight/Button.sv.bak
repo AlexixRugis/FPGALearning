@@ -1,0 +1,25 @@
+module Button(
+	input clk,
+	input reset,
+	input enable,
+	input button,
+	output reg pressed
+);
+
+always @(posedge clk or reset) begin
+
+	if (reset) begin
+		pressed <= 1'd0;
+	end
+	else begin
+		if (enabled == 1'd0) begin
+			pressed <= 1'd0;
+		end
+		else if (enabled == 1'd1 & button == 1'd1) begin
+			pressed <= 1'd1;
+		end
+	end
+
+end
+
+endmodule

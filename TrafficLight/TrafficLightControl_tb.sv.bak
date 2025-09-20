@@ -1,0 +1,26 @@
+`timescale 1ns/100ps;
+
+module TrafficLightControl_tb;
+
+reg clk;
+reg reset;
+reg btn;
+
+wire btnEnable;
+wire [4:0]timeToNext;
+wire [0:0]state;
+
+TrafficLightControl dut(.clk(clk), .reset(reset), .btnEnable(btnEnable), .btn(btn), .timeToNextState(timeToNext), .state(state));
+
+initial begin
+	clk <= 'd0;
+	reset <= 'd0;
+	btn <= 'd0;
+	
+end
+
+always begin
+	#0.5 clk <= ~clk;
+end
+
+endmodule

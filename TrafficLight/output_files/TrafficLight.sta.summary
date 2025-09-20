@@ -3,99 +3,99 @@ Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Slow 1100mV 85C Model Setup 'CLOCK_50_B7A'
-Slack : -2.942
-TNS   : -73.422
+Slack : -3.330
+TNS   : -86.167
 
 Type  : Slow 1100mV 85C Model Setup 'Counter:cd|overflow'
-Slack : -2.420
-TNS   : -20.434
+Slack : -1.679
+TNS   : -18.861
 
 Type  : Slow 1100mV 85C Model Hold 'CLOCK_50_B7A'
-Slack : 0.442
+Slack : 0.438
 TNS   : 0.000
 
 Type  : Slow 1100mV 85C Model Hold 'Counter:cd|overflow'
-Slack : 0.912
+Slack : 0.953
 TNS   : 0.000
 
 Type  : Slow 1100mV 85C Model Minimum Pulse Width 'CLOCK_50_B7A'
-Slack : -0.561
-TNS   : -20.337
+Slack : -0.538
+TNS   : -23.929
 
 Type  : Slow 1100mV 85C Model Minimum Pulse Width 'Counter:cd|overflow'
 Slack : -0.538
-TNS   : -8.014
+TNS   : -9.228
 
 Type  : Slow 1100mV 0C Model Setup 'CLOCK_50_B7A'
-Slack : -2.971
-TNS   : -74.659
+Slack : -3.659
+TNS   : -87.216
 
 Type  : Slow 1100mV 0C Model Setup 'Counter:cd|overflow'
-Slack : -2.464
-TNS   : -20.838
+Slack : -1.728
+TNS   : -19.577
 
 Type  : Slow 1100mV 0C Model Hold 'CLOCK_50_B7A'
-Slack : 0.447
+Slack : 0.445
 TNS   : 0.000
 
 Type  : Slow 1100mV 0C Model Hold 'Counter:cd|overflow'
-Slack : 0.888
+Slack : 0.920
 TNS   : 0.000
 
 Type  : Slow 1100mV 0C Model Minimum Pulse Width 'CLOCK_50_B7A'
-Slack : -0.560
-TNS   : -21.657
+Slack : -0.538
+TNS   : -26.018
 
 Type  : Slow 1100mV 0C Model Minimum Pulse Width 'Counter:cd|overflow'
 Slack : -0.538
-TNS   : -7.920
+TNS   : -9.258
 
 Type  : Fast 1100mV 85C Model Setup 'CLOCK_50_B7A'
-Slack : -1.133
-TNS   : -24.876
+Slack : -1.359
+TNS   : -28.339
 
 Type  : Fast 1100mV 85C Model Setup 'Counter:cd|overflow'
-Slack : -0.960
-TNS   : -6.960
+Slack : -0.495
+TNS   : -5.122
 
 Type  : Fast 1100mV 85C Model Hold 'CLOCK_50_B7A'
-Slack : 0.200
+Slack : 0.198
 TNS   : 0.000
 
 Type  : Fast 1100mV 85C Model Hold 'Counter:cd|overflow'
-Slack : 0.335
+Slack : 0.373
 TNS   : 0.000
 
 Type  : Fast 1100mV 85C Model Minimum Pulse Width 'CLOCK_50_B7A'
-Slack : -0.519
-TNS   : -2.359
+Slack : -0.333
+TNS   : -2.410
 
 Type  : Fast 1100mV 85C Model Minimum Pulse Width 'Counter:cd|overflow'
-Slack : 0.109
+Slack : 0.143
 TNS   : 0.000
 
 Type  : Fast 1100mV 0C Model Setup 'CLOCK_50_B7A'
-Slack : -0.997
-TNS   : -21.385
+Slack : -1.292
+TNS   : -24.436
 
 Type  : Fast 1100mV 0C Model Setup 'Counter:cd|overflow'
-Slack : -0.828
-TNS   : -6.040
+Slack : -0.432
+TNS   : -4.453
 
 Type  : Fast 1100mV 0C Model Hold 'CLOCK_50_B7A'
-Slack : 0.191
+Slack : 0.190
 TNS   : 0.000
 
 Type  : Fast 1100mV 0C Model Hold 'Counter:cd|overflow'
-Slack : 0.307
+Slack : 0.335
 TNS   : 0.000
 
 Type  : Fast 1100mV 0C Model Minimum Pulse Width 'CLOCK_50_B7A'
-Slack : -0.480
-TNS   : -2.344
+Slack : -0.338
+TNS   : -2.476
 
 Type  : Fast 1100mV 0C Model Minimum Pulse Width 'Counter:cd|overflow'
-Slack : 0.119
+Slack : 0.143
 TNS   : 0.000
 
 ------------------------------------------------------------

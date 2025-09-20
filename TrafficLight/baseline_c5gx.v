@@ -172,12 +172,28 @@ module baseline_c5gx(
 
 wire nReset;
 wire nBtn;
-wire twoHz;
+wire hz32;
 
 not Not1(nBtn, KEY[0]);
 not Not2(nReset, KEY[1]);
 
-Counter #(25, 25'd24999999) cd(.clk(CLOCK_50_B7A), .overflow(twoHz), .reset(nReset));
-TrafficLight tl(.clk(twoHz), .reset(nReset), .waitBtn(nBtn), .redL(LEDR[0]), .yellowL(LEDR[1]), .greenL(LEDG[0]));
+Counter #(26, 26'd1562499) cd(.clk(CLOCK_50_B7A), .overflow(hz32), .reset(nReset));
+
+wire [4:0]timeToNextState;
+wire btnEnable;
+wire btnPressed;
+wire curState;
+wire oneHz;
+
+Button btn(.clk(hz32), .reset(nReset), .enable(btnEnable), .button(nBtn), .pressed(btnPressed));
+
+TrafficLightControl control(.clk(hz32), .oneHz(oneHz), .reset(nReset), .btnEnable(btnEnable), .btn(btnPressed),
+	.timeToNextState(timeToNextState), .state(curState));
+
+SevenSegmentInd digit0(.digit(timeToNextState % 10), .out(HEX0));
+SevenSegmentInd digit1(.digit(timeToNextState / 10), .out(HEX1));
+
+TrafficLight #(5'd0) carLight(.clk(oneHz), .state(curState), .remainingTime(timeToNextState), .ledG(LEDG[0]), .ledR(LEDR[0]));
+TrafficLight #(5'd1) peopleLight(.clk(oneHz), .state(curState), .remainingTime(timeToNextState),  .ledG(LEDG[3]), .ledR(LEDR[3]));
 
 endmodule

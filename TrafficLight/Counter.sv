@@ -10,7 +10,7 @@ module Counter
 	output reg overflow
 );
 
-always @(posedge clk) begin
+always @(posedge clk or posedge reset) begin
 
 	if (reset) begin
 		out <= 0;
