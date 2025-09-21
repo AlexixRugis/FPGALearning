@@ -1,10 +1,10 @@
-Analysis & Synthesis Status : Successful - Sun Sep 21 00:31:33 2025
+Analysis & Synthesis Status : Successful - Sun Sep 21 23:47:01 2025
 Quartus Prime Version : 22.1std.2 Build 922 07/20/2023 SC Lite Edition
 Revision Name : TrafficLight
 Top-level Entity Name : baseline_c5gx
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 39
+Total registers : 40
 Total pins : 236
 Total virtual pins : 0
 Total block memory bits : 0
