@@ -1,3 +1,4 @@
+
 //--------------------------------------------------------------------------//
 // Title:        baseline_pinout.v                                          //
 // Rev:          Rev 1.0                                                    //
@@ -171,31 +172,25 @@ module baseline_c5gx(
 );
 
 wire nReset;
-wire nBtn;
-wire hz32;
+wire hz1;
+wire [7:0]addr;
+wire [7:0]nextAddr;
+wire [7:0]data;
 
-not Not1(nBtn, KEY[0]);
-not Not2(nReset, KEY[1]);
+not Not2(nReset, KEY[0]);
 
-Counter #(26, 26'd1562499) cd(.clk(CLOCK_50_B7A), .overflow(hz32), .reset(nReset));
+Counter #(26, 26'd499999999) cd(.clk(CLOCK_50_B7A), .overflow(hz1), .reset(nReset));
 
-wire [4:0]timeToNextState;
-wire btnEnable;
-wire btnPressed;
-wire curState;
-wire oneHz;
+SevenSegmentInd addr0(.digit(addr[3:0]), .out(HEX2));
+SevenSegmentInd addr1(.digit(addr[7:4]), .out(HEX3));
 
-Button btn(.clk(hz32), .reset(nReset), .enable(btnEnable), .button(nBtn), .pressed(btnPressed));
+AddrRoundRobin #(8'd9) rr(.clk(hz1), .reset(nReset), .addr(addr), .nextAddr(nextAddr));
 
-TrafficLightControl control(.clk(hz32), .oneHz(oneHz), .reset(nReset), .btnEnable(btnEnable), .btn(btnPressed),
-	.timeToNextState(timeToNextState), .state(curState));
+rom rom (.address(nextAddr),
+	.clock(hz1),
+	.q(data));
 
-SevenSegmentInd digit0(.digit(timeToNextState % 10), .out(HEX0));
-SevenSegmentInd digit1(.digit(timeToNextState / 10), .out(HEX1));
-
-TrafficLight #(5'd0) carLight(.clk(oneHz), .state(curState), .remainingTime(timeToNextState), .ledG(LEDG[0]), .ledR(LEDR[0]));
-TrafficLight #(5'd1) peopleLight(.clk(oneHz), .state(curState), .remainingTime(timeToNextState),  .ledG(LEDG[3]), .ledR(LEDR[3]));
-
-assign LEDR[5] = btnPressed;
-
+SevenSegmentInd data0(.digit(data[3:0]), .out(HEX0));
+SevenSegmentInd data1(.digit(data[7:4]), .out(HEX1));	
+	
 endmodule
