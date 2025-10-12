@@ -34,7 +34,7 @@ always_comb begin
     
     2'b00: addr = 32'd0;
     2'b01: addr = 32'd0;
-    2'b10: addr = sp - 32'd1;
+    2'b10: addr = sp + 32'hFFFFFFFF;
     2'b11: addr = memAddr;
     
     endcase

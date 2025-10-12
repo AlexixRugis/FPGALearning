@@ -18,7 +18,7 @@ localparam [3:0]
 	OP_DIV = 	'd5,
 	OP_REM = 	'd6,
 	OP_AND = 	'd7,
-	OP_OR = 		'd8,
+	OP_OR =     'd8,
 	OP_NOT = 	'd9,
 	OP_XOR = 	'd10,
 	OP_A = 		'd11,
@@ -33,13 +33,13 @@ always_comb begin
 		OP_ADD:		result = regA + regB;
 		OP_SUB:		result = regA - regB;
 		OP_MULT: 	result = regA * regB;
-		OP_DIV: 		result = regA / regB;
+		OP_DIV: 	result = regA / regB;
 		OP_REM:		result = regA % regB;
 		OP_AND:		result = regA & regB;
 		OP_OR:		result = regA | regB;
 		OP_NOT:		result = ~regA;
 		OP_XOR:		result = regA ^ regB;
-		OP_A:			result = regA;
+		OP_A:		result = regA;
 		OP_SHL:		result = regA << regB;
 		OP_SHR:		result = regA >> regB;
 		

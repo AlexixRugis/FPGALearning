@@ -44,7 +44,10 @@ always_comb begin
     unique case (state)
 
     STATE_WAIT: busy = 1'b0;
-    STATE_SAVE_STACK: incrementSp = 1'b1;
+    STATE_SAVE_STACK: begin
+        incrementSp = 1'b1;
+        memWe = 1'b1;
+    end
     STATE_SAVE_MEM: memWe = 1'b1;
 
     endcase
