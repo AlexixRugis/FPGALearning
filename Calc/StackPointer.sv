@@ -14,8 +14,8 @@ always_ff @(posedge clk or posedge reset) begin
 	end
 	else begin
 
-        if (increment) sp <= sp + 32'h1;
-        else if (decrement) sp <= sp + 32'hFFFFFFFF;
+        if (increment & ~decrement) sp <= sp + 32'h1;
+        else if (~increment & decrement) sp <= sp + 32'hFFFFFFFF;
 
 	end
 

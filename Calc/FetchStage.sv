@@ -34,7 +34,7 @@ always_comb begin
     
     busy = 1'b1;
     
-    case (state)
+    unique case (state)
         
     STATE_DECODE: begin
         nextPc = pc + 32'd1;
