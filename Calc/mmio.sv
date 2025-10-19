@@ -12,24 +12,24 @@ logic [31:0] ramQ;
 
 ram ram(
     .clock(clock),
-    .address(address),
+    .address(address[7:0]),
     .data(data),
-    .wren(wren & ~address[31]),
+    .wren(wren & ~address[30]),
     .q(ramQ)
 );
 
 always_comb begin
-    if (address[31]) q = out1;
+    if (address[30]) q = out1;
     else q = ramQ;
 end
 
 always_ff @(posedge clock or posedge reset) begin
     if (reset) begin
-        out1 <= 8'b0;
+        out1 <= 32'b0;
     end
     else begin
-        if (wren) begin
-            if (address[31]) out1 <= data;
+        if (wren & address[30]) begin
+            out1 <= data;
         end
     end
 end

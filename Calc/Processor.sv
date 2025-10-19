@@ -5,10 +5,19 @@ module Processor(
     output  logic [31:0]        romAddr,
     input   logic [31:0]        romData,
     
-    output  logic [31:0]         ramAddr,
+    output  logic [31:0]        ramAddr,
     input   logic [31:0]        ramData,
     output  logic [31:0]        ramWriteData,
-    output  logic               ramWe
+    output  logic               ramWe,
+
+    output  logic [31:0]        regA,
+    output  logic [31:0]        regB,
+    output  logic [4:0]         stateDbg,
+    output  logic               startFs,
+    output  logic               startLsB,
+    output  logic               startLsA,
+    output  logic               startSs
+
 );
 
 logic spIncr;
@@ -23,23 +32,32 @@ StackPointer sp(
 
 logic               fsStart;
 logic               fsBusy;
-logic [31:0]        pc;
 logic [31:0]        imm;
 logic [1:0]         opASrc;
 logic [1:0]         opBSrc;
 logic [3:0]         aluOp;
 logic [1:0]         resDst;
+logic [31:0]        pcWriteData;
+logic [31:0]        pcValue;
+logic               pcIncrEnable;
+logic               pcWriteEnable;
 
+ProgramCounter pc(
+    .clk(clk), .arst(reset),
+    .writeData(pcWriteData), .incrEnable(pcIncrEnable),
+    .writeEnable(pcWriteEnable), .q(pcValue)
+);
 
 FetchStage fs(
     .clk(clk), .reset(reset),
     .start(fsStart), .busy(fsBusy),
-    .pc(pc), .memData(romData),
+    .pcIncrEnable(pcIncrEnable), .pcMemData(romData),
     .imm(imm), .opASrc(opASrc), .opBSrc(opBSrc),
     .aluOp(aluOp), .resDst(resDst)
 );
 
-always_comb romAddr = pc;
+always_comb romAddr = pcValue;
+always_comb startFs = fsStart;
 
 logic               lsBStart;
 logic               lsBBusy;
@@ -55,6 +73,10 @@ LoadStage lsB(
     .data(opBVal), .decrSp(lsBspDecr)
 );
 
+always_comb regB = opBVal;
+always_comb pcWriteData = opBVal;
+always_comb startLsB = lsBStart;
+
 logic               lsAStart;
 logic               lsABusy;
 logic               lsAspDecr;
@@ -69,6 +91,9 @@ LoadStage lsA(
     .data(opAVal), .decrSp(lsAspDecr)
 );
 
+always_comb regA = opAVal;
+always_comb startLsA = lsAStart;
+
 logic [31:0]        aluRes;
 
 ALU alu(
@@ -82,14 +107,18 @@ always_comb ramWriteData = aluRes;
 logic               ssStart;
 logic               ssBusy;
 logic [31:0]        ssRamAddr;
+logic               ssPcWe;
 
 SaveStage ss(
     .clk(clk), .reset(reset),
     .start(ssStart), .busy(ssBusy),
     .dst(resDst), .sp(spVal), .memAddr(opBVal),
     .addr(ssRamAddr),
-    .memWe(ramWe), .incrementSp(spIncr)
+    .memWe(ramWe), .incrementSp(spIncr), .pcWe(ssPcWe)
 );
+
+always_comb startSs = ssStart;
+always_comb pcWriteEnable = ssPcWe & regA[0];
 
 localparam STATES_NUM = 5;
 localparam [STATES_NUM-1:0]
@@ -100,6 +129,8 @@ localparam [STATES_NUM-1:0]
     STATE_SAVE = 5'b10000;
 
 logic [STATES_NUM-1:0] state, nextState;
+
+always_comb stateDbg = state;
 
 always_comb begin
 
@@ -115,19 +146,15 @@ always_comb begin
 
 end
 
-always_comb begin
-
-    unique case (state)
-
-    STATE_RESET: ramAddr = 32'b0;
-    STATE_FETCH: ramAddr = 32'b0;
-    STATE_LOADB: ramAddr = lsBRamAddr;
-    STATE_LOADA: ramAddr = lsARamAddr;
-    STATE_SAVE: ramAddr = ssRamAddr;
-
-    endcase
-
-end
+OneHotMux5 ramAddrMux(
+    .addr(nextState),
+    .in0(32'b0),
+    .in1(32'b0),
+    .in2(lsBRamAddr),
+    .in3(lsARamAddr),
+    .in4(ssRamAddr),
+    .out(ramAddr)
+);
 
 always_comb begin
 
@@ -143,15 +170,15 @@ always_comb begin
         nextState = STATE_FETCH;
         fsStart = 1'b1;
     end
-    STATE_FETCH: if (~fsBusy & ~lsABusy) begin
+    STATE_FETCH: if (~fsBusy & ~lsBBusy) begin
         nextState = STATE_LOADB;
         lsBStart = 1'b1;
     end
-    STATE_LOADB: if (~lsABusy & ~lsBBusy) begin 
+    STATE_LOADB: if (~lsBBusy & ~lsABusy) begin 
         nextState = STATE_LOADA;
         lsAStart = 1'b1;
     end
-    STATE_LOADA: if (~lsBBusy & ~ssBusy) begin
+    STATE_LOADA: if (~lsABusy & ~ssBusy) begin
         nextState = STATE_SAVE;
         ssStart = 1'b1;
     end

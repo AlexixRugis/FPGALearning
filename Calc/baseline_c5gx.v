@@ -170,7 +170,13 @@ module baseline_c5gx(
 
 );
 
-wire clk = ~KEY[0];
+reg [13:0] cnt;
+
+always @(posedge CLOCK_50_B5B) begin
+	cnt <= cnt + 'd1;
+end
+
+wire clk = SW[9] ? ~cnt[13] : ~KEY[0];
 wire reset = ~KEY[1];
 
 wire [31:0] romAddr;
@@ -183,10 +189,18 @@ wire [31:0] ramVal;
 wire [31:0] ramWriteData;
 wire ramWe;
 wire [31:0] out1;
+wire fsStart;
+wire lsBStart;
+wire lsAStart;
+wire ssStart;
+wire [31:0] regA;
+wire [31:0] regB;
+
+wire [31:0] digit;
 
 mmio ram(
     .clock(clk), .reset(reset),
-    .address(ramAddr[7:0]), .data(ramWriteData), 
+    .address(ramAddr), .data(ramWriteData), 
     .wren(ramWe), .q(ramVal), .out1(out1));
 
 Processor p(
@@ -194,12 +208,25 @@ Processor p(
     .reset(reset),
     .romAddr(romAddr), .romData(romVal),
     .ramAddr(ramAddr), .ramData(ramVal),
-    .ramWriteData(ramWriteData), .ramWe(ramWe)
+    .ramWriteData(ramWriteData), .ramWe(ramWe),
+    .startFs(fsStart),
+    .startLsB(lsBStart),
+    .startLsA(lsAStart),
+    .startSs(ssStart),
+    .regA(regA), .regB(regB)
 );
 
-SevenSegmentInd ind0(.digit(out1[3:0]), .out(HEX0));
-SevenSegmentInd ind1(.digit(out1[7:4]), .out(HEX1));
-SevenSegmentInd ind2(.digit(out1[11:8]), .out(HEX2));
-SevenSegmentInd ind3(.digit(out1[15:12]), .out(HEX3));
+assign digit = (SW[1] ? regB : (SW[0] ? regA : out1));
+
+SevenSegmentInd ind0(.digit(digit[3:0]), .out(HEX0));
+SevenSegmentInd ind1(.digit(digit[7:4]), .out(HEX1));
+SevenSegmentInd ind2(.digit(digit[11:8]), .out(HEX2));
+SevenSegmentInd ind3(.digit(digit[15:12]), .out(HEX3));
+
+assign LEDG[0] = fsStart;
+assign LEDG[1] = lsBStart;
+assign LEDG[2] = lsAStart;
+assign LEDG[3] = ssStart;
+assign LEDR[0] = clk;
 
 endmodule

@@ -6,7 +6,8 @@ logic               clk;
 logic               reset;
 logic               start;
 logic               busy;
-logic [31:0]        pc;
+logic               pcIncrEnable;
+logic [31:0]        pcValue;
 logic [31:0]        memData;
 logic [31:0]        imm;
 logic [1:0]         opASrc;
@@ -14,10 +15,16 @@ logic [1:0]         opBSrc;
 logic [3:0]         aluOp;
 logic [1:0]         resDst;
 
+ProgramCounter pc(
+    .clk(clk), .arst(reset),
+    .writeData('0), .incrEnable(pcIncrEnable),
+    .writeEnable('0), .q(pcValue)
+);
+
 FetchStage fs(
     .clk(clk), .reset(reset),
     .start(start), .busy(busy),
-    .pc(pc), .memData(memData),
+    .pcIncrEnable(pcIncrEnable), .pcMemData(memData),
     .imm(imm), .opASrc(opASrc),
     .opBSrc(opBSrc), .aluOp(aluOp),
     .resDst(resDst)
@@ -51,7 +58,7 @@ end
 
 always_ff @(posedge clk) begin
 
-    unique case (pc)
+    unique case (pcValue)
     32'h0: memData <= 32'h1;
     32'h1: memData <= 32'h7FFFFFFF;
     32'h2: memData <= { 1'b1, 21'b0, 4'b0, 2'b0, 2'b0, 2'b0 };

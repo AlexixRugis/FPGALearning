@@ -6,40 +6,40 @@ module SaveStage(
     input   logic           start,
     output  logic           busy,
 
-    input   logic [1:0]     dst, // 00 - nop, 01 - to stack, 10 - tomem
+    input   logic [1:0]     dst, // 00 - nop, 01 - to stack, 10 - tomem, 11 - to pc
     input   logic [31:0]    sp,
     input   logic [31:0]    memAddr,
     
     output  logic [31:0]    addr,
     output  logic           memWe,
-    output  logic           incrementSp
+    output  logic           incrementSp,
+    output  logic           pcWe
 );
 
-localparam STATES_CNT = 3;
+localparam STATES_CNT = 4;
 localparam [STATES_CNT-1:0]
-    STATE_WAIT = 3'b001,
-    STATE_SAVE_STACK = 3'b010,
-    STATE_SAVE_MEM = 3'b100;
+    STATE_WAIT = 4'b0001,
+    STATE_SAVE_STACK = 4'b0010,
+    STATE_SAVE_MEM = 4'b0100,
+    STATE_SAVE_PC = 4'b1000;
 
 logic [STATES_CNT-1:0] state, nextState;
 
-always_comb begin
-
-    unique case (dst)
-
-    2'b01: addr = sp;
-    2'b10: addr = memAddr;
-    default: addr = 32'b0;
-
-    endcase
-
-end
+FourMux32 mux(
+    .addr(dst),
+    .in0(32'b0),
+    .in1(sp),
+    .in2(memAddr),
+    .in3(32'b0),
+    .out(addr)
+);
 
 always_comb begin
 
     busy = 1'b1;
     incrementSp = 1'b0;
     memWe = 1'b0;
+    pcWe = 1'b0;
 
     unique case (state)
 
@@ -49,6 +49,7 @@ always_comb begin
         memWe = 1'b1;
     end
     STATE_SAVE_MEM: memWe = 1'b1;
+    STATE_SAVE_PC: pcWe = 1'b1;
 
     endcase
 
@@ -60,6 +61,7 @@ always_comb begin
 
     { 3'b101, STATE_WAIT }: nextState = STATE_SAVE_STACK;
     { 3'b110, STATE_WAIT }: nextState = STATE_SAVE_MEM;
+    { 3'b111, STATE_WAIT }: nextState = STATE_SAVE_PC;
     default: nextState = STATE_WAIT;
 
     endcase

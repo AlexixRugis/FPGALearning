@@ -28,35 +28,34 @@ localparam [STATES_CNT-1:0]
 logic [31:0]            nextData;
 logic [STATES_CNT-1:0]  state, nextState;
 
-always_comb begin
-    
-    unique case (src)
-    
-    2'b00: addr = 32'd0;
-    2'b01: addr = 32'd0;
-    2'b10: addr = sp + 32'hFFFFFFFF;
-    2'b11: addr = memAddr;
-    
-    endcase
-    
-end
+FourMux32 memAddrMux(
+    .addr(src),
+    .in0(32'd0),
+    .in1(32'd0),
+    .in2(sp + 32'hFFFFFFFF),
+    .in3(memAddr),
+    .out(addr)
+);
+
+OneHotMux5 nextDataMux(
+    .addr(state),
+    .in0(nextData),
+    .in1(32'b0),
+    .in2(imm),
+    .in3(memData),
+    .in4(memData),
+    .out(nextData)
+);
 
 always_comb begin
 
     busy = 1'b1;
     decrSp = 1'b0;
-    nextData = data;
     
     unique case (state)
         
     STATE_WAIT: busy = 1'b0;
-    STATE_LOAD_ZERO: nextData = 32'd0;
-    STATE_LOAD_IMM:    nextData = imm;
-    STATE_LOAD_MEM: nextData = memData;
-    STATE_LOAD_STACK: begin
-        nextData = memData;
-        decrSp = 1'b1;
-    end
+    STATE_LOAD_STACK: decrSp = 1'b1;
     
     endcase
 
@@ -81,6 +80,7 @@ always_ff @(posedge clk or posedge reset) begin
 
     if (reset) begin
         state <= STATE_WAIT;
+        data <= 32'b0;
     end
     else begin
         state <= nextState;

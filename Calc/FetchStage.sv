@@ -5,8 +5,8 @@ module FetchStage(
     input    logic          start,
     output   logic          busy,
     
-    output   logic [31:0]   pc,
-    input    logic [31:0]   memData,
+    output   logic          pcIncrEnable,
+    input    logic [31:0]   pcMemData,
     
     output   logic [31:0]   imm,
     output   logic [1:0]    opASrc, // 00 - zero, 01 - from imm, 10 - from stack, 11 - from memaddr
@@ -37,10 +37,11 @@ always_comb begin
     unique case (state)
         
     STATE_DECODE: begin
-        nextPc = pc + 32'd1;
         
-        if (memData[31] == 1'b0) begin
-            nextImm = {1'b0, memData[30:0]};
+        pcIncrEnable = 1'b1;
+        
+        if (pcMemData[31] == 1'b0) begin
+            nextImm = {1'b0, pcMemData[30:0]};
             nextOpASrc = 2'b01;
             nextOpBSrc = 2'b00;
             nextResDst = 2'b01;
@@ -48,16 +49,16 @@ always_comb begin
         end
         else begin 
             nextImm = 32'b0;
-            nextOpASrc = memData[1:0];
-            nextOpBSrc = memData[3:2];
-            nextResDst = memData[5:4];
-            nextAluOp = memData[9:6];
+            nextOpASrc = pcMemData[1:0];
+            nextOpBSrc = pcMemData[3:2];
+            nextResDst = pcMemData[5:4];
+            nextAluOp = pcMemData[9:6];
         end
     end
 
     default: begin
         busy = 1'b0;
-        nextPc = pc;
+        pcIncrEnable = 1'b0;
         nextImm = imm;
         nextOpASrc = opASrc;
         nextOpBSrc = opBSrc;
@@ -86,11 +87,9 @@ always_ff @(posedge clk or posedge reset) begin
 
     if (reset) begin
         state <= STATE_WAIT;
-        pc = 32'd0;
     end
     else begin
         state <= nextState;
-        pc <= nextPc;
         imm <= nextImm;
         opASrc <= nextOpASrc;
         opBSrc <= nextOpBSrc;
