@@ -20,7 +20,7 @@ logic               decrSp;
 logic               incrSp;
 
 LoadStage ls(
-    .clk(clk), .reset(reset),
+    .clk(clk), .arst(reset),
     .start(start), .busy(busy),
     .addr(addr), .memData(memData),
     .src(src), .imm(imm), .sp(sp),

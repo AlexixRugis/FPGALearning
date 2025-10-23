@@ -170,19 +170,61 @@ module baseline_c5gx(
 
 );
 
-reg [13:0] cnt;
+reg [23:0] cnt;
 
 always @(posedge CLOCK_50_B5B) begin
-	cnt <= cnt + 'd1;
+	cnt <= cnt + 24'd1;
 end
 
-wire clk = SW[9] ? ~cnt[13] : ~KEY[0];
+wire clk = ~cnt[23];
+
+//wire clk = SW[9] ? ~cnt[16] : ~KEY[0];
+
+//wire clk = ~KEY[0];
 wire reset = ~KEY[1];
+
+wire uartRead;
+wire uartValid;
+wire [7:0] uartData;
+
+uart serial(
+    .clk_clk(CLOCK_50_B5B),
+    .reset_reset_n(~reset),
+    .rs232_0_from_uart_ready(uartRead),
+    .rs232_0_from_uart_data(uartData),
+    .rs232_0_from_uart_valid(uartValid),
+    .rs232_0_to_uart_data(8'b0),
+    .rs232_0_to_uart_error(1'b0),
+    .rs232_0_to_uart_valid(1'b0),
+    .rs232_0_UART_RXD(UART_RX),
+    .rs232_0_UART_TXD(UART_TX)
+);
+
+wire [7:0] portBAddr;
+wire [31:0] portBData;
+wire portBWe;
+
+UartRamLoader ramLoader(
+    .clk(CLOCK_50_B5B),
+    .arst(reset),
+    .uartData(uartData),
+    .uartValid(uartValid),
+    .uartRead(uartRead),
+    .ramAddr(portBAddr),
+    .ramData(portBData),
+    .ramWe(portBWe)
+);
+
 
 wire [31:0] romAddr;
 wire [31:0] romVal;
 
-rom rom(.clock(clk), .address(romAddr[7:0]), .q(romVal));
+rom rom(.clock_a(clk), .clock_b(CLOCK_50_B5B),
+    .address_a(romAddr[7:0]), .q_a(romVal),
+    .wren_a(1'b0),
+    //.address_b(portBAddr), .data_b(portBData),
+    //.wren_b(portBWe)),
+    .wren_b(1'b0));
 
 wire [31:0] ramAddr;
 wire [31:0] ramVal;
@@ -195,6 +237,7 @@ wire lsAStart;
 wire ssStart;
 wire [31:0] regA;
 wire [31:0] regB;
+wire [31:0] cmd;
 
 wire [31:0] digit;
 
@@ -213,10 +256,14 @@ Processor p(
     .startLsB(lsBStart),
     .startLsA(lsAStart),
     .startSs(ssStart),
-    .regA(regA), .regB(regB)
+    .regA(regA), .regB(regB), .cmdDbg(cmd)
 );
 
-assign digit = (SW[1] ? regB : (SW[0] ? regA : out1));
+// 00 - out1
+// 01 - regA
+// 10 - regB
+// 11 - cmd
+assign digit = (SW[1] ? (SW[0] ? cmd : regB) : (SW[0] ? regA : out1));
 
 SevenSegmentInd ind0(.digit(digit[3:0]), .out(HEX0));
 SevenSegmentInd ind1(.digit(digit[7:4]), .out(HEX1));
@@ -227,6 +274,6 @@ assign LEDG[0] = fsStart;
 assign LEDG[1] = lsBStart;
 assign LEDG[2] = lsAStart;
 assign LEDG[3] = ssStart;
-assign LEDR[0] = clk;
+assign LEDR[9] = clk;
 
 endmodule

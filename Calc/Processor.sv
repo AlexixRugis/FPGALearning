@@ -12,7 +12,11 @@ module Processor(
 
     output  logic [31:0]        regA,
     output  logic [31:0]        regB,
-    output  logic [4:0]         stateDbg,
+    output  logic [31:0]        spDbg,
+    output  logic [31:0]        cmdDbg,
+    output  logic [2:0]         stateDbg,
+    output  logic               spIncrDbg,
+    output  logic               pcWeDbg,
     output  logic               startFs,
     output  logic               startLsB,
     output  logic               startLsA,
@@ -30,6 +34,8 @@ StackPointer sp(
     .sp(spVal)
 );
 
+always_comb spDbg = spVal;
+
 logic               fsStart;
 logic               fsBusy;
 logic [31:0]        imm;
@@ -42,6 +48,7 @@ logic [31:0]        pcValue;
 logic               pcIncrEnable;
 logic               pcWriteEnable;
 
+
 ProgramCounter pc(
     .clk(clk), .arst(reset),
     .writeData(pcWriteData), .incrEnable(pcIncrEnable),
@@ -49,7 +56,7 @@ ProgramCounter pc(
 );
 
 FetchStage fs(
-    .clk(clk), .reset(reset),
+    .clk(clk), .arst(reset),
     .start(fsStart), .busy(fsBusy),
     .pcIncrEnable(pcIncrEnable), .pcMemData(romData),
     .imm(imm), .opASrc(opASrc), .opBSrc(opBSrc),
@@ -58,6 +65,7 @@ FetchStage fs(
 
 always_comb romAddr = pcValue;
 always_comb startFs = fsStart;
+always_comb cmdDbg = { 22'b0, aluOp, resDst, opBSrc, opASrc };
 
 logic               lsBStart;
 logic               lsBBusy;
@@ -66,7 +74,7 @@ logic [31:0]        lsBRamAddr;
 logic [31:0]        opBVal;
 
 LoadStage lsB(
-    .clk(clk), .reset(reset),
+    .clk(clk), .arst(reset),
     .start(lsBStart), .busy(lsBBusy),
     .addr(lsBRamAddr), .memData(ramData),
     .src(opBSrc), .imm(imm), .sp(spVal), .memAddr('b0),
@@ -84,7 +92,7 @@ logic [31:0]        lsARamAddr;
 logic [31:0]        opAVal;
 
 LoadStage lsA(
-    .clk(clk), .reset(reset),
+    .clk(clk), .arst(reset),
     .start(lsAStart), .busy(lsABusy),
     .addr(lsARamAddr), .memData(ramData),
     .src(opASrc), .imm(imm), .sp(spVal), .memAddr(opBVal),
@@ -119,16 +127,18 @@ SaveStage ss(
 
 always_comb startSs = ssStart;
 always_comb pcWriteEnable = ssPcWe & regA[0];
+always_comb spIncrDbg = spIncr;
+always_comb pcWeDbg = pcWriteEnable;
 
-localparam STATES_NUM = 5;
-localparam [STATES_NUM-1:0]
-    STATE_RESET = 5'b00001,
-    STATE_FETCH = 5'b00010,
-    STATE_LOADB = 5'b00100,
-    STATE_LOADA = 5'b01000,
-    STATE_SAVE = 5'b10000;
+typedef enum logic [2:0] {
+    S_RESET,
+    S_FETCH,
+    S_LOADB,
+    S_LOADA,
+    S_STORE
+} state_t;
 
-logic [STATES_NUM-1:0] state, nextState;
+state_t state, nextState;
 
 always_comb stateDbg = state;
 
@@ -136,25 +146,25 @@ always_comb begin
 
     unique case (state)
 
-    STATE_RESET: spDecr = 1'b0;
-    STATE_FETCH: spDecr = 1'b0;
-    STATE_LOADB: spDecr = lsBspDecr;
-    STATE_LOADA: spDecr = lsAspDecr;
-    STATE_SAVE: spDecr = 1'b0;
+    S_RESET: spDecr = 1'b0;
+    S_FETCH: spDecr = 1'b0;
+    S_LOADB: spDecr = lsBspDecr;
+    S_LOADA: spDecr = lsAspDecr;
+    S_STORE: spDecr = 1'b0;
 
     endcase
 
 end
 
-OneHotMux5 ramAddrMux(
-    .addr(nextState),
-    .in0(32'b0),
-    .in1(32'b0),
-    .in2(lsBRamAddr),
-    .in3(lsARamAddr),
-    .in4(ssRamAddr),
-    .out(ramAddr)
-);
+always_comb begin
+    ramAddr = '0;
+
+    unique case (nextState)
+    S_LOADB: ramAddr = lsBRamAddr;
+    S_LOADA: ramAddr = lsARamAddr;
+    S_STORE: ramAddr = ssRamAddr;
+    endcase
+end
 
 always_comb begin
 
@@ -166,24 +176,24 @@ always_comb begin
 
     unique case (state)
 
-    STATE_RESET: begin
-        nextState = STATE_FETCH;
+    S_RESET: begin
+        nextState = S_FETCH;
         fsStart = 1'b1;
     end
-    STATE_FETCH: if (~fsBusy & ~lsBBusy) begin
-        nextState = STATE_LOADB;
+    S_FETCH: if (~fsBusy & ~lsBBusy) begin
+        nextState = S_LOADB;
         lsBStart = 1'b1;
     end
-    STATE_LOADB: if (~lsBBusy & ~lsABusy) begin 
-        nextState = STATE_LOADA;
+    S_LOADB: if (~lsBBusy & ~lsABusy) begin 
+        nextState = S_LOADA;
         lsAStart = 1'b1;
     end
-    STATE_LOADA: if (~lsABusy & ~ssBusy) begin
-        nextState = STATE_SAVE;
+    S_LOADA: if (~lsABusy & ~ssBusy) begin
+        nextState = S_STORE;
         ssStart = 1'b1;
     end
-    STATE_SAVE: if (~ssBusy & ~fsBusy) begin
-        nextState = STATE_FETCH;
+    S_STORE: if (~ssBusy & ~fsBusy) begin
+        nextState = S_FETCH;
         fsStart = 1'b1;
     end
 
@@ -194,7 +204,7 @@ end
 always_ff @(posedge clk or posedge reset) begin
 
     if (reset) begin
-        state <= STATE_RESET;
+        state <= S_RESET;
     end
     else begin
         state <= nextState;

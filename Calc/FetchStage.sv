@@ -1,6 +1,6 @@
 module FetchStage(
     input    logic          clk,
-    input    logic          reset,
+    input    logic          arst,
     
     input    logic          start,
     output   logic          busy,
@@ -16,30 +16,37 @@ module FetchStage(
     
 );
 
-localparam STATES_CNT = 2;
-localparam [STATES_CNT-1:0] 
-    STATE_WAIT = 2'b01,
-    STATE_DECODE = 2'b10;
+typedef enum logic [0:0] {
+    S_WAIT,
+    S_DECODE
+} state_t;
 
-logic [31:0]            nextPc;
 logic [31:0]            nextImm;
 logic [1:0]             nextOpASrc;
 logic [1:0]             nextOpBSrc;
 logic [1:0]             nextResDst;
 logic [3:0]             nextAluOp;
     
-logic [STATES_CNT-1:0]  state, nextState;
+state_t state, nextState;
 
 always_comb begin
-    
-    busy = 1'b1;
-    
-    unique case (state)
-        
-    STATE_DECODE: begin
-        
+    busy = 1'b0;
+    pcIncrEnable = 1'b0;
+
+    if (state == S_DECODE) begin
+        busy = 1'b1;
         pcIncrEnable = 1'b1;
-        
+    end
+end
+
+always_comb begin
+    nextImm = imm;
+    nextOpASrc = opASrc;
+    nextOpBSrc = opBSrc;
+    nextResDst = resDst;
+    nextAluOp = aluOp;
+
+    if (state == S_DECODE) begin
         if (pcMemData[31] == 1'b0) begin
             nextImm = {1'b0, pcMemData[30:0]};
             nextOpASrc = 2'b01;
@@ -56,37 +63,31 @@ always_comb begin
         end
     end
 
-    default: begin
-        busy = 1'b0;
-        pcIncrEnable = 1'b0;
-        nextImm = imm;
-        nextOpASrc = opASrc;
-        nextOpBSrc = opBSrc;
-        nextResDst = resDst;
-        nextAluOp = aluOp;
-    end
-    
-    endcase
-
 end
 
 always_comb begin
-
     nextState = state;
-    
-    case ({ start, state })
 
-    { 1'b1, STATE_WAIT}: nextState = STATE_DECODE;
-    default: nextState = STATE_WAIT;
-    
-    endcase
-    
+    if (state == S_WAIT) begin
+        if (start) begin
+            nextState = S_DECODE;
+        end
+    end
+    else begin
+        nextState = S_WAIT;
+    end
+        
 end
 
-always_ff @(posedge clk or posedge reset) begin
+always_ff @(posedge clk or posedge arst) begin
 
-    if (reset) begin
-        state <= STATE_WAIT;
+    if (arst) begin
+        state <= S_WAIT;
+        imm <= '0;
+        opASrc <= '0;
+        opBSrc <= '0;
+        resDst <= '0;
+        aluOp <= '0;
     end
     else begin
         state <= nextState;

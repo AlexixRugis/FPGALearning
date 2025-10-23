@@ -7,17 +7,21 @@ logic               reset;
 logic [31:0]        romAddr;
 logic [31:0]        romVal;
 
-rom rom(.clock(clk), .address(romAddr[7:0]), .q(romVal));
+rom rom(.clock_a(clk), 
+    .address_a(romAddr[7:0]), .q_a(romVal), .wren_a('0),
+    .wren_b('0), .clock_b('0));
 
 logic [31:0]        ramAddr;
 logic [31:0]        ramVal;
 logic [31:0]        ramWriteData;
 logic               ramWe;
 logic [31:0]        out1;
-logic [4:0]         stateDbg;
-
+logic [2:0]         stateDbg;
+logic [31:0]        cmdDbg;
+logic               pcWeDbg;
 logic [31:0]        regA;
 logic [31:0]        regB;
+logic [31:0]        spDbg;
 logic               startFs;
 logic               startLsB;
 logic               startLsA;
@@ -40,6 +44,9 @@ Processor p(
     .stateDbg(stateDbg),
     .regA(regA),
     .regB(regB),
+    .spDbg(spDbg),
+    .cmdDbg(cmdDbg),
+    .pcWeDbg(pcWeDbg),
     .startFs(startFs),
     .startLsB(startLsB),
     .startLsA(startLsA),

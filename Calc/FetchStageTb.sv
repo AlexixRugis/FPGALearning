@@ -22,7 +22,7 @@ ProgramCounter pc(
 );
 
 FetchStage fs(
-    .clk(clk), .reset(reset),
+    .clk(clk), .arst(reset),
     .start(start), .busy(busy),
     .pcIncrEnable(pcIncrEnable), .pcMemData(memData),
     .imm(imm), .opASrc(opASrc),
