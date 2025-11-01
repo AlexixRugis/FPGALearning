@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="uart" kind="uart" version="1.0" fabric="QSYS">
  <!-- Format version 22.1 922 (Future versions may contain additional information.) -->
- <!-- 2025.11.01.20:33:08 -->
+ <!-- 2025.11.01.22:12:34 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1762018388</value>
+  <value>1762024354</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -32,7 +32,7 @@
  </parameter>
  <parameter name="AUTO_DEVICE">
   <type>java.lang.String</type>
-  <value>5CGXFC5C6F27C7</value>
+  <value>5CSEMA5F31C6</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -41,7 +41,7 @@
  </parameter>
  <parameter name="AUTO_DEVICE_SPEEDGRADE">
   <type>java.lang.String</type>
-  <value>7_H6</value>
+  <value>6</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>

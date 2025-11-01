@@ -170,110 +170,21 @@ module baseline_c5gx(
 
 );
 
-reg [23:0] cnt;
-
-always @(posedge CLOCK_50_B5B) begin
-	cnt <= cnt + 24'd1;
-end
-
-wire clk = ~cnt[23];
-
-//wire clk = SW[9] ? ~cnt[16] : ~KEY[0];
-
-//wire clk = ~KEY[0];
-wire reset = ~KEY[1];
-
-wire uartRead;
-wire uartValid;
-wire [7:0] uartData;
-
-uart serial(
-    .clk_clk(CLOCK_50_B5B),
-    .reset_reset_n(~reset),
-    .rs232_0_from_uart_ready(uartRead),
-    .rs232_0_from_uart_data(uartData),
-    .rs232_0_from_uart_valid(uartValid),
-    .rs232_0_to_uart_data(8'b0),
-    .rs232_0_to_uart_error(1'b0),
-    .rs232_0_to_uart_valid(1'b0),
-    .rs232_0_UART_RXD(UART_RX),
-    .rs232_0_UART_TXD(UART_TX)
+top top(
+    .clk50mhz(CLOCK_50_B5B),
+    .nKeyRst(KEY[1]),
+    .uartRx(UART_RX),
+    .uartTx(UART_TX),
+    .sw(SW[1:0]),
+    .hex0(HEX0),
+    .hex1(HEX1),
+    .hex2(HEX2),
+    .hex3(HEX3),
+    .ledClk(LEDR[9]),
+    .ledState0(LEDG[0]),
+    .ledState1(LEDG[1]),
+    .ledState2(LEDG[2]),
+    .ledState3(LEDG[3])
 );
-
-wire [7:0] portBAddr;
-wire [31:0] portBData;
-wire portBWe;
-
-UartRamLoader ramLoader(
-    .clk(CLOCK_50_B5B),
-    .arst(reset),
-    .uartData(uartData),
-    .uartValid(uartValid),
-    .uartRead(uartRead),
-    .ramAddr(portBAddr),
-    .ramData(portBData),
-    .ramWe(portBWe)
-);
-
-
-wire [31:0] romAddr;
-wire [31:0] romVal;
-
-rom rom(.clock_a(clk), .clock_b(CLOCK_50_B5B),
-    .address_a(romAddr[7:0]), .q_a(romVal),
-    .wren_a(1'b0),
-    //.address_b(portBAddr), .data_b(portBData),
-    //.wren_b(portBWe)),
-    .wren_b(1'b0));
-
-wire [31:0] ramAddr;
-wire [31:0] ramVal;
-wire [31:0] ramWriteData;
-wire ramWe;
-wire [31:0] out1;
-wire fsStart;
-wire lsBStart;
-wire lsAStart;
-wire ssStart;
-wire [31:0] regA;
-wire [31:0] regB;
-wire [31:0] cmd;
-
-wire [31:0] digit;
-
-mmio ram(
-    .clock(clk), .reset(reset),
-    .address(ramAddr), .data(ramWriteData), 
-    .wren(ramWe), .q(ramVal), .out1(out1));
-
-Processor p(
-    .clk(clk),
-    .reset(reset),
-    .romAddr(romAddr), .romData(romVal),
-    .ramAddr(ramAddr), .ramData(ramVal),
-    .ramWriteData(ramWriteData), .ramWe(ramWe),
-    .startFs(fsStart),
-    .startLsB(lsBStart),
-    .startLsA(lsAStart),
-    .startSs(ssStart),
-    .regA(regA), .regB(regB), .cmdDbg(cmd)
-);
-
-// 00 - out1
-// 01 - regA
-// 10 - regB
-// 11 - cmd
-assign digit = (SW[1] ? (SW[0] ? cmd : regB) : (SW[0] ? regA : out1));
-
-SevenSegmentInd ind0(.digit(digit[3:0]), .out(HEX0));
-SevenSegmentInd ind1(.digit(digit[7:4]), .out(HEX1));
-SevenSegmentInd ind2(.digit(digit[11:8]), .out(HEX2));
-SevenSegmentInd ind3(.digit(digit[15:12]), .out(HEX3));
-
-assign LEDG[0] = fsStart;
-assign LEDG[1] = lsBStart;
-assign LEDG[2] = lsAStart;
-assign LEDG[3] = ssStart;
-assign LEDR[9] = clk;
 
 endmodule
