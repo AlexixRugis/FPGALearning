@@ -234,12 +234,15 @@ module DE1_SOC_golden_top(
 //     .txd(UART_TX)
 // );
 
+//assign LEDR[9] = ~GPIO_0[7];
+
 top top(
     .clk(CLOCK_50),
     .rst_n(KEY[0]),
-    .uart_rx(UART_RX),
+    .uart_rx(GPIO_0[7]),
     .uart_tx(GPIO_0[9]),
-    .uart_send_data(LEDR[7:0])
+    .addr(LEDR[7:0]),
+    .stateDbg(LEDR[9:8])
 );
 
 
