@@ -1,12 +1,12 @@
-# system info uart on 2025.11.01.22:12:32
+# system info uart on 2025.11.03.11:27:31
 system_info:
 name,value
 DEVICE,5CSEMA5F31C6
 DEVICE_FAMILY,Cyclone V
-GENERATION_ID,1762024351
+GENERATION_ID,1762158450
 #
 #
-# Files generated for uart on 2025.11.01.22:12:32
+# Files generated for uart on 2025.11.03.11:27:31
 files:
 filepath,kind,attributes,module,is_top
 simulation/uart.v,VERILOG,,uart,true

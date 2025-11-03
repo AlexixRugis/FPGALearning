@@ -33,51 +33,62 @@ always_comb clkEnable = (cnt == '0);
 logic reset;
 always_comb reset = ~nKeyRst;
 
-logic uartRead;
-logic uartValid;
-logic [7:0] uartData;
 
-uart serial(
-    .clk_clk(clk50mhz),
-    .reset_reset_n(~reset),
-    .rs232_0_from_uart_ready(uartRead),
-    .rs232_0_from_uart_data(uartData),
-    .rs232_0_from_uart_valid(uartValid),
-    .rs232_0_to_uart_data(8'b0),
-    .rs232_0_to_uart_error(1'b0),
-    .rs232_0_to_uart_valid(1'b0),
-    .rs232_0_UART_RXD(uartRx),
-    .rs232_0_UART_TXD(uartTx)
-);
+logic [31:0]            romAddr;
+logic [31:0]            romVal;
 
-logic [7:0] portBAddr;
-logic [31:0] portBData;
-logic portBWe;
+logic [7:0]             bAddr;
+logic [31:0]            bWriteData;
+logic [31:0]            bReadData;
+logic                   bWE;
 
-UartRamLoader ramLoader(
-    .clk(clk50mhz),
-    .clkEnable(1'b1),
-    .arst(reset),
-    .uartData(uartData),
-    .uartValid(uartValid),
-    .uartRead(uartRead),
-    .ramAddr(portBAddr),
-    .ramData(portBData),
-    .ramWe(portBWe)
-);
-
-
-logic [31:0] romAddr;
-logic [31:0] romVal;
+logic [7:0]             fromUartData;
+logic                   fromUartValid;
+logic                   fromUartReady;
+logic [7:0]             toUartData;
+logic                   toUartReady;
+logic                   toUartValid;
 
 rom rom(.clock_a(clk50mhz), .clock_b(clk50mhz),
     .address_a(romAddr[7:0]), .q_a(romVal),
     .enable_a(clkEnable),
     .wren_a(1'b0),
-    //.address_b(portBAddr), .data_b(portBData),
-    //.wren_b(portBWe)),
-    .enable_b(1'b0),
-    .wren_b(1'b0));
+    .address_b(bAddr),
+    .data_b(bWriteData),
+    .q_b(bReadData),
+    .enable_b(1'b1),
+    .wren_b(bWE));
+
+uart uart (
+	.clk_clk(clk50mhz),
+	.reset_reset_n(nKeyRst),
+	.rs232_0_from_uart_ready(fromUartReady),
+	.rs232_0_from_uart_data(fromUartData),
+	.rs232_0_from_uart_valid(fromUartValid),
+	.rs232_0_to_uart_data(toUartData),
+	.rs232_0_to_uart_error(1'b0), 
+	.rs232_0_to_uart_valid(toUartValid),
+	.rs232_0_to_uart_ready(toUartReady),
+	.rs232_0_UART_RXD(uartRx),
+	.rs232_0_UART_TXD(uartTx)
+);
+
+UartMemInit memInit(
+    .clk(clk50mhz),
+    .nRst(nKeyRst),
+    
+    .memAddr(bAddr),
+    .memWriteData(bWriteData),
+    .memWE(bWE),
+    .memReadData(bReadData),
+    
+    .fromUartData(fromUartData),
+    .fromUartValid(fromUartValid),
+    .fromUartReady(fromUartReady),
+    .toUartData(toUartData),
+    .toUartReady(toUartReady),
+    .toUartValid(toUartValid)
+);
 
 logic [31:0] ramAddr;
 logic [31:0] ramVal;

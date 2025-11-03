@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="uart" kind="system" version="22.1" fabric="QSYS">
  <!-- Format version 22.1 922 (Future versions may contain additional information.) -->
- <!-- 2025.11.01.22:12:34 -->
+ <!-- 2025.11.03.11:27:34 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1762024354</value>
+  <value>1762158453</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -101,7 +101,7 @@
  </parameter>
  <parameter name="projectName">
   <type>java.lang.String</type>
-  <value></value>
+  <value>DE1_SOC_golden_top.qpf</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -482,7 +482,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="baud">
    <type>int</type>
-   <value>9600</value>
+   <value>115200</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -506,7 +506,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="stop_bits">
    <type>int</type>
-   <value>1</value>
+   <value>2</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -1610,5 +1610,5 @@ parameters are a RESULT of the module parameters. -->
   <version>22.1</version>
  </plugin>
  <reportVersion>22.1 922</reportVersion>
- <uniqueIdentifier>CC4740E927280000019A40D5F325</uniqueIdentifier>
+ <uniqueIdentifier>CC4740E927280000019A48D4255D</uniqueIdentifier>
 </EnsembleReport>

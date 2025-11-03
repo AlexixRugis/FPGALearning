@@ -231,8 +231,8 @@ module DE1_SOC_golden_top(
 top top(
     .clk50mhz(CLOCK_50),
     .nKeyRst(KEY[0]),
-    .uartRx(UART_RX),
-    .uartTx(UART_TX),
+    .uartRx(GPIO_0[7]),
+    .uartTx(GPIO_0[9]),
     .sw(SW[2:0]),
     .hex0(HEX0),
     .hex1(HEX1),
