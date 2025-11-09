@@ -45,7 +45,7 @@ StackPointer sp(
 logic [31:0]        imm;
 logic [1:0]         op_a_src;
 logic [1:0]         op_b_src;
-logic [3:0]         alu_op;
+logic [4:0]         alu_op;
 logic [1:0]         res_dst;
 logic [31:0]        pc_write_data;
 logic [31:0]        pc_val;
@@ -202,6 +202,6 @@ always_comb regB = op_b_val;
 always_comb spIncrDbg = sp_incr_enable;
 always_comb pcWeDbg = pc_write_enable;
 always_comb spDbg = sp_val;
-always_comb cmdDbg = { 22'b0, alu_op, res_dst, op_b_src, op_a_src };
+always_comb cmdDbg = { 21'b0, alu_op, res_dst, op_b_src, op_a_src };
 
 endmodule

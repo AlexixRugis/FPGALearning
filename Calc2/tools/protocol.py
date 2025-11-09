@@ -31,12 +31,36 @@ with serial.Serial(PORT, BAUD, timeout=1, stopbits=2) as ser:
     # ---------------------------
     # 1. Команда записи
     # ---------------------------
-    cmd_write = 0x00
-    addr = 0x0c
-    data = 0x00000002
     
-    write_word(ser, addr, data)
-    time.sleep(0.05)  # маленькая пауза, чтобы устройство успело
+    data = [
+0x80000010,
+0x8000FAE6,
+0x80000010,
+0x40000000,
+0x800002EA,
+0x8000FAD7,
+0x800053D6,
+0x80000252,
+0x80009036,
+0x0000001F,
+0x8000FAD7,
+0x80000896,
+0x8000FAE6,
+0x8000FAD7,
+0x40000000,
+0x800002EA,
+0x00000001,
+0x80002836,
+0x00000001,
+0x80000036,
+    ]
+    addr = 0x00
+    
+    for d in data:
+        print(f"writing to addr 0x{addr:08X}")
+        write_word(ser, addr, d)
+        addr+=1
+        time.sleep(0.05)
     
     for i in range(0, 64):
         print(i, end=":\t")

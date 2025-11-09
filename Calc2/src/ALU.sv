@@ -139,12 +139,12 @@ endmodule
 module ALU(
 	input   logic [31:0]    regA,
 	input   logic [31:0]    regB,
-	input   logic [3:0]     iop,
+	input   logic [4:0]     iop,
 	
 	output  logic [31:0]    result
 ); 
 
-localparam [3:0]
+localparam [4:0]
 	OP_ZERO = 	'd0,
 	OP_NEGATE = 'd1,
 	OP_ADD = 	'd2,
@@ -191,7 +191,7 @@ Equator equator(.opa(regA), .opb(regB), .out(equRes));
 logic [31:0]            lessRes;
 Lesser lesser(.opa(regA), .opb(regB), .out(lessRes));
 
-logic [31:0] results [15:0];
+logic [31:0] results [31:0];
 assign results[OP_ZERO] = 32'd0;
 assign results[OP_NEGATE] = negateRes;
 assign results[OP_ADD] = addRes;
@@ -208,6 +208,22 @@ assign results[OP_SHL] = shlRes;
 assign results[OP_SHR] = shrRes;
 assign results[OP_EQ] = equRes;
 assign results[OP_LE] = lessRes;
+assign results['d16] = '0;
+assign results['d17] = '0;
+assign results['d18] = '0;
+assign results['d19] = '0;
+assign results['d20] = '0;
+assign results['d21] = '0;
+assign results['d22] = '0;
+assign results['d23] = '0;
+assign results['d24] = '0;
+assign results['d25] = '0;
+assign results['d26] = '0;
+assign results['d27] = '0;
+assign results['d28] = '0;
+assign results['d29] = '0;
+assign results['d30] = '0;
+assign results['d31] = '0;
 
 assign result = results[iop];
 

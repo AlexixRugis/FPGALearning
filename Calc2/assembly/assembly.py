@@ -13,38 +13,44 @@ class OpDst(Enum):
     TO_PC = 0b11
     
 class OpAlu(Enum):
-    ZERO = 0b0000
-    NEGATE = 0b0001
-    ADD = 0b0010
-    SUB = 0b0011
-    MUL = 0b0100
-    DIV = 0b0101
-    REM = 0b0110
-    AND = 0b0111
-    OR = 0b1000
-    NOT = 0b1001
-    XOR = 0b1010
-    A = 0b1011
-    SHL = 0b1100
-    SHR = 0b1101
-    EQ = 0b1110
-    LE = 0b1111
+    ZERO = 0b00000
+    NEGATE = 0b00001
+    ADD = 0b00010
+    SUB = 0b00011
+    MUL = 0b00100
+    DIV = 0b00101
+    REM = 0b00110
+    AND = 0b00111
+    OR = 0b01000
+    NOT = 0b01001
+    XOR = 0b01010
+    A = 0b01011
+    SHL = 0b01100
+    SHR = 0b01101
+    EQ = 0b01110
+    LE = 0b01111
     
 class Op:
     opASrc: OpSrc
     opBSrc: OpSrc
     aluOp: OpAlu
     opDst: OpDst
+    imm: int
     
-    def __init__(self, opASrc: OpSrc, opBSrc: OpSrc, aluOp: OpAlu, opDst: OpDst):
+    def __init__(self, opASrc: OpSrc, opBSrc: OpSrc, aluOp: OpAlu, opDst: OpDst, imm: int = 0):
         self.opASrc = opASrc
         self.opBSrc = opBSrc
         self.aluOp = aluOp
         self.opDst = opDst
+        self.imm = imm
+        
+        if imm < 0 or imm > 1048575:
+            raise ValueError('Val must be valid 20 bit value')
         
     def __call__(self):
         return (0b1 << 31) | int(self.opASrc.value) | int(self.opBSrc.value) << 2 \
-            | int(self.opDst.value) << 4 | int(self.aluOp.value) << 6
+            | int(self.opDst.value) << 4 | int(self.aluOp.value) << 6 \
+            | self.imm << 11
             
 class Const:
     def __call__(self, val: int):
@@ -52,12 +58,31 @@ class Const:
             raise ValueError('Val must be valid 31 bit value')
         return val
     
+class Cjmpc:
+    def __call__(self, value: int):
+        return Op(OpSrc.FROM_STACK, OpSrc.FROM_IMM, OpAlu.ZERO, OpDst.TO_PC, value)()
+
+class Lmema:
+    def __call__(self, value: int):
+        return Op(OpSrc.FROM_ADDR, OpSrc.FROM_IMM, OpAlu.A, OpDst.TO_STACK, value)()
+    
+class Stmema:
+    def __call__(self, value: int):
+        return Op(OpSrc.FROM_STACK, OpSrc.FROM_IMM, OpAlu.A, OpDst.TO_ADDR, value)()
+    
+class Lec:
+    def __call__(self, value: int):
+        return Op(OpSrc.FROM_STACK, OpSrc.FROM_IMM, OpAlu.LE, OpDst.TO_STACK, value)()
+    
 LCONST = Const()
 LZERO = Op(OpSrc.ZERO, OpSrc.ZERO, OpAlu.ZERO, OpDst.TO_STACK)
 LMEM = Op(OpSrc.FROM_ADDR, OpSrc.FROM_STACK, OpAlu.A, OpDst.TO_STACK)
+LMEMA = Lmema()
 STMEM = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.A, OpDst.TO_ADDR)
+STMEMA = Stmema()
 POP = Op(OpSrc.ZERO, OpSrc.FROM_STACK, OpAlu.ZERO, OpDst.NOP)
 ADD = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.ADD, OpDst.TO_STACK)
+INC = Op(OpSrc.FROM_STACK, OpSrc.FROM_IMM, OpAlu.ADD, OpDst.TO_STACK, 1)
 SUB = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.SUB, OpDst.TO_STACK)
 NEGATE = Op(OpSrc.FROM_STACK, OpSrc.ZERO, OpAlu.NEGATE, OpDst.TO_STACK)
 MUL = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.MUL, OpDst.TO_STACK)
@@ -71,7 +96,9 @@ SHL = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.SHL, OpDst.TO_STACK)
 SHR = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.SHR, OpDst.TO_STACK)
 EQU = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.EQ, OpDst.TO_STACK)
 LE = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.LE, OpDst.TO_STACK)
+LEC = Lec()
 CJMP = Op(OpSrc.FROM_STACK, OpSrc.FROM_STACK, OpAlu.ZERO, OpDst.TO_PC)
+CJMPC = Cjmpc()
     
 # prog = [
 #     LCONST(42),
@@ -89,41 +116,35 @@ prog = [
     # int* a = 0;
     # *a = 0
     LZERO(),
-    LCONST(A_ADDR),
+    STMEMA(A_ADDR),
+    LZERO(),
+    LCONST(1<<30),
     STMEM(),
     # while (a < 10)
     #     a = a + 1
     #     out1 = a
-    LCONST(A_ADDR),
-    LMEM(),
-    LCONST(10),
-    LE(),
+    LMEMA(A_ADDR),
+    LEC(10),
     NOT(),
-    LCONST(23), # to loop end
-    CJMP(),
+    CJMPC(18), # to loop end
     # loop body
     LCONST(A_ADDR),
-    LMEM(),
-    LCONST(1),
-    ADD(),
-    LCONST(A_ADDR),
-    STMEM(), # a = a + 1
-    LCONST(A_ADDR),
-    LMEM(),
+    LMEMA(A_ADDR),
+    INC(),
+    STMEMA(A_ADDR), # a = a + 1
+    LMEMA(A_ADDR),
     LCONST(1 << 30),
     STMEM(),
     LCONST(1),
-    LCONST(3), # to loop begin
-    CJMP(),
+    CJMPC(5), # to loop begin
     
     # afterloop
     LCONST(1),
-    LCONST(0),
-    CJMP()
+    CJMPC(0)
 ]
 
 for v in prog:
-    print(f"{v:032b}  {v:08X}")
+    print(f"0x{v:08X},")
     
 WIDTH = 32
 DEPTH = 256

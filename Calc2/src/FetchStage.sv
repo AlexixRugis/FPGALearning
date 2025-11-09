@@ -9,7 +9,7 @@ module FetchStage(
     output   logic [31:0]   imm,
     output   logic [1:0]    op_a_src, // 00 - zero, 01 - from imm, 10 - from stack, 11 - from memaddr
     output   logic [1:0]    op_b_src,
-    output   logic [3:0]    alu_op,
+    output   logic [4:0]    alu_op,
     output   logic [1:0]    res_dst // 00 - nop, 01 - to stack, 10 - tomem
 );
 
@@ -17,7 +17,7 @@ logic [31:0]            local_imm;
 logic [1:0]             local_op_a_src;
 logic [1:0]             local_op_b_src;
 logic [1:0]             local_res_dst;
-logic [3:0]             local_alu_op;
+logic [4:0]             local_alu_op;
 
 always_comb begin
     pc_incr_enable = clk_enable;
@@ -36,14 +36,14 @@ always_comb begin
             op_a_src        = 2'b01;
             op_b_src        = 2'b00;
             res_dst         = 2'b01;
-            alu_op          = 4'b1011;
+            alu_op          = 5'b01011;
         end
         else begin 
-            imm             = 32'b0;
+            imm             = { 12'b0, pc_mem_data[30:11] };
             op_a_src        = pc_mem_data[1:0];
             op_b_src        = pc_mem_data[3:2];
             res_dst         = pc_mem_data[5:4];
-            alu_op          = pc_mem_data[9:6];
+            alu_op          = pc_mem_data[10:6];
         end
     end
 
