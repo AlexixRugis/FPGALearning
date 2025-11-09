@@ -32,8 +32,8 @@ with serial.Serial(PORT, BAUD, timeout=1, stopbits=2) as ser:
     # 1. Команда записи
     # ---------------------------
     cmd_write = 0x00
-    addr = 0x30
-    data = 0xABCDABCE
+    addr = 0x0c
+    data = 0x00000002
     
     write_word(ser, addr, data)
     time.sleep(0.05)  # маленькая пауза, чтобы устройство успело

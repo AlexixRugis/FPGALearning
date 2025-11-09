@@ -1,102 +1,69 @@
 module FetchStage(
     input    logic          clk,
-    input    logic          clkEnable,
-    input    logic          arst,
+    input    logic          clk_enable,
+    input    logic          arstn,
     
-    input    logic          start,
-    output   logic          busy,
-    
-    output   logic          pcIncrEnable,
-    input    logic [31:0]   pcMemData,
+    output   logic          pc_incr_enable,
+    input    logic [31:0]   pc_mem_data,
     
     output   logic [31:0]   imm,
-    output   logic [1:0]    opASrc, // 00 - zero, 01 - from imm, 10 - from stack, 11 - from memaddr
-    output   logic [1:0]    opBSrc,
-    output   logic [3:0]    aluOp,
-    output   logic [1:0]    resDst // 00 - nop, 01 - to stack, 10 - tomem
-    
+    output   logic [1:0]    op_a_src, // 00 - zero, 01 - from imm, 10 - from stack, 11 - from memaddr
+    output   logic [1:0]    op_b_src,
+    output   logic [3:0]    alu_op,
+    output   logic [1:0]    res_dst // 00 - nop, 01 - to stack, 10 - tomem
 );
 
-typedef enum logic [0:0] {
-    S_WAIT,
-    S_DECODE
-} state_t;
-
-logic [31:0]            nextImm;
-logic [1:0]             nextOpASrc;
-logic [1:0]             nextOpBSrc;
-logic [1:0]             nextResDst;
-logic [3:0]             nextAluOp;
-    
-state_t state, nextState;
+logic [31:0]            local_imm;
+logic [1:0]             local_op_a_src;
+logic [1:0]             local_op_b_src;
+logic [1:0]             local_res_dst;
+logic [3:0]             local_alu_op;
 
 always_comb begin
-    busy = 1'b0;
-    pcIncrEnable = 1'b0;
-
-    if (state == S_DECODE) begin
-        busy = 1'b1;
-        pcIncrEnable = 1'b1;
-    end
+    pc_incr_enable = clk_enable;
 end
 
 always_comb begin
-    nextImm = imm;
-    nextOpASrc = opASrc;
-    nextOpBSrc = opBSrc;
-    nextResDst = resDst;
-    nextAluOp = aluOp;
+    imm         = local_imm;
+    op_a_src    = local_op_a_src;
+    op_b_src    = local_op_b_src;
+    alu_op      = local_alu_op;
+    res_dst     = local_res_dst;
 
-    if (state == S_DECODE) begin
-        if (pcMemData[31] == 1'b0) begin
-            nextImm = {1'b0, pcMemData[30:0]};
-            nextOpASrc = 2'b01;
-            nextOpBSrc = 2'b00;
-            nextResDst = 2'b01;
-            nextAluOp = 4'b1011;
+    if (clk_enable) begin
+        if (pc_mem_data[31] == 1'b0) begin
+            imm             = {1'b0, pc_mem_data[30:0]};
+            op_a_src        = 2'b01;
+            op_b_src        = 2'b00;
+            res_dst         = 2'b01;
+            alu_op          = 4'b1011;
         end
         else begin 
-            nextImm = 32'b0;
-            nextOpASrc = pcMemData[1:0];
-            nextOpBSrc = pcMemData[3:2];
-            nextResDst = pcMemData[5:4];
-            nextAluOp = pcMemData[9:6];
+            imm             = 32'b0;
+            op_a_src        = pc_mem_data[1:0];
+            op_b_src        = pc_mem_data[3:2];
+            res_dst         = pc_mem_data[5:4];
+            alu_op          = pc_mem_data[9:6];
         end
     end
 
 end
 
-always_comb begin
-    nextState = state;
+always_ff @(posedge clk or negedge arstn) begin
 
-    if (state == S_WAIT) begin
-        if (start) begin
-            nextState = S_DECODE;
-        end
+    if (~arstn) begin
+        local_imm <= '0;
+        local_op_a_src <= '0;
+        local_op_b_src <= '0;
+        local_res_dst <= '0;
+        local_alu_op <= '0;
     end
-    else begin
-        nextState = S_WAIT;
-    end
-        
-end
-
-always_ff @(posedge clk or posedge arst) begin
-
-    if (arst) begin
-        state <= S_WAIT;
-        imm <= '0;
-        opASrc <= '0;
-        opBSrc <= '0;
-        resDst <= '0;
-        aluOp <= '0;
-    end
-    else if (clkEnable) begin
-        state <= nextState;
-        imm <= nextImm;
-        opASrc <= nextOpASrc;
-        opBSrc <= nextOpBSrc;
-        resDst <= nextResDst;
-        aluOp <= nextAluOp;
+    else if (clk_enable) begin
+        local_imm <= imm;
+        local_op_a_src <= op_a_src;
+        local_op_b_src <= op_b_src;
+        local_res_dst <= res_dst;
+        local_alu_op <= alu_op;
     end
 
 end

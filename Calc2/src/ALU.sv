@@ -137,9 +137,6 @@ always_comb out = { 31'b0, opa < opb };
 endmodule
 
 module ALU(
-	input   logic           clk,
-	input   logic           reset,
-
 	input   logic [31:0]    regA,
 	input   logic [31:0]    regB,
 	input   logic [3:0]     iop,

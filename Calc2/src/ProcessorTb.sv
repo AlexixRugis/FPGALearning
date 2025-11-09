@@ -16,7 +16,6 @@ logic [31:0]        ramVal;
 logic [31:0]        ramWriteData;
 logic               ramWe;
 logic [31:0]        out1;
-logic [2:0]         stateDbg;
 logic [31:0]        cmdDbg;
 logic               pcWeDbg;
 logic [31:0]        regA;
@@ -38,11 +37,10 @@ mmio ram(
 Processor p(
     .clk(clk),
     .clkEnable(1'b1),
-    .reset(reset),
+    .arstn(~reset),
     .romAddr(romAddr), .romData(romVal),
     .ramAddr(ramAddr), .ramData(ramVal),
     .ramWriteData(ramWriteData), .ramWe(ramWe),
-    .stateDbg(stateDbg),
     .regA(regA),
     .regB(regB),
     .spDbg(spDbg),

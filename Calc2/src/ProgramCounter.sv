@@ -1,24 +1,34 @@
 module ProgramCounter(
     input   logic           clk,
-    input   logic           clkEnable,
-    input   logic           arst,
+    input   logic           clk_enable,
+    input   logic           arstn,
     
-    input   logic [31:0]    writeData,
-    input   logic           incrEnable,
-    input   logic           writeEnable,
+    input   logic [31:0]    write_data,
+    input   logic           incr_enable,
+    input   logic           write_enable,
     output  logic [31:0]    q
 );
 
-always_ff @(posedge clk or posedge arst) begin
+logic [31:0]            local_q;
 
-    if (arst) begin
-        q <= '0;
+always_comb begin
+    q = local_q;
+
+    if (clk_enable & write_enable) begin
+        q = write_data;
     end
-    else if (clkEnable) begin
-        if (writeEnable)
-            q <= writeData;
-        else if (incrEnable)
-            q <= q + 32'd1;
+end
+
+always_ff @(posedge clk or negedge arstn) begin
+
+    if (~arstn) begin
+        local_q <= '0;
+    end
+    else if (clk_enable) begin
+        if (write_enable)
+            local_q <= write_data;
+        else if (incr_enable)
+            local_q <= q + 32'd1;
     end
 
 end

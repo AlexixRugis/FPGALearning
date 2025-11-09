@@ -114,7 +114,7 @@ mmio ram(
 Processor p(
     .clk(clk50mhz),
     .clkEnable(clkEnable),
-    .reset(reset),
+    .arstn(nKeyRst),
     .romAddr(romAddr), .romData(romVal),
     .ramAddr(ramAddr), .ramData(ramVal),
     .ramWriteData(ramWriteData), .ramWe(ramWe),
