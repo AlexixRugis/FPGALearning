@@ -74,6 +74,7 @@ class Lec:
     def __call__(self, value: int):
         return Op(OpSrc.FROM_STACK, OpSrc.FROM_IMM, OpAlu.LE, OpDst.TO_STACK, value)()
     
+NOP = Op(OpSrc.FROM_IMM, OpSrc.FROM_IMM, OpAlu.ZERO, OpDst.NOP)
 LCONST = Const()
 LZERO = Op(OpSrc.ZERO, OpSrc.ZERO, OpAlu.ZERO, OpDst.TO_STACK)
 LMEM = Op(OpSrc.FROM_ADDR, OpSrc.FROM_STACK, OpAlu.A, OpDst.TO_STACK)
@@ -111,55 +112,58 @@ CJMPC = Cjmpc()
 #     JMP(),
 # ]
 
-A_ADDR = 31
-prog = [
-    # int* a = 0;
-    # *a = 0
-    LZERO(),
-    STMEMA(A_ADDR),
-    LZERO(),
-    LCONST(1<<30),
-    STMEM(),
-    # while (a < 10)
-    #     a = a + 1
-    #     out1 = a
-    LMEMA(A_ADDR),
-    LEC(10),
-    NOT(),
-    CJMPC(18), # to loop end
-    # loop body
-    LCONST(A_ADDR),
-    LMEMA(A_ADDR),
-    INC(),
-    STMEMA(A_ADDR), # a = a + 1
-    LMEMA(A_ADDR),
-    LCONST(1 << 30),
-    STMEM(),
-    LCONST(1),
-    CJMPC(5), # to loop begin
-    
-    # afterloop
-    LCONST(1),
-    CJMPC(0)
-]
-
-for v in prog:
-    print(f"0x{v:08X},")
-    
-WIDTH = 32
-DEPTH = 256
-if len(prog) > DEPTH:
-    raise IndexError('Generated program is too long')
-
-with open("output.mif", "w") as f:
-    f.write(f"WIDTH={WIDTH};\n")
-    f.write(f"DEPTH={DEPTH};\n\n")
-    f.write("ADDRESS_RADIX=UNS;\n")
-    f.write("DATA_RADIX=HEX;\n\n")
-    f.write("CONTENT BEGIN\n")
-    for i, v in enumerate(prog):
-        f.write(f"    {i} : {v & 0xFFFFFFFF:08X};\n")
-    if len(prog) < DEPTH:
-        f.write(f"    [{len(prog)}..{DEPTH-1}] : 00000000;\n")
+if __name__ == '__main__':
+    A_ADDR = 31
+    prog = [
+        # int* a = 0;
+        # *a = 0
+        LZERO(),
+        STMEMA(A_ADDR),
+        LZERO(),
+        LCONST(1<<30),
+        STMEM(),
+        # while (a < 10)
+        #     a = a + 1
+        #     out1 = a
+        LMEMA(A_ADDR),
+        LEC(10),
+        NOT(),
+        CJMPC(17), # to loop end
+        # loop body
+        LMEMA(A_ADDR),
+        INC(),
+        STMEMA(A_ADDR), # a = a + 1
         
-    f.write("END;\n")
+        LMEMA(A_ADDR),
+        LCONST(1 << 30),
+        STMEM(),
+        
+        LCONST(1),
+        CJMPC(5), # to loop begin
+        
+        # afterloop
+        LCONST(1),
+        CJMPC(0)
+    ]
+
+    print(len(prog))
+    for v in prog:
+        print(f"0x{v:08X},")
+        
+    WIDTH = 32
+    DEPTH = 256
+    if len(prog) > DEPTH:
+        raise IndexError('Generated program is too long')
+
+    with open("output.mif", "w") as f:
+        f.write(f"WIDTH={WIDTH};\n")
+        f.write(f"DEPTH={DEPTH};\n\n")
+        f.write("ADDRESS_RADIX=UNS;\n")
+        f.write("DATA_RADIX=HEX;\n\n")
+        f.write("CONTENT BEGIN\n")
+        for i, v in enumerate(prog):
+            f.write(f"    {i} : {v & 0xFFFFFFFF:08X};\n")
+        if len(prog) < DEPTH:
+            f.write(f"    [{len(prog)}..{DEPTH-1}] : 00000000;\n")
+            
+        f.write("END;\n")

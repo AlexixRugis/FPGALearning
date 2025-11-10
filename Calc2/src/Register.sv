@@ -8,13 +8,23 @@ module Register(
     output  logic [31:0]    q
 );
 
+logic [31:0]            local_q;
+
+always_comb begin
+    q = local_q;
+
+    if (clk_enable & write_enable) begin
+        q = write_data;
+    end
+end
+
 always_ff @(posedge clk or negedge arstn) begin
     
     if (~arstn) begin
-        q <= '0;
+        local_q <= '0;
     end
     else if (clk_enable & write_enable) begin
-        q <= write_data;
+        local_q <= q;
     end
 
 end

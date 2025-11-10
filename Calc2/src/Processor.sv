@@ -118,7 +118,7 @@ AddrSelector addr_sel_a(
     .enable(clkEnable & enable_load_b),
     .src(op_a_src),
     .stack_pointer(sp_val),
-    .mem_data(ramData),
+    .mem_data(op_b_val),
     
     .addr(ram_addr_a),
     .decrement_sp(sp_decr_a)

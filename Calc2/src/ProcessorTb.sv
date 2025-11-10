@@ -60,7 +60,7 @@ initial begin
     #1 reset <= 'b1;
     #10 reset <= 'b0;
 
-    #2000 $stop();
+    #10000 $stop();
 
 end
 
