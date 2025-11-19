@@ -1,0 +1,23 @@
+var b = 0;
+var c = 12;
+
+b = 10;
+c = 5;
+print((10 + b) * c);
+
+if (c < b) {
+    print(1);
+}
+else {
+    print(2);
+}
+
+while (1) {
+    var a = 0;
+    a = 0;
+    print(a);
+    while (a < 10) {
+        a = a + 1;
+        print(a);
+    }
+}

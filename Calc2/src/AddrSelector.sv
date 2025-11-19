@@ -9,8 +9,6 @@ module AddrSelector(
 );
 
 always_comb begin
-    addr = '0;
-    decrement_sp = '0;
 
     if (enable) begin
         case (src)
@@ -20,8 +18,17 @@ always_comb begin
         end
         2'b11: begin
             addr = mem_data;
+				decrement_sp = 'd0;
+        end
+        default: begin
+            addr = '0;
+            decrement_sp = '0;
         end
         endcase
+    end
+    else begin
+        addr = '0;
+        decrement_sp = '0;
     end
 end
 
