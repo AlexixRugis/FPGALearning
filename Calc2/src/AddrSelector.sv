@@ -18,11 +18,11 @@ always_comb begin
         end
         2'b11: begin
             addr = mem_data;
-				decrement_sp = 'd0;
+            decrement_sp = 'd0;
         end
         default: begin
             addr = '0;
-            decrement_sp = '0;
+            decrement_sp = 'd0;
         end
         endcase
     end

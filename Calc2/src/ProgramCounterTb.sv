@@ -2,45 +2,45 @@
 module ProgramCounterTb();
 
 logic           clk;
-logic           arst;
-logic [31:0]    writeData;
+logic           arstn;
+logic [31:0]    write_data;
 logic [31:0]    q;
-logic           writeEnable;
-logic           incrEnable;
+logic           write_en;
+logic           incr_en;
 
-ProgramCounter pc(.clk(clk), .clkEnable(1'b1), .arst(arst),
-    .writeData(writeData), .incrEnable(incrEnable),
-    .writeEnable(writeEnable), .q(q));
+ProgramCounter pc(.clk(clk), .clk_enable(1'b1), .arstn(arstn),
+    .write_data(write_data), .incr_enable(incr_en),
+    .write_enable(write_en), .q(q));
 
 always begin
 
     clk <= 1'b1;
-    arst <= 1'b0;
-    writeData <= '0;
-    writeEnable <= 1'b0;
-    incrEnable <= 1'b0;
+    arstn <= 1'b1;
+    write_data <= '0;
+    write_en <= 1'b0;
+    incr_en <= 1'b0;
 
-    #1 arst <= 'b1;
-    #10 arst <= 'b0;
+    #1 arstn <= 'b0;
+    #10 arstn <= 'b1;
 
     #10
 
     if (q != '0) $error("Expected pc to be 0, has %d", q);
     
-    incrEnable <= 1'b1;
+    incr_en <= 1'b1;
 
     #10
     
-    incrEnable <= 1'b0;
+    incr_en <= 1'b0;
 
     #0.5 if (q != 'd10) $error("Expected pc to be 10, has %d", q);
     #0.5
     
 
-    writeData <= 'd123;
-    writeEnable <= 1'b1;
+    write_data <= 'd123;
+    write_en <= 1'b1;
     #1
-    writeEnable <= 1'b0;
+    write_en <= 1'b0;
 
     #0.5 if (q != 'd123) $error("Expected pc to be 123, has %d", q);
     #0.5

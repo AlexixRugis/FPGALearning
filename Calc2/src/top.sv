@@ -1,161 +1,155 @@
 module top(
-    input   logic           clk50mhz,
-    input   logic           nKeyRst,
+    input   logic           clk_50_mhz,
+    input   logic           arstn,
 
-    input   logic           uartRx,
-    output  logic           uartTx,
+    input   logic           uart_rx,
+    output  logic           uart_tx,
 
     input   logic [2:0]     sw,
-    output  logic [6:0]     hex0,
-    output  logic [6:0]     hex1,
-    output  logic [6:0]     hex2,
-    output  logic [6:0]     hex3,
+    output  logic [6:0]     hex_0,
+    output  logic [6:0]     hex_1,
+    output  logic [6:0]     hex_2,
+    output  logic [6:0]     hex_3,
 
-    output  logic           ledClk,
-    output  logic           ledState0,
-    output  logic           ledState1,
-    output  logic           ledState2,
-    output  logic           ledState3
+    output  logic           led_clk,
+    output  logic           led_state_0,
+    output  logic           led_state_1,
+    output  logic           led_state_2,
+    output  logic           led_state_3
 );
 
-logic [20:0] cnt;
+logic [18:0] cnt;
 
-always @(posedge clk50mhz) begin
-	cnt <= cnt + 21'd1;
+always @(posedge clk_50_mhz) begin
+	cnt <= cnt + 19'd1;
 end
 
-logic clkEnable;
-always_comb clkEnable = (cnt == '0);
+logic clk_en;
+always_comb clk_en = (cnt == '0);
 
-//wire clk = SW[9] ? ~cnt[16] : ~KEY[0];
+logic [31:0]            rom_addr;
+logic [31:0]            rom_val;
 
-//wire clk = ~KEY[0];
-logic reset;
-always_comb reset = ~nKeyRst;
+logic [31:0]            port_b_addr;
+logic [31:0]            port_b_write_data;
+logic [31:0]            port_b_read_data;
+logic                   port_b_we;
 
+logic [7:0]             from_uart_data;
+logic                   from_uart_valid;
+logic                   from_uart_ready;
+logic [7:0]             to_uart_data;
+logic                   to_uart_ready;
+logic                   to_uart_valid;
 
-logic [31:0]            romAddr;
-logic [31:0]            romVal;
-
-logic [7:0]             bAddr;
-logic [31:0]            bWriteData;
-logic [31:0]            bReadData;
-logic                   bWE;
-
-logic [7:0]             fromUartData;
-logic                   fromUartValid;
-logic                   fromUartReady;
-logic [7:0]             toUartData;
-logic                   toUartReady;
-logic                   toUartValid;
-
-rom rom(.clock_a(clk50mhz), .clock_b(clk50mhz),
-    .address_a(romAddr[7:0]), .q_a(romVal),
-    .enable_a(clkEnable),
+rom rom(.clock_a(clk_50_mhz), .clock_b(clk_50_mhz),
+    .address_a(rom_addr[12:0]), .q_a(rom_val),
+    .enable_a(clk_en),
     .wren_a(1'b0),
-    .address_b(bAddr),
-    .data_b(bWriteData),
-    .q_b(bReadData),
+    .address_b(port_b_addr[12:0]),
+    .data_b(port_b_write_data),
+    .q_b(port_b_read_data),
     .enable_b(1'b1),
-    .wren_b(bWE));
+    .wren_b(port_b_we));
 
-uart uart (
-	.clk_clk(clk50mhz),
-	.reset_reset_n(nKeyRst),
-	.rs232_0_from_uart_ready(fromUartReady),
-	.rs232_0_from_uart_data(fromUartData),
-	.rs232_0_from_uart_valid(fromUartValid),
-	.rs232_0_to_uart_data(toUartData),
+uart uart(
+	.clk_clk(clk_50_mhz),
+	.reset_reset_n(arstn),
+	.rs232_0_from_uart_ready(from_uart_ready),
+	.rs232_0_from_uart_data(from_uart_data),
+	.rs232_0_from_uart_valid(from_uart_valid),
+	.rs232_0_to_uart_data(to_uart_data),
 	.rs232_0_to_uart_error(1'b0), 
-	.rs232_0_to_uart_valid(toUartValid),
-	.rs232_0_to_uart_ready(toUartReady),
-	.rs232_0_UART_RXD(uartRx),
-	.rs232_0_UART_TXD(uartTx)
+	.rs232_0_to_uart_valid(to_uart_valid),
+	.rs232_0_to_uart_ready(to_uart_ready),
+	.rs232_0_UART_RXD(uart_rx),
+	.rs232_0_UART_TXD(uart_tx)
 );
 
 UartMemInit memInit(
-    .clk(clk50mhz),
-    .nRst(nKeyRst),
+    .clk(clk_50_mhz),
+    .arstn(arstn),
     
-    .memAddr(bAddr),
-    .memWriteData(bWriteData),
-    .memWE(bWE),
-    .memReadData(bReadData),
+    .mem_addr(port_b_addr),
+    .mem_write_data(port_b_write_data),
+    .mem_we(port_b_we),
+    .mem_read_data(port_b_read_data),
     
-    .fromUartData(fromUartData),
-    .fromUartValid(fromUartValid),
-    .fromUartReady(fromUartReady),
-    .toUartData(toUartData),
-    .toUartReady(toUartReady),
-    .toUartValid(toUartValid)
+    .from_uart_data(from_uart_data),
+    .from_uart_valid(from_uart_valid),
+    .from_uart_ready(from_uart_ready),
+    .to_uart_data(to_uart_data),
+    .to_uart_ready(to_uart_ready),
+    .to_uart_valid(to_uart_valid)
 );
 
-logic [31:0] ramAddr;
-logic [31:0] ramVal;
-logic [31:0] ramWriteData;
-logic ramWe;
-logic [31:0] out1;
-logic fsStart;
-logic lsBStart;
-logic lsAStart;
-logic ssStart;
-logic [31:0] regA;
-logic [31:0] regB;
-logic [31:0] cmd;
-logic [31:0] spDbg;
+logic [31:0] ram_addr;
+logic [31:0] ram_val;
+logic [31:0] ram_write_data;
+logic ram_we;
+logic [31:0] out_1;
+logic fs_start;
+logic lsb_start;
+logic lsa_start;
+logic ss_start;
+logic [31:0] reg_a;
+logic [31:0] reg_b;
+logic [31:0] cmd_dbg;
+logic [31:0] sp_dbg;
 
 logic [31:0] digit;
 
 mmio ram(
-    .clock(clk50mhz), .clockEnable(clkEnable), .reset(reset),
-    .address(ramAddr), .data(ramWriteData), 
-    .wren(ramWe), .q(ramVal), .out1(out1));
+    .clk(clk_50_mhz), .clk_en(clk_en), .arstn(arstn),
+    .address(ram_addr), .data(ram_write_data), 
+    .write_en(ram_we), .q(ram_val), .out_1(out_1));
 
 Processor p(
-    .clk(clk50mhz),
-    .clkEnable(clkEnable),
-    .arstn(nKeyRst),
-    .romAddr(romAddr), .romData(romVal),
-    .ramAddr(ramAddr), .ramData(ramVal),
-    .ramWriteData(ramWriteData), .ramWe(ramWe),
-    .startFs(fsStart),
-    .startLsB(lsBStart),
-    .startLsA(lsAStart),
-    .startSs(ssStart),
-    .regA(regA), .regB(regB), .cmdDbg(cmd), .spDbg(spDbg)
+    .clk(clk_50_mhz),
+    .clk_en(clk_en),
+    .arstn(arstn),
+    .rom_addr(rom_addr), .rom_data(rom_val),
+    .ram_addr(ram_addr), .ram_data(ram_val),
+    .ram_write_data(ram_write_data), .ram_we(ram_we),
+    .start_fs_dbg(fs_start),
+    .start_lsb_dbg(lsb_start),
+    .start_lsa_dbg(lsa_start),
+    .start_ss_dbg(ss_start),
+    .reg_a(reg_a), .reg_b(reg_b),
+    .cmd_dbg(cmd_dbg), .sp_dbg(sp_dbg)
 );
 
-// 00 - out1
-// 01 - regA
-// 10 - regB
-// 11 - cmd
+// 00 - out_1
+// 01 - reg_a
+// 10 - reg_b
+// 11 - cmd_dbg
 
 always_comb begin
 
     case (sw)
 
-    3'b000: digit = out1;
-    3'b001: digit = regA;
-    3'b010: digit = regB;
-    3'b011: digit = cmd;
-    3'b100: digit = romAddr;
-    3'b101: digit = spDbg;
-    3'b110: digit = romVal;
+    3'b000: digit = out_1;
+    3'b001: digit = reg_a;
+    3'b010: digit = reg_b;
+    3'b011: digit = cmd_dbg;
+    3'b100: digit = rom_addr;
+    3'b101: digit = sp_dbg;
+    3'b110: digit = rom_val;
     default: digit = 32'hffffffff;
 
     endcase
 
 end
 
-SevenSegmentInd ind0(.digit(digit[3:0]), .out(hex0));
-SevenSegmentInd ind1(.digit(digit[7:4]), .out(hex1));
-SevenSegmentInd ind2(.digit(digit[11:8]), .out(hex2));
-SevenSegmentInd ind3(.digit(digit[15:12]), .out(hex3));
+SevenSegmentInd ind_0(.digit(digit[3:0]), .out(hex_0));
+SevenSegmentInd ind_1(.digit(digit[7:4]), .out(hex_1));
+SevenSegmentInd ind_2(.digit(digit[11:8]), .out(hex_2));
+SevenSegmentInd ind_3(.digit(digit[15:12]), .out(hex_3));
 
-assign ledState0 = fsStart;
-assign ledState1 = lsBStart;
-assign ledState2 = lsAStart;
-assign ledState3 = ssStart;
-assign ledClk = clkEnable;
+assign led_state_0 = fs_start;
+assign led_state_1 = lsb_start;
+assign led_state_2 = lsa_start;
+assign led_state_3 = ss_start;
+assign led_clk = clk_en;
 
 endmodule

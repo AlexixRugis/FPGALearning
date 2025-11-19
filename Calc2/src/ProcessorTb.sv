@@ -2,63 +2,60 @@
 module ProcessorTb;
 
 logic               clk;
-logic               reset;
+logic               arstn;
 
-logic [31:0]        romAddr;
-logic [31:0]        romVal;
+logic [31:0]        rom_addr;
+logic [31:0]        rom_val;
 
 rom rom(.clock_a(clk), .enable_a(1'b1),
-    .address_a(romAddr[7:0]), .q_a(romVal), .wren_a('0),
+    .address_a(rom_addr[12:0]), .q_a(rom_val), .wren_a('0),
     .wren_b('0), .clock_b('0), .enable_b(1'b0));
 
-logic [31:0]        ramAddr;
-logic [31:0]        ramVal;
-logic [31:0]        ramWriteData;
-logic               ramWe;
-logic [31:0]        out1;
-logic [31:0]        cmdDbg;
-logic               pcWeDbg;
-logic [31:0]        regA;
-logic [31:0]        regB;
-logic [31:0]        spDbg;
-logic               startFs;
-logic               startLsB;
-logic               startLsA;
-logic               startSs;
-
-// ram ram(.clock(clk), .address(ramAddr[7:0]),
-// .data(ramWriteData), .wren(ramWe), .q(ramVal));
+logic [31:0]        ram_addr;
+logic [31:0]        ram_val;
+logic [31:0]        ram_write_data;
+logic               ram_we;
+logic [31:0]        out_1;
+logic [31:0]        cmd_dbg;
+logic               pc_we_dbg;
+logic [31:0]        reg_a;
+logic [31:0]        reg_b;
+logic [31:0]        sp_dbg;
+logic               start_fs_dbg;
+logic               start_lsb_dbg;
+logic               start_lsa_dbg;
+logic               start_ss_dbg;
 
 mmio ram(
-    .clock(clk), .clockEnable(1'b1), .reset(reset),
-    .address(ramAddr), .data(ramWriteData), 
-    .wren(ramWe), .q(ramVal), .out1(out1));
+    .clk(clk), .clk_en(1'b1), .arstn(arstn),
+    .address(ram_addr), .data(ram_write_data), 
+    .write_en(ram_we), .q(ram_val), .out_1(out_1));
 
 Processor p(
     .clk(clk),
-    .clkEnable(1'b1),
-    .arstn(~reset),
-    .romAddr(romAddr), .romData(romVal),
-    .ramAddr(ramAddr), .ramData(ramVal),
-    .ramWriteData(ramWriteData), .ramWe(ramWe),
-    .regA(regA),
-    .regB(regB),
-    .spDbg(spDbg),
-    .cmdDbg(cmdDbg),
-    .pcWeDbg(pcWeDbg),
-    .startFs(startFs),
-    .startLsB(startLsB),
-    .startLsA(startLsA),
-    .startSs(startSs)
+    .clk_en(1'b1),
+    .arstn(arstn),
+    .rom_addr(rom_addr), .rom_data(rom_val),
+    .ram_addr(ram_addr), .ram_data(ram_val),
+    .ram_write_data(ram_write_data), .ram_we(ram_we),
+    .reg_a(reg_a),
+    .reg_b(reg_b),
+    .sp_dbg(sp_dbg),
+    .cmd_dbg(cmd_dbg),
+    .pc_we_dbg(pc_we_dbg),
+    .start_fs_dbg(start_fs_dbg),
+    .start_lsb_dbg(start_lsb_dbg),
+    .start_lsa_dbg(start_lsa_dbg),
+    .start_ss_dbg(start_ss_dbg)
 );
 
 initial begin
 
     clk <= 1'b1;
-    reset <= 1'b0;
+    arstn <= 1'b1;
 
-    #1 reset <= 'b1;
-    #10 reset <= 'b0;
+    #1 arstn <= 'b0;
+    #10 arstn <= 'b1;
 
     #10000 $stop();
 

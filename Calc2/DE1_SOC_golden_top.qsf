@@ -805,7 +805,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE src/StackPointerTb.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/StackPointer.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/SixteenMux32.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/SevenSegmentInd.sv
-set_global_assignment -name SYSTEMVERILOG_FILE src/SaveStageTb.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/SaveStage.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ProgramCounterTb.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ProgramCounter.sv

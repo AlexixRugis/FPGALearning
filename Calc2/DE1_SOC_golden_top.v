@@ -229,20 +229,20 @@ module DE1_SOC_golden_top(
 
 
 top top(
-    .clk50mhz(CLOCK_50),
-    .nKeyRst(KEY[0]),
-    .uartRx(GPIO_0[7]),
-    .uartTx(GPIO_0[9]),
+    .clk_50_mhz(CLOCK_50),
+    .arstn(KEY[0]),
+    .uart_rx(GPIO_0[7]),
+    .uart_tx(GPIO_0[9]),
     .sw(SW[2:0]),
-    .hex0(HEX0),
-    .hex1(HEX1),
-    .hex2(HEX2),
-    .hex3(HEX3),
-    .ledClk(LEDR[9]),
-    .ledState0(LEDR[0]),
-    .ledState1(LEDR[1]),
-    .ledState2(LEDR[2]),
-    .ledState3(LEDR[3])
+    .hex_0(HEX0),
+    .hex_1(HEX1),
+    .hex_2(HEX2),
+    .hex_3(HEX3),
+    .led_clk(LEDR[9]),
+    .led_state_0(LEDR[0]),
+    .led_state_1(LEDR[1]),
+    .led_state_2(LEDR[2]),
+    .led_state_3(LEDR[3])
 );
 
 

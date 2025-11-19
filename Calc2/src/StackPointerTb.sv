@@ -3,25 +3,25 @@
 module StackPointerTb();
 
 logic           clk;
-logic           reset;
+logic           arstn;
 logic           incr;
 logic           decr;
 logic [31:0]    val;
 
 StackPointer sp(
-    .clk(clk), .clkEnable(1'b1), .reset(reset),
+    .clk(clk), .clk_enable(1'b1), .arstn(arstn),
     .increment(incr), .decrement(decr),
     .sp(val)
 );
 
 initial begin
     clk <= 'b0;
-    reset <= 'b0;
+    arstn <= 'b1;
     incr <= 'b0;
     decr <= 'b0;
 
-    #1 reset <= 'b1;
-    #10 reset <= 'b0;
+    #1 arstn <= 'b0;
+    #10 arstn <= 'b1;
 
     if (val != 0) $error("Expected val to be d0");
 

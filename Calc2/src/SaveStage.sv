@@ -19,24 +19,11 @@ ArrayMux #(.WIDTH(32), .INPUTS(4)) addrMux(
 );
 
 always_comb begin
-    increment_sp = 1'b0;
-    mem_write_enable = 1'b0;
-    pc_write_enable = 1'b0;
 
-    if (enable) begin
-        case (dst)
-            2'b01: begin
-                mem_write_enable = 1'b1;
-                increment_sp = 1'b1;
-            end
-            2'b10: begin
-                mem_write_enable = 1'b1;
-            end
-            2'b11: begin
-                pc_write_enable = 1'b1;
-            end
-        endcase
-    end
+    pc_write_enable     = enable & (dst == 2'b11);
+    increment_sp        = enable & (dst == 2'b01);
+    mem_write_enable    = enable & ((dst == 2'b01) | (dst == 2'b10));
+
 end
 
 endmodule

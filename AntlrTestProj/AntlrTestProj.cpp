@@ -59,7 +59,7 @@ int main()
             std::cout << ",\n";
         }
 
-        Compiler::saveMif("output.mif", program, 256);
+        Compiler::saveMif("output.mif", program, 8192);
         std::cout << "Saved results to output.mif\n" << std::endl;
     }
     catch (const std::runtime_error& e)
