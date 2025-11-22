@@ -54,7 +54,7 @@ logic               pc_write_enable;
 ProgramCounter pc(
     .clk(clk), .clk_enable(clk_en), .arstn(arstn),
     .write_data(pc_write_data), .incr_enable(pc_incr_enable),
-    .write_enable(pc_write_enable), .q(pc_val)
+    .write_enable(pc_write_enable), .pc(pc_val)
 );
 
 FetchStage fs(

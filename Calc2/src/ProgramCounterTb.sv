@@ -4,13 +4,14 @@ module ProgramCounterTb();
 logic           clk;
 logic           arstn;
 logic [31:0]    write_data;
-logic [31:0]    q;
+logic [31:0]    pc;
+logic [31:0]    ppc;
 logic           write_en;
 logic           incr_en;
 
-ProgramCounter pc(.clk(clk), .clk_enable(1'b1), .arstn(arstn),
+ProgramCounter pc_inst(.clk(clk), .clk_enable(1'b1), .arstn(arstn),
     .write_data(write_data), .incr_enable(incr_en),
-    .write_enable(write_en), .q(q));
+    .write_enable(write_en), .pc(pc), .ppc(ppc));
 
 always begin
 
@@ -25,7 +26,8 @@ always begin
 
     #10
 
-    if (q != '0) $error("Expected pc to be 0, has %d", q);
+    if (pc != '0) $error("Expected pc to be 0, has %d", pc);
+    if (ppc != '0) $error("Expected pc to be 0, has %d", ppc);
     
     incr_en <= 1'b1;
 
@@ -33,7 +35,8 @@ always begin
     
     incr_en <= 1'b0;
 
-    #0.5 if (q != 'd10) $error("Expected pc to be 10, has %d", q);
+    #0.5 if (pc != 'd10) $error("Expected pc to be 10, has %d", pc);
+         if (ppc != 'd9) $error("Expected ppc to be 9, has %d", ppc);
     #0.5
     
 
@@ -42,7 +45,8 @@ always begin
     #1
     write_en <= 1'b0;
 
-    #0.5 if (q != 'd123) $error("Expected pc to be 123, has %d", q);
+    #0.5 if (pc != 'd123) $error("Expected pc to be 123, has %d", pc);
+         if (ppc != 'd10) $error("Expected pc to be 10, has %d", ppc);
     #0.5
 
 
