@@ -13,6 +13,7 @@ module Processor(
 
     output  logic [31:0]        reg_a,
     output  logic [31:0]        reg_b,
+    output  logic [31:0]        fp_dbp,
     output  logic [31:0]        sp_dbg,
     output  logic [31:0]        cmd_dbg,
     output  logic               sp_incr_dbg,
@@ -22,6 +23,8 @@ module Processor(
     output  logic               start_lsa_dbg,
     output  logic               start_ss_dbg
 );
+
+// STACK POINTER
 
 logic               enable_fetch;
 logic               enable_load_b;
@@ -38,23 +41,39 @@ StackPointer sp(
     .sp(sp_val)
 );
 
+// FRAME POINTER
+
+logic [31:0]        fp_write_data;
+logic [31:0]        fp_val;
+logic               fp_write_enable;
+
+Register fp_inst(
+    .clk(clk),
+    .clk_enable(clk_en),
+    .arstn(arstn),
+
+    .write_data(fp_write_data),
+    .write_enable(fp_write_enable),
+    .q(fp_val)
+);
 
 // FETCH INSTRUCTION
 
 logic [31:0]        imm;
-logic [1:0]         op_a_src;
-logic [1:0]         op_b_src;
-logic [4:0]         alu_op;
-logic [1:0]         res_dst;
+operand_source_t    op_a_src;
+operand_source_t    op_b_src;
+alu_op_t            alu_op;
+store_destination_t res_dst;
 logic [31:0]        pc_write_data;
 logic [31:0]        pc_val;
+logic [31:0]        ppc_val;
 logic               pc_incr_enable;
 logic               pc_write_enable;
 
 ProgramCounter pc(
     .clk(clk), .clk_enable(clk_en), .arstn(arstn),
     .write_data(pc_write_data), .incr_enable(pc_incr_enable),
-    .write_enable(pc_write_enable), .pc(pc_val)
+    .write_enable(pc_write_enable), .pc(pc_val), .ppc(ppc_val)
 );
 
 FetchStage fs(
@@ -63,7 +82,7 @@ FetchStage fs(
     .arstn(arstn),
     .pc_incr_enable(pc_incr_enable), .pc_mem_data(rom_data),
     .imm(imm), .op_a_src(op_a_src), .op_b_src(op_b_src),
-    .alu_op(alu_op), .res_dst(res_dst)
+    .res_dst(res_dst), .alu_op(alu_op)
 );
 
 always_comb rom_addr = pc_val;
@@ -85,13 +104,13 @@ AddrSelector addr_sel_b(
     .decrement_sp(sp_decr_b)
 );
 
-FourMux32 reg_b_data(
-    .addr(op_b_src),
-    .in_0('0),
-    .in_1(imm),
-    .in_2(ram_data),
-    .in_3(ram_data),
-    .out(reg_b_write_data)
+OperandSourceSelector reg_b_data(
+    .op_src(op_b_src),
+    .in_imm(imm),
+    .in_mem(ram_data),
+    .in_fp(fp_val),
+    .in_ppc(ppc_val),
+    .q(reg_b_write_data)
 );
 
 Register reg_b_inst(
@@ -123,13 +142,13 @@ AddrSelector addr_sel_a(
     .decrement_sp(sp_decr_a)
 );
 
-FourMux32 reg_a_data(
-    .addr(op_a_src),
-    .in_0('0),
-    .in_1(imm),
-    .in_2(ram_data),
-    .in_3(ram_data),
-    .out(reg_a_write_data)
+OperandSourceSelector reg_a_data(
+    .op_src(op_a_src),
+    .in_imm(imm),
+    .in_mem(ram_data),
+    .in_fp(fp_val),
+    .in_ppc(ppc_val),
+    .q(reg_a_write_data)
 );
 
 Register reg_a_inst(
@@ -152,6 +171,7 @@ ALU alu(
 );
 
 always_comb ram_write_data = alu_res;
+always_comb fp_write_data = alu_res;
 
 // STORE RESULT
 
@@ -164,11 +184,21 @@ SaveStage ss(
 
     .dst(res_dst), .sp(sp_val), .mem_addr(op_b_val),
     .addr(ram_addr_store),
-    .mem_write_enable(ram_we), .increment_sp(sp_incr_enable), 
+    .mem_write_enable(ram_we), .increment_sp(sp_incr_enable),
+    .fp_write_enable(fp_write_enable),
     .pc_write_enable(pc_write_enable_store)
 );
 
-always_comb pc_write_enable = pc_write_enable_store & reg_a[0];
+always_comb begin
+
+    case (res_dst)
+    STDST_PC:       pc_write_enable = pc_write_enable_store;
+    STDST_PC_Z:     pc_write_enable = pc_write_enable_store & (~|reg_a);
+    STDST_PC_NZ:    pc_write_enable = pc_write_enable_store & (|reg_a);
+    default:        pc_write_enable = 'b0;
+    endcase
+
+end
 
 always_comb begin
     sp_decr_enable = sp_decr_b | sp_decr_a;
@@ -197,10 +227,11 @@ always_comb start_ss_dbg = enable_store;
 
 always_comb reg_a = op_a_val;
 always_comb reg_b = op_b_val;
+always_comb fp_dbp = fp_val;
 
 always_comb sp_incr_dbg = sp_incr_enable;
 always_comb pc_we_dbg = pc_write_enable;
 always_comb sp_dbg = sp_val;
-always_comb cmd_dbg = { 21'b0, alu_op, res_dst, op_b_src, op_a_src };
+always_comb cmd_dbg = { 18'b0, alu_op, res_dst, op_b_src, op_a_src };
 
 endmodule

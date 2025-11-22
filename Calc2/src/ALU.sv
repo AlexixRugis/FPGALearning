@@ -126,6 +126,16 @@ always_comb out = { 31'b0, op_a == op_b };
 
 endmodule
 
+module NotEquator(
+    input   logic [31:0]            op_a,
+    input   logic [31:0]            op_b,
+    output  logic [31:0]            out
+);
+
+always_comb out = { 31'b0, op_a != op_b };
+
+endmodule
+
 module Lesser(
     input   logic [31:0]            op_a,
     input   logic [31:0]            op_b,
@@ -136,31 +146,43 @@ always_comb out = { 31'b0, op_a < op_b };
 
 endmodule
 
+module Greater(
+    input   logic [31:0]            op_a,
+    input   logic [31:0]            op_b,
+    output  logic [31:0]            out
+);
+
+always_comb out = { 31'b0, op_a > op_b };
+
+endmodule
+
+module LesserEq(
+    input   logic [31:0]            op_a,
+    input   logic [31:0]            op_b,
+    output  logic [31:0]            out
+);
+
+always_comb out = { 31'b0, op_a <= op_b };
+
+endmodule
+
+module GreaterEq(
+    input   logic [31:0]            op_a,
+    input   logic [31:0]            op_b,
+    output  logic [31:0]            out
+);
+
+always_comb out = { 31'b0, op_a >= op_b };
+
+endmodule
+
 module ALU(
 	input   logic [31:0]    reg_a,
 	input   logic [31:0]    reg_b,
-	input   logic [4:0]     iop,
+	input   alu_op_t        iop,
 	
 	output  logic [31:0]    result
 ); 
-
-localparam [4:0]
-	OP_ZERO = 	'd0,
-	OP_NEGATE = 'd1,
-	OP_ADD = 	'd2,
-	OP_SUB = 	'd3,
-	OP_MULT = 	'd4,
-	OP_DIV = 	'd5,
-	OP_REM = 	'd6,
-	OP_AND = 	'd7,
-	OP_OR =     'd8,
-	OP_NOT = 	'd9,
-	OP_XOR = 	'd10,
-	OP_A = 		'd11,
-	OP_SHL = 	'd12,
-	OP_SHR = 	'd13,
-    OP_EQ =     'd14,
-    OP_LE =     'd15;
 
 logic [31:0]            negate_res;
 Negator negator(.op_a(reg_a), .out(negate_res));
@@ -188,8 +210,16 @@ logic [31:0]            shr_res;
 Shrer shrer(.op_a(reg_a), .op_b(reg_b), .out(shr_res));
 logic [31:0]            equ_res;
 Equator equator(.op_a(reg_a), .op_b(reg_b), .out(equ_res));
+logic [31:0]            not_equ_res;
+NotEquator not_equator(.op_a(reg_a), .op_b(reg_b), .out(not_equ_res));
 logic [31:0]            less_res;
 Lesser lesser(.op_a(reg_a), .op_b(reg_b), .out(less_res));
+logic [31:0]            greater_res;
+Greater greater(.op_a(reg_a), .op_b(reg_b), .out(greater_res));
+logic [31:0]            less_equal_res;
+LesserEq lesser_eq(.op_a(reg_a), .op_b(reg_b), .out(less_equal_res));
+logic [31:0]            greater_equal_res;
+GreaterEq greater_eq(.op_a(reg_a), .op_b(reg_b), .out(greater_equal_res));
 
 logic [31:0] results [31:0];
 assign results[OP_ZERO] = 32'd0;
@@ -204,15 +234,15 @@ assign results[OP_OR] = or_res;
 assign results[OP_NOT] = not_res;
 assign results[OP_XOR] = xor_res;
 assign results[OP_A] = reg_a;
+assign results[OP_B] = reg_b;
 assign results[OP_SHL] = shl_res;
 assign results[OP_SHR] = shr_res;
 assign results[OP_EQ] = equ_res;
-assign results[OP_LE] = less_res;
-assign results['d16] = '0;
-assign results['d17] = '0;
-assign results['d18] = '0;
-assign results['d19] = '0;
-assign results['d20] = '0;
+assign results[OP_NEQ] = not_equ_res;
+assign results[OP_LT] = less_res;
+assign results[OP_GT] = greater_res;
+assign results[OP_LE] = less_equal_res;
+assign results[OP_GE] = greater_equal_res;
 assign results['d21] = '0;
 assign results['d22] = '0;
 assign results['d23] = '0;

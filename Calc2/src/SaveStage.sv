@@ -1,28 +1,53 @@
 module SaveStage(
 
-    input   logic           enable,
+    input   logic                   enable,
 
-    input   logic [1:0]     dst, // 00 - nop, 01 - to stack, 10 - tomem, 11 - to pc
-    input   logic [31:0]    sp,
-    input   logic [31:0]    mem_addr,
+    input   store_destination_t     dst,
+    input   logic [31:0]            sp,
+    input   logic [31:0]            mem_addr,
     
-    output  logic [31:0]    addr,
-    output  logic           mem_write_enable,
-    output  logic           increment_sp,
-    output  logic           pc_write_enable
-);
-
-ArrayMux #(.WIDTH(32), .INPUTS(4)) addrMux(
-    .addr(dst & { 2 {enable} }),
-    .data({ 32'b0, mem_addr, sp, 32'b0 }),
-    .out(addr)
+    output  logic [31:0]            addr,
+    output  logic                   mem_write_enable,
+    output  logic                   increment_sp,
+    output  logic                   pc_write_enable,
+    output  logic                   fp_write_enable
 );
 
 always_comb begin
 
-    pc_write_enable     = enable & (dst == 2'b11);
-    increment_sp        = enable & (dst == 2'b01);
-    mem_write_enable    = enable & ((dst == 2'b01) | (dst == 2'b10));
+    addr                        = '0;
+    mem_write_enable            = '0;
+    increment_sp                = '0;
+    pc_write_enable             = '0;
+    fp_write_enable             = '0;
+
+    if (enable) begin
+        case (dst)
+        STDST_STACK: begin
+            addr                = sp;
+            mem_write_enable    = 'b1;
+            increment_sp        = 'b1;
+        end
+        STDST_MEM: begin
+            addr                = mem_addr;
+            mem_write_enable    = 'b1;
+        end
+        STDST_FP: begin
+            fp_write_enable     = 'b1;
+        end
+        STDST_PC: begin
+            pc_write_enable     = 'b1;
+        end
+        STDST_PC_Z: begin
+            pc_write_enable     = 'b1;
+        end
+        STDST_PC_NZ: begin
+            pc_write_enable     = 'b1;
+        end
+        default: begin
+        end
+        endcase
+    end
 
 end
 
