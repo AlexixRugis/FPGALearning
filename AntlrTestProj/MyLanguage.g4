@@ -18,9 +18,9 @@ var_decl_stmt	: VAR IDENT ASSIGN expr SEMICOLON;
 assign_stmt		: IDENT ASSIGN expr SEMICOLON;
 print_stmt		: PRINT LPAR expr RPAR SEMICOLON;
 
-expr			: summa LESS summa | summa;
+expr			: summa LESS summa | summa LESSEQUAL summa | summa GREATER summa | summa GREATEREQUAL summa | summa EQUAL summa | summa NOTEQUAL summa | summa;
 summa			: summa PLUS term | summa MINUS term | term;
-term			: term MULT factor | term DIV factor | factor;
+term			: term MULT factor | term DIV factor | term REM factor | factor;
 factor			: NUMBER | IDENT | LPAR expr RPAR;
 
 FUNC			: 'func';
@@ -38,7 +38,13 @@ PLUS			: '+';
 MINUS			: '-';
 MULT			: '*';
 DIV				: '/';
+REM				: '%';
 LESS			: '<';
+LESSEQUAL		: '<=';
+GREATER			: '>';
+GREATEREQUAL	: '>=';
+EQUAL			: '==';
+NOTEQUAL		: '!=';
 ASSIGN			: '=';
 SEMICOLON		: ';';
 

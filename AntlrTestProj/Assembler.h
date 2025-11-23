@@ -242,7 +242,7 @@ namespace Compiler
 
         opcode_t addfp(int32_t delta)
         {
-            return Op(OpSrc::FP_IMM_FP, OpAlu::A, delta)();
+            return Op(OpSrc::FP_IMM_FP, OpAlu::ADD, delta)();
         }
 
         opcode_t lfp()

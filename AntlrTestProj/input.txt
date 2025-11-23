@@ -10,6 +10,12 @@ func routine2 {
 
 func main {
 
+    fibArg = 5;
+    call FiBboNacci;
+    print(fibRet);
+
+    call bibafun;
+
     b = 10;
     c = 5;
     print((10 + b) * c);
@@ -33,4 +39,31 @@ func main {
         call routine2;
     }
 
+}
+
+func bibafun {
+    var biba = 10;
+    while (biba >= 0) {
+        if (biba % 2 == 0) print(biba);
+        biba = biba - 1;
+    }
+}
+
+var fibArg = 0;
+var fibRet = 0;
+
+func FiBboNacci {
+    var localArg = fibArg;
+    var ans = 0;
+    
+    if (localArg <= 2) fibRet = 1;
+    else {
+        fibArg = localArg - 1;
+        call FiBboNacci;
+        ans = ans + fibRet;
+        fibArg = localArg - 2;
+        call FiBboNacci;
+        ans = ans + fibRet;
+        fibRet = ans;
+    }
 }

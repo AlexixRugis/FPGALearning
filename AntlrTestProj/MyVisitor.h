@@ -310,6 +310,66 @@ public:
 
             return {};
         }
+        else if (ctx->GREATER())
+        {
+            tab(); std::cout << "> (GreaterExpr)\n";
+            mIndent++;
+            visit(ctx->summa(0));
+            visit(ctx->summa(1));
+            mIndent--;
+
+            mCodeGen.compileGt();
+
+            return {};
+        }
+        else if (ctx->LESSEQUAL())
+        {
+            tab(); std::cout << "<= (LessEqualExpr)\n";
+            mIndent++;
+            visit(ctx->summa(0));
+            visit(ctx->summa(1));
+            mIndent--;
+
+            mCodeGen.compileLe();
+
+            return {};
+        }
+        else if (ctx->GREATEREQUAL())
+        {
+            tab(); std::cout << ">= (GreaterEqualExpr)\n";
+            mIndent++;
+            visit(ctx->summa(0));
+            visit(ctx->summa(1));
+            mIndent--;
+
+            mCodeGen.compileGe();
+
+            return {};
+        }
+        else if (ctx->EQUAL())
+        {
+            tab(); std::cout << "== (EqualExpr)\n";
+            mIndent++;
+            visit(ctx->summa(0));
+            visit(ctx->summa(1));
+            mIndent--;
+
+            mCodeGen.compileEq();
+
+            return {};
+        }
+        else if (ctx->NOTEQUAL())
+        {
+            tab(); std::cout << "!= (NotEqualExpr)\n";
+            mIndent++;
+            visit(ctx->summa(0));
+            visit(ctx->summa(1));
+            mIndent--;
+
+            mCodeGen.compileNeq();
+
+            return {};
+        }
 
         return visitChildren(ctx); // просто сумма
     }
@@ -365,6 +425,18 @@ public:
             mIndent--;
 
             mCodeGen.compileDiv();
+
+            return {};
+        }
+        else if (ctx->REM())
+        {
+            tab(); std::cout << "% (Rem)\n";
+            mIndent++;
+            visit(ctx->term());
+            visit(ctx->factor());
+            mIndent--;
+
+            mCodeGen.compileRem();
 
             return {};
         }

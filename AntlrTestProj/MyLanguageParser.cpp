@@ -58,59 +58,69 @@ void mylanguageParserInitialize() {
     },
     std::vector<std::string>{
       "", "'func'", "'call'", "'var'", "'print'", "'if'", "'else'", "'while'", 
-      "'{'", "'}'", "'('", "')'", "'+'", "'-'", "'*'", "'/'", "'<'", "'='", 
-      "';'"
+      "'{'", "'}'", "'('", "')'", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", 
+      "'<='", "'>'", "'>='", "'=='", "'!='", "'='", "';'"
     },
     std::vector<std::string>{
       "", "FUNC", "CALL", "VAR", "PRINT", "IF", "ELSE", "WHILE", "LBRA", 
-      "RBRA", "LPAR", "RPAR", "PLUS", "MINUS", "MULT", "DIV", "LESS", "ASSIGN", 
+      "RBRA", "LPAR", "RPAR", "PLUS", "MINUS", "MULT", "DIV", "REM", "LESS", 
+      "LESSEQUAL", "GREATER", "GREATEREQUAL", "EQUAL", "NOTEQUAL", "ASSIGN", 
       "SEMICOLON", "IDENT", "NUMBER", "WS"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,21,144,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,27,167,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
   	14,1,0,5,0,32,8,0,10,0,12,0,35,9,0,1,1,1,1,3,1,39,8,1,1,2,1,2,1,2,1,2,
   	1,2,1,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,57,8,3,1,4,5,4,60,
   	8,4,10,4,12,4,63,9,4,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,72,8,5,1,6,1,6,1,
   	6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,
-  	1,9,1,10,1,10,1,10,1,10,1,10,1,10,1,11,1,11,1,11,1,11,1,11,3,11,106,8,
-  	11,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,5,12,117,8,12,10,12,12,
-  	12,120,9,12,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,5,13,131,8,13,
-  	10,13,12,13,134,9,13,1,14,1,14,1,14,1,14,1,14,1,14,3,14,142,8,14,1,14,
-  	0,2,24,26,15,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,0,0,145,0,33,1,0,
-  	0,0,2,38,1,0,0,0,4,40,1,0,0,0,6,56,1,0,0,0,8,61,1,0,0,0,10,64,1,0,0,0,
-  	12,73,1,0,0,0,14,79,1,0,0,0,16,83,1,0,0,0,18,89,1,0,0,0,20,94,1,0,0,0,
-  	22,105,1,0,0,0,24,107,1,0,0,0,26,121,1,0,0,0,28,141,1,0,0,0,30,32,3,2,
-  	1,0,31,30,1,0,0,0,32,35,1,0,0,0,33,31,1,0,0,0,33,34,1,0,0,0,34,1,1,0,
-  	0,0,35,33,1,0,0,0,36,39,3,4,2,0,37,39,3,16,8,0,38,36,1,0,0,0,38,37,1,
-  	0,0,0,39,3,1,0,0,0,40,41,5,1,0,0,41,42,5,19,0,0,42,43,5,8,0,0,43,44,3,
-  	8,4,0,44,45,5,9,0,0,45,5,1,0,0,0,46,57,3,10,5,0,47,57,3,12,6,0,48,57,
-  	3,16,8,0,49,57,3,18,9,0,50,57,3,20,10,0,51,57,3,14,7,0,52,53,5,8,0,0,
-  	53,54,3,8,4,0,54,55,5,9,0,0,55,57,1,0,0,0,56,46,1,0,0,0,56,47,1,0,0,0,
-  	56,48,1,0,0,0,56,49,1,0,0,0,56,50,1,0,0,0,56,51,1,0,0,0,56,52,1,0,0,0,
-  	57,7,1,0,0,0,58,60,3,6,3,0,59,58,1,0,0,0,60,63,1,0,0,0,61,59,1,0,0,0,
-  	61,62,1,0,0,0,62,9,1,0,0,0,63,61,1,0,0,0,64,65,5,5,0,0,65,66,5,10,0,0,
-  	66,67,3,22,11,0,67,68,5,11,0,0,68,71,3,6,3,0,69,70,5,6,0,0,70,72,3,6,
-  	3,0,71,69,1,0,0,0,71,72,1,0,0,0,72,11,1,0,0,0,73,74,5,7,0,0,74,75,5,10,
-  	0,0,75,76,3,22,11,0,76,77,5,11,0,0,77,78,3,6,3,0,78,13,1,0,0,0,79,80,
-  	5,2,0,0,80,81,5,19,0,0,81,82,5,18,0,0,82,15,1,0,0,0,83,84,5,3,0,0,84,
-  	85,5,19,0,0,85,86,5,17,0,0,86,87,3,22,11,0,87,88,5,18,0,0,88,17,1,0,0,
-  	0,89,90,5,19,0,0,90,91,5,17,0,0,91,92,3,22,11,0,92,93,5,18,0,0,93,19,
-  	1,0,0,0,94,95,5,4,0,0,95,96,5,10,0,0,96,97,3,22,11,0,97,98,5,11,0,0,98,
-  	99,5,18,0,0,99,21,1,0,0,0,100,101,3,24,12,0,101,102,5,16,0,0,102,103,
-  	3,24,12,0,103,106,1,0,0,0,104,106,3,24,12,0,105,100,1,0,0,0,105,104,1,
-  	0,0,0,106,23,1,0,0,0,107,108,6,12,-1,0,108,109,3,26,13,0,109,118,1,0,
-  	0,0,110,111,10,3,0,0,111,112,5,12,0,0,112,117,3,26,13,0,113,114,10,2,
-  	0,0,114,115,5,13,0,0,115,117,3,26,13,0,116,110,1,0,0,0,116,113,1,0,0,
-  	0,117,120,1,0,0,0,118,116,1,0,0,0,118,119,1,0,0,0,119,25,1,0,0,0,120,
-  	118,1,0,0,0,121,122,6,13,-1,0,122,123,3,28,14,0,123,132,1,0,0,0,124,125,
-  	10,3,0,0,125,126,5,14,0,0,126,131,3,28,14,0,127,128,10,2,0,0,128,129,
-  	5,15,0,0,129,131,3,28,14,0,130,124,1,0,0,0,130,127,1,0,0,0,131,134,1,
-  	0,0,0,132,130,1,0,0,0,132,133,1,0,0,0,133,27,1,0,0,0,134,132,1,0,0,0,
-  	135,142,5,20,0,0,136,142,5,19,0,0,137,138,5,10,0,0,138,139,3,22,11,0,
-  	139,140,5,11,0,0,140,142,1,0,0,0,141,135,1,0,0,0,141,136,1,0,0,0,141,
-  	137,1,0,0,0,142,29,1,0,0,0,11,33,38,56,61,71,105,116,118,130,132,141
+  	1,9,1,10,1,10,1,10,1,10,1,10,1,10,1,11,1,11,1,11,1,11,1,11,1,11,1,11,
+  	1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,
+  	1,11,1,11,1,11,1,11,3,11,126,8,11,1,12,1,12,1,12,1,12,1,12,1,12,1,12,
+  	1,12,1,12,5,12,137,8,12,10,12,12,12,140,9,12,1,13,1,13,1,13,1,13,1,13,
+  	1,13,1,13,1,13,1,13,1,13,1,13,1,13,5,13,154,8,13,10,13,12,13,157,9,13,
+  	1,14,1,14,1,14,1,14,1,14,1,14,3,14,165,8,14,1,14,0,2,24,26,15,0,2,4,6,
+  	8,10,12,14,16,18,20,22,24,26,28,0,0,174,0,33,1,0,0,0,2,38,1,0,0,0,4,40,
+  	1,0,0,0,6,56,1,0,0,0,8,61,1,0,0,0,10,64,1,0,0,0,12,73,1,0,0,0,14,79,1,
+  	0,0,0,16,83,1,0,0,0,18,89,1,0,0,0,20,94,1,0,0,0,22,125,1,0,0,0,24,127,
+  	1,0,0,0,26,141,1,0,0,0,28,164,1,0,0,0,30,32,3,2,1,0,31,30,1,0,0,0,32,
+  	35,1,0,0,0,33,31,1,0,0,0,33,34,1,0,0,0,34,1,1,0,0,0,35,33,1,0,0,0,36,
+  	39,3,4,2,0,37,39,3,16,8,0,38,36,1,0,0,0,38,37,1,0,0,0,39,3,1,0,0,0,40,
+  	41,5,1,0,0,41,42,5,25,0,0,42,43,5,8,0,0,43,44,3,8,4,0,44,45,5,9,0,0,45,
+  	5,1,0,0,0,46,57,3,10,5,0,47,57,3,12,6,0,48,57,3,16,8,0,49,57,3,18,9,0,
+  	50,57,3,20,10,0,51,57,3,14,7,0,52,53,5,8,0,0,53,54,3,8,4,0,54,55,5,9,
+  	0,0,55,57,1,0,0,0,56,46,1,0,0,0,56,47,1,0,0,0,56,48,1,0,0,0,56,49,1,0,
+  	0,0,56,50,1,0,0,0,56,51,1,0,0,0,56,52,1,0,0,0,57,7,1,0,0,0,58,60,3,6,
+  	3,0,59,58,1,0,0,0,60,63,1,0,0,0,61,59,1,0,0,0,61,62,1,0,0,0,62,9,1,0,
+  	0,0,63,61,1,0,0,0,64,65,5,5,0,0,65,66,5,10,0,0,66,67,3,22,11,0,67,68,
+  	5,11,0,0,68,71,3,6,3,0,69,70,5,6,0,0,70,72,3,6,3,0,71,69,1,0,0,0,71,72,
+  	1,0,0,0,72,11,1,0,0,0,73,74,5,7,0,0,74,75,5,10,0,0,75,76,3,22,11,0,76,
+  	77,5,11,0,0,77,78,3,6,3,0,78,13,1,0,0,0,79,80,5,2,0,0,80,81,5,25,0,0,
+  	81,82,5,24,0,0,82,15,1,0,0,0,83,84,5,3,0,0,84,85,5,25,0,0,85,86,5,23,
+  	0,0,86,87,3,22,11,0,87,88,5,24,0,0,88,17,1,0,0,0,89,90,5,25,0,0,90,91,
+  	5,23,0,0,91,92,3,22,11,0,92,93,5,24,0,0,93,19,1,0,0,0,94,95,5,4,0,0,95,
+  	96,5,10,0,0,96,97,3,22,11,0,97,98,5,11,0,0,98,99,5,24,0,0,99,21,1,0,0,
+  	0,100,101,3,24,12,0,101,102,5,17,0,0,102,103,3,24,12,0,103,126,1,0,0,
+  	0,104,105,3,24,12,0,105,106,5,18,0,0,106,107,3,24,12,0,107,126,1,0,0,
+  	0,108,109,3,24,12,0,109,110,5,19,0,0,110,111,3,24,12,0,111,126,1,0,0,
+  	0,112,113,3,24,12,0,113,114,5,20,0,0,114,115,3,24,12,0,115,126,1,0,0,
+  	0,116,117,3,24,12,0,117,118,5,21,0,0,118,119,3,24,12,0,119,126,1,0,0,
+  	0,120,121,3,24,12,0,121,122,5,22,0,0,122,123,3,24,12,0,123,126,1,0,0,
+  	0,124,126,3,24,12,0,125,100,1,0,0,0,125,104,1,0,0,0,125,108,1,0,0,0,125,
+  	112,1,0,0,0,125,116,1,0,0,0,125,120,1,0,0,0,125,124,1,0,0,0,126,23,1,
+  	0,0,0,127,128,6,12,-1,0,128,129,3,26,13,0,129,138,1,0,0,0,130,131,10,
+  	3,0,0,131,132,5,12,0,0,132,137,3,26,13,0,133,134,10,2,0,0,134,135,5,13,
+  	0,0,135,137,3,26,13,0,136,130,1,0,0,0,136,133,1,0,0,0,137,140,1,0,0,0,
+  	138,136,1,0,0,0,138,139,1,0,0,0,139,25,1,0,0,0,140,138,1,0,0,0,141,142,
+  	6,13,-1,0,142,143,3,28,14,0,143,155,1,0,0,0,144,145,10,4,0,0,145,146,
+  	5,14,0,0,146,154,3,28,14,0,147,148,10,3,0,0,148,149,5,15,0,0,149,154,
+  	3,28,14,0,150,151,10,2,0,0,151,152,5,16,0,0,152,154,3,28,14,0,153,144,
+  	1,0,0,0,153,147,1,0,0,0,153,150,1,0,0,0,154,157,1,0,0,0,155,153,1,0,0,
+  	0,155,156,1,0,0,0,156,27,1,0,0,0,157,155,1,0,0,0,158,165,5,26,0,0,159,
+  	165,5,25,0,0,160,161,5,10,0,0,161,162,3,22,11,0,162,163,5,11,0,0,163,
+  	165,1,0,0,0,164,158,1,0,0,0,164,159,1,0,0,0,164,160,1,0,0,0,165,29,1,
+  	0,0,0,11,33,38,56,61,71,125,136,138,153,155,164
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -548,7 +558,7 @@ MyLanguageParser::StmtsContext* MyLanguageParser::stmts() {
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & 524732) != 0)) {
+      ((1ULL << _la) & 33554876) != 0)) {
       setState(58);
       stmt();
       setState(63);
@@ -1027,6 +1037,26 @@ tree::TerminalNode* MyLanguageParser::ExprContext::LESS() {
   return getToken(MyLanguageParser::LESS, 0);
 }
 
+tree::TerminalNode* MyLanguageParser::ExprContext::LESSEQUAL() {
+  return getToken(MyLanguageParser::LESSEQUAL, 0);
+}
+
+tree::TerminalNode* MyLanguageParser::ExprContext::GREATER() {
+  return getToken(MyLanguageParser::GREATER, 0);
+}
+
+tree::TerminalNode* MyLanguageParser::ExprContext::GREATEREQUAL() {
+  return getToken(MyLanguageParser::GREATEREQUAL, 0);
+}
+
+tree::TerminalNode* MyLanguageParser::ExprContext::EQUAL() {
+  return getToken(MyLanguageParser::EQUAL, 0);
+}
+
+tree::TerminalNode* MyLanguageParser::ExprContext::NOTEQUAL() {
+  return getToken(MyLanguageParser::NOTEQUAL, 0);
+}
+
 
 size_t MyLanguageParser::ExprContext::getRuleIndex() const {
   return MyLanguageParser::RuleExpr;
@@ -1052,7 +1082,7 @@ MyLanguageParser::ExprContext* MyLanguageParser::expr() {
     exitRule();
   });
   try {
-    setState(105);
+    setState(125);
     _errHandler->sync(this);
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 5, _ctx)) {
     case 1: {
@@ -1069,6 +1099,61 @@ MyLanguageParser::ExprContext* MyLanguageParser::expr() {
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(104);
+      summa(0);
+      setState(105);
+      match(MyLanguageParser::LESSEQUAL);
+      setState(106);
+      summa(0);
+      break;
+    }
+
+    case 3: {
+      enterOuterAlt(_localctx, 3);
+      setState(108);
+      summa(0);
+      setState(109);
+      match(MyLanguageParser::GREATER);
+      setState(110);
+      summa(0);
+      break;
+    }
+
+    case 4: {
+      enterOuterAlt(_localctx, 4);
+      setState(112);
+      summa(0);
+      setState(113);
+      match(MyLanguageParser::GREATEREQUAL);
+      setState(114);
+      summa(0);
+      break;
+    }
+
+    case 5: {
+      enterOuterAlt(_localctx, 5);
+      setState(116);
+      summa(0);
+      setState(117);
+      match(MyLanguageParser::EQUAL);
+      setState(118);
+      summa(0);
+      break;
+    }
+
+    case 6: {
+      enterOuterAlt(_localctx, 6);
+      setState(120);
+      summa(0);
+      setState(121);
+      match(MyLanguageParser::NOTEQUAL);
+      setState(122);
+      summa(0);
+      break;
+    }
+
+    case 7: {
+      enterOuterAlt(_localctx, 7);
+      setState(124);
       summa(0);
       break;
     }
@@ -1148,10 +1233,10 @@ MyLanguageParser::SummaContext* MyLanguageParser::summa(int precedence) {
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(108);
+    setState(128);
     term(0);
     _ctx->stop = _input->LT(-1);
-    setState(118);
+    setState(138);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 7, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -1159,18 +1244,18 @@ MyLanguageParser::SummaContext* MyLanguageParser::summa(int precedence) {
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(116);
+        setState(136);
         _errHandler->sync(this);
         switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 6, _ctx)) {
         case 1: {
           _localctx = _tracker.createInstance<SummaContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleSumma);
-          setState(110);
+          setState(130);
 
           if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
-          setState(111);
+          setState(131);
           match(MyLanguageParser::PLUS);
-          setState(112);
+          setState(132);
           term(0);
           break;
         }
@@ -1178,12 +1263,12 @@ MyLanguageParser::SummaContext* MyLanguageParser::summa(int precedence) {
         case 2: {
           _localctx = _tracker.createInstance<SummaContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleSumma);
-          setState(113);
+          setState(133);
 
           if (!(precpred(_ctx, 2))) throw FailedPredicateException(this, "precpred(_ctx, 2)");
-          setState(114);
+          setState(134);
           match(MyLanguageParser::MINUS);
-          setState(115);
+          setState(135);
           term(0);
           break;
         }
@@ -1192,7 +1277,7 @@ MyLanguageParser::SummaContext* MyLanguageParser::summa(int precedence) {
           break;
         } 
       }
-      setState(120);
+      setState(140);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 7, _ctx);
     }
@@ -1225,6 +1310,10 @@ tree::TerminalNode* MyLanguageParser::TermContext::MULT() {
 
 tree::TerminalNode* MyLanguageParser::TermContext::DIV() {
   return getToken(MyLanguageParser::DIV, 0);
+}
+
+tree::TerminalNode* MyLanguageParser::TermContext::REM() {
+  return getToken(MyLanguageParser::REM, 0);
 }
 
 
@@ -1266,10 +1355,10 @@ MyLanguageParser::TermContext* MyLanguageParser::term(int precedence) {
   try {
     size_t alt;
     enterOuterAlt(_localctx, 1);
-    setState(122);
+    setState(142);
     factor();
     _ctx->stop = _input->LT(-1);
-    setState(132);
+    setState(155);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 9, _ctx);
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
@@ -1277,18 +1366,18 @@ MyLanguageParser::TermContext* MyLanguageParser::term(int precedence) {
         if (!_parseListeners.empty())
           triggerExitRuleEvent();
         previousContext = _localctx;
-        setState(130);
+        setState(153);
         _errHandler->sync(this);
         switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 8, _ctx)) {
         case 1: {
           _localctx = _tracker.createInstance<TermContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleTerm);
-          setState(124);
+          setState(144);
 
-          if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
-          setState(125);
+          if (!(precpred(_ctx, 4))) throw FailedPredicateException(this, "precpred(_ctx, 4)");
+          setState(145);
           match(MyLanguageParser::MULT);
-          setState(126);
+          setState(146);
           factor();
           break;
         }
@@ -1296,12 +1385,25 @@ MyLanguageParser::TermContext* MyLanguageParser::term(int precedence) {
         case 2: {
           _localctx = _tracker.createInstance<TermContext>(parentContext, parentState);
           pushNewRecursionContext(_localctx, startState, RuleTerm);
-          setState(127);
+          setState(147);
+
+          if (!(precpred(_ctx, 3))) throw FailedPredicateException(this, "precpred(_ctx, 3)");
+          setState(148);
+          match(MyLanguageParser::DIV);
+          setState(149);
+          factor();
+          break;
+        }
+
+        case 3: {
+          _localctx = _tracker.createInstance<TermContext>(parentContext, parentState);
+          pushNewRecursionContext(_localctx, startState, RuleTerm);
+          setState(150);
 
           if (!(precpred(_ctx, 2))) throw FailedPredicateException(this, "precpred(_ctx, 2)");
-          setState(128);
-          match(MyLanguageParser::DIV);
-          setState(129);
+          setState(151);
+          match(MyLanguageParser::REM);
+          setState(152);
           factor();
           break;
         }
@@ -1310,7 +1412,7 @@ MyLanguageParser::TermContext* MyLanguageParser::term(int precedence) {
           break;
         } 
       }
-      setState(134);
+      setState(157);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 9, _ctx);
     }
@@ -1374,30 +1476,30 @@ MyLanguageParser::FactorContext* MyLanguageParser::factor() {
     exitRule();
   });
   try {
-    setState(141);
+    setState(164);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case MyLanguageParser::NUMBER: {
         enterOuterAlt(_localctx, 1);
-        setState(135);
+        setState(158);
         match(MyLanguageParser::NUMBER);
         break;
       }
 
       case MyLanguageParser::IDENT: {
         enterOuterAlt(_localctx, 2);
-        setState(136);
+        setState(159);
         match(MyLanguageParser::IDENT);
         break;
       }
 
       case MyLanguageParser::LPAR: {
         enterOuterAlt(_localctx, 3);
-        setState(137);
+        setState(160);
         match(MyLanguageParser::LPAR);
-        setState(138);
+        setState(161);
         expr();
-        setState(139);
+        setState(162);
         match(MyLanguageParser::RPAR);
         break;
       }
@@ -1440,8 +1542,9 @@ bool MyLanguageParser::summaSempred(SummaContext *_localctx, size_t predicateInd
 
 bool MyLanguageParser::termSempred(TermContext *_localctx, size_t predicateIndex) {
   switch (predicateIndex) {
-    case 2: return precpred(_ctx, 3);
-    case 3: return precpred(_ctx, 2);
+    case 2: return precpred(_ctx, 4);
+    case 3: return precpred(_ctx, 3);
+    case 4: return precpred(_ctx, 2);
 
   default:
     break;

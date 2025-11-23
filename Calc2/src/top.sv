@@ -5,7 +5,7 @@ module top(
     input   logic           uart_rx,
     output  logic           uart_tx,
 
-    input   logic [2:0]     sw,
+    input   logic [3:0]     sw,
     output  logic [6:0]     hex_0,
     output  logic [6:0]     hex_1,
     output  logic [6:0]     hex_2,
@@ -18,14 +18,14 @@ module top(
     output  logic           led_state_3
 );
 
-logic [18:0] cnt;
+logic [17:0] cnt;
 
 always @(posedge clk_50_mhz) begin
-	cnt <= cnt + 19'd1;
+	cnt <= cnt + 18'd1;
 end
 
 logic clk_en;
-always_comb clk_en = (cnt == '0);
+always_comb clk_en = sw[3] & (cnt == '0);
 
 logic [31:0]            rom_addr;
 logic [31:0]            rom_val;
@@ -125,7 +125,7 @@ Processor p(
 
 always_comb begin
 
-    case (sw)
+    case (sw[2:0])
 
     3'b000: digit = out_1;
     3'b001: digit = reg_a;
@@ -144,10 +144,12 @@ SevenSegmentInd ind_1(.digit(digit[7:4]), .out(hex_1));
 SevenSegmentInd ind_2(.digit(digit[11:8]), .out(hex_2));
 SevenSegmentInd ind_3(.digit(digit[15:12]), .out(hex_3));
 
-assign led_state_0 = fs_start;
+assign led_state_0 = sw[3];
+
+/*assign led_state_0 = fs_start;
 assign led_state_1 = lsb_start;
 assign led_state_2 = lsa_start;
 assign led_state_3 = ss_start;
-assign led_clk = clk_en;
+assign led_clk = clk_en;*/
 
 endmodule

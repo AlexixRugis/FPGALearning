@@ -35,12 +35,54 @@ with serial.Serial(PORT, BAUD, timeout=1, stopbits=2) as ser:
     # ---------------------------
     
     data = [
+0x00000400,
+0x800000b9,
 0x00000000,
 0x000000c8,
 0x800000b5,
 0x0000000c,
 0x000000c9,
 0x800000b5,
+0x00000000,
+0x000000ca,
+0x800000b5,
+0x00000000,
+0x000000cb,
+0x800000b5,
+0x00000023,
+0x800000bb,
+0x00000010,
+0x800000bb,
+0x800000be,
+0x8000042a,
+0x00000000,
+0x800000b7,
+0x00000078,
+0x800002b7,
+0x800000b6,
+0x800002b6,
+0x80000020,
+0x00000002,
+0x80000050,
+0x800000b7,
+0x800000b6,
+0x40000000,
+0x800000b5,
+0xfffffc2a,
+0x800000bb,
+0x800000be,
+0x8000022a,
+0x00000005,
+0x000000ca,
+0x800000b5,
+0x00000087,
+0x800000bb,
+0x000000cb,
+0x800000b4,
+0x40000000,
+0x800000b5,
+0x0000006c,
+0x800000bb,
 0x0000000a,
 0x000000c8,
 0x800000b5,
@@ -61,67 +103,158 @@ with serial.Serial(PORT, BAUD, timeout=1, stopbits=2) as ser:
 0x000000c8,
 0x800000b4,
 0x80000110,
-0x00000021,
+0x0000004b,
 0x800000bc,
 0x00000001,
 0x40000000,
 0x800000b5,
-0x00000024,
+0x0000004e,
 0x800000bb,
 0x00000002,
 0x40000000,
 0x800000b5,
 0x00000001,
-0x00000045,
+0x0000006a,
 0x800000bc,
 0x00000000,
-0x000000ca,
-0x800000b5,
+0x800000b7,
 0x00000000,
-0x000000ca,
-0x800000b5,
-0x000000ca,
-0x800000b4,
+0x800000b7,
+0x800000b6,
 0x40000000,
 0x800000b5,
-0x000000ca,
-0x800000b4,
+0x800000b6,
 0x0000000a,
 0x80000110,
-0x00000043,
+0x00000066,
 0x800000bc,
-0x000000ca,
-0x800000b4,
+0x800000b6,
 0x00000001,
 0x80000020,
-0x000000ca,
-0x800000b5,
-0x000000ca,
-0x800000b4,
+0x800000b7,
+0x800000b6,
 0x40000000,
 0x800000b5,
-0x00000031,
+0x00000058,
 0x800000bb,
-0x00000024,
+0x00000012,
 0x800000bb,
-0x00000045,
+0x0000004e,
+0x800000bb,
+0xfffffe2a,
+0x800000bb,
+0x800000be,
+0x8000022a,
+0x0000000a,
+0x800000b7,
+0x800000b6,
+0x00000000,
+0x80000140,
+0x00000085,
+0x800000bc,
+0x800000b6,
+0x00000002,
+0x80000060,
+0x00000000,
+0x800000f0,
+0x0000007f,
+0x800000bc,
+0x800000b6,
+0x40000000,
+0x800000b5,
+0x800000b6,
+0x00000001,
+0x80000030,
+0x800000b7,
+0x00000070,
+0x800000bb,
+0xfffffe2a,
+0x800000bb,
+0x800000be,
+0x8000042a,
+0x000000ca,
+0x800000b4,
+0x800000b7,
+0x00000000,
+0x800002b7,
+0x800000b6,
+0x00000002,
+0x80000130,
+0x00000098,
+0x800000bc,
+0x00000001,
+0x000000cb,
+0x800000b5,
+0x000000b3,
+0x800000bb,
+0x800000b6,
+0x00000001,
+0x80000030,
+0x000000ca,
+0x800000b5,
+0x00000087,
+0x800000bb,
+0x800002b6,
+0x000000cb,
+0x800000b4,
+0x80000020,
+0x800002b7,
+0x800000b6,
+0x00000002,
+0x80000030,
+0x000000ca,
+0x800000b5,
+0x00000087,
+0x800000bb,
+0x800002b6,
+0x000000cb,
+0x800000b4,
+0x80000020,
+0x800002b7,
+0x800002b6,
+0x000000cb,
+0x800000b5,
+0xfffffc2a,
 0x800000bb,
     ]
     addr = 0x00
-    
+    error_cnt = 0
     for d in data:
-        print(f"writing to addr 0x{addr:08X}")
-        write_word(ser, addr, d)
+        while True:
+            print(f"writing to addr 0x{addr:08X}")
+            write_word(ser, addr, d)
+            
+            time.sleep(0.05)
+            
+            response = read_word(ser, addr)
+
+            if len(response) != 4:
+                print("Ошибка: не получено 4 байта ответа!")
+            else:
+                value = int.from_bytes(response, byteorder='big')
+                if value != d: 
+                    print("Error!")
+                    error_cnt += 1
+                else:
+                    break
+        
         addr+=1
-        time.sleep(0.05)
+        
+    print("Errors:", error_cnt)
     
-    for i in range(0, 64):
-        print(i, end=":\t")
-        response = read_word(ser, i)
+    print("Validation...")
+    
+    addr = 0x00
+    for d in data:        
+        response = read_word(ser, addr)
 
         if len(response) != 4:
             print("Ошибка: не получено 4 байта ответа!")
+            break
         else:
             value = int.from_bytes(response, byteorder='big')
-            #print(f"Ответ (HEX): {[hex(x) for x in response]}")
-            print(f"0x{value:08X}")
+            if value != d: 
+                print("Error at addr", addr)
+                break
+        
+        addr+=1

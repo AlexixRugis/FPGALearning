@@ -14,8 +14,9 @@ public:
   enum {
     FUNC = 1, CALL = 2, VAR = 3, PRINT = 4, IF = 5, ELSE = 6, WHILE = 7, 
     LBRA = 8, RBRA = 9, LPAR = 10, RPAR = 11, PLUS = 12, MINUS = 13, MULT = 14, 
-    DIV = 15, LESS = 16, ASSIGN = 17, SEMICOLON = 18, IDENT = 19, NUMBER = 20, 
-    WS = 21
+    DIV = 15, REM = 16, LESS = 17, LESSEQUAL = 18, GREATER = 19, GREATEREQUAL = 20, 
+    EQUAL = 21, NOTEQUAL = 22, ASSIGN = 23, SEMICOLON = 24, IDENT = 25, 
+    NUMBER = 26, WS = 27
   };
 
   enum {
@@ -246,6 +247,11 @@ public:
     std::vector<SummaContext *> summa();
     SummaContext* summa(size_t i);
     antlr4::tree::TerminalNode *LESS();
+    antlr4::tree::TerminalNode *LESSEQUAL();
+    antlr4::tree::TerminalNode *GREATER();
+    antlr4::tree::TerminalNode *GREATEREQUAL();
+    antlr4::tree::TerminalNode *EQUAL();
+    antlr4::tree::TerminalNode *NOTEQUAL();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -278,6 +284,7 @@ public:
     TermContext *term();
     antlr4::tree::TerminalNode *MULT();
     antlr4::tree::TerminalNode *DIV();
+    antlr4::tree::TerminalNode *REM();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="uart" kind="uart" version="1.0" fabric="QSYS">
  <!-- Format version 22.1 922 (Future versions may contain additional information.) -->
- <!-- 2025.11.23.22:10:27 -->
+ <!-- 2025.11.23.23:48:55 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1763925026</value>
+  <value>1763930935</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>

@@ -24,7 +24,11 @@ namespace Compiler
         void compileShl();
         void compileShr();
         void compileEq();
+        void compileNeq();
         void compileLt();
+        void compileLe();
+        void compileGt();
+        void compileGe();
 
         void compileConst(uint32_t val);
         void compileLoad(addr_t addr);

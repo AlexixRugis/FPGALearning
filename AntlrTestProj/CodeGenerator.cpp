@@ -62,9 +62,29 @@ namespace Compiler
         mProgram.push_back(mAsm.equ());
     }
 
+    void CodeGenerator::compileNeq()
+    {
+        mProgram.push_back(mAsm.nequ());
+    }
+
     void CodeGenerator::compileLt()
     {
         mProgram.push_back(mAsm.lt());
+    }
+
+    void CodeGenerator::compileLe()
+    {
+        mProgram.push_back(mAsm.le());
+    }
+
+    void CodeGenerator::compileGt()
+    {
+        mProgram.push_back(mAsm.gt());
+    }
+
+    void CodeGenerator::compileGe()
+    {
+        mProgram.push_back(mAsm.ge());
     }
 
     void CodeGenerator::compileConst(uint32_t val)
