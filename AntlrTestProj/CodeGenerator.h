@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 
 #include "Types.h"
 #include "Assembler.h"
@@ -28,17 +29,12 @@ namespace Compiler
         void compileLoad(addr_t addr);
         void compileSave(addr_t addr);
 
-        void compileCJmp();
+        void compileCJmpz();
+        void compileAJmp();
 
-        void setConst(uint32_t addr, uint32_t val)
-        {
-            mProgram[addr] = val;
-        }
-
-        uint32_t getOpAddr() const
-        {
-            return mProgram.size();
-        }
+        void declareLabel(const std::string& labelName);
+        void compileRef(const std::string& labelName);
+        void resolveRefs();
 
         std::vector<Assembler::opcode_t> getProgram() const
         {
@@ -47,5 +43,7 @@ namespace Compiler
     private:
         Assembler mAsm;
         std::vector<Assembler::opcode_t> mProgram;
+        std::unordered_map<std::string, size_t> mLabels;
+        std::unordered_map<std::string, std::vector<size_t>> mRefs;
     };
 };

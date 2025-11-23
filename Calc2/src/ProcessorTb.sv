@@ -1,3 +1,5 @@
+import ProcessorTypes::*;
+
 `timescale 1ns/100ps
 module ProcessorTb;
 
@@ -16,7 +18,6 @@ logic [31:0]        ram_val;
 logic [31:0]        ram_write_data;
 logic               ram_we;
 logic [31:0]        out_1;
-logic [31:0]        cmd_dbg;
 logic               pc_we_dbg;
 logic [31:0]        reg_a;
 logic [31:0]        reg_b;
@@ -25,6 +26,10 @@ logic               start_fs_dbg;
 logic               start_lsb_dbg;
 logic               start_lsa_dbg;
 logic               start_ss_dbg;
+operand_source_t    op_a_src;
+operand_source_t    op_b_src;
+store_destination_t res_dst;
+alu_op_t            alu_op;
 
 mmio ram(
     .clk(clk), .clk_en(1'b1), .arstn(arstn),
@@ -41,12 +46,15 @@ Processor p(
     .reg_a(reg_a),
     .reg_b(reg_b),
     .sp_dbg(sp_dbg),
-    .cmd_dbg(cmd_dbg),
     .pc_we_dbg(pc_we_dbg),
     .start_fs_dbg(start_fs_dbg),
     .start_lsb_dbg(start_lsb_dbg),
     .start_lsa_dbg(start_lsa_dbg),
-    .start_ss_dbg(start_ss_dbg)
+    .start_ss_dbg(start_ss_dbg),
+    .op_a_src_dbg(op_a_src),
+    .op_b_src_dbg(op_b_src),
+    .res_dst_dbg(res_dst),
+    .alu_op_dbg(alu_op)
 );
 
 initial begin

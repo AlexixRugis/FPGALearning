@@ -212,7 +212,7 @@ namespace Compiler
 
         opcode_t ajmp() const
         {
-            return Op(OpSrc::STACK_IMM_PC, OpAlu::A)();
+            return Op(OpSrc::IMM_STACK_PC, OpAlu::A)();
         }
 
         opcode_t cjmpz() const
@@ -239,7 +239,7 @@ namespace Compiler
             FP_IMM_STACK,
             STACK_IMM_FP,
             FP_IMM_FP,
-            STACK_IMM_PC,
+            IMM_STACK_PC,
             STACK_STACK_PC_Z,
             STACK_STACK_PC_NZ,
             PPC_IMM_STACK,

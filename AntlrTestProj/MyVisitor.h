@@ -9,12 +9,14 @@
 #include "Types.h"
 #include "VariableAllocator.h"
 #include "CodeGenerator.h"
+#include "LabelGenerator.h"
 
 class MyVisitor final : public MyLanguageBaseVisitor
 {
 private:
     Compiler::VariableAllocator mAllocator;
     Compiler::CodeGenerator mCodeGen;
+    Compiler::LabelGenerator mLabelGenerator;
     int mIndent = 0;
 
     void tab() const
@@ -34,10 +36,12 @@ public:
     {
         visitProg(ctx);
         
-        uint32_t endLoop = mCodeGen.getOpAddr();
-        mCodeGen.compileConst(1);
-        mCodeGen.compileConst(endLoop);
-        mCodeGen.compileCJmp();
+        auto endLoop = mLabelGenerator.next();
+        mCodeGen.declareLabel(endLoop);
+        mCodeGen.compileRef(endLoop);
+        mCodeGen.compileAJmp();
+
+        mCodeGen.resolveRefs();
 
         return mCodeGen.getProgram();
     }
@@ -67,16 +71,16 @@ public:
     {
         mAllocator.startBlock();
 
+        auto elseBegin = mLabelGenerator.next();
+
         tab(); std::cout << "IfStmt\n";
         mIndent++;
 
         tab(); std::cout << "Condition:\n";
         mIndent++;
         visit(ctx->expr());
-        mCodeGen.compileNot();
-        uint32_t elseJmpAddr = mCodeGen.getOpAddr();
-        mCodeGen.compileConst(0);
-        mCodeGen.compileCJmp();
+        mCodeGen.compileRef(elseBegin);
+        mCodeGen.compileCJmpz();
         mIndent--;
 
         mAllocator.startBlock();
@@ -88,12 +92,11 @@ public:
 
         if (ctx->ELSE())
         {
-            mCodeGen.compileConst(1);
-            uint32_t outJmpAddr = mCodeGen.getOpAddr();
-            mCodeGen.compileConst(0);
-            mCodeGen.compileCJmp();
+            auto operatorEnd = mLabelGenerator.next();
+            mCodeGen.compileRef(operatorEnd);
+            mCodeGen.compileAJmp();
 
-            mCodeGen.setConst(elseJmpAddr, mCodeGen.getOpAddr());
+            mCodeGen.declareLabel(elseBegin);
 
             mAllocator.startBlock();
             tab(); std::cout << "Else:\n";
@@ -102,11 +105,11 @@ public:
             mIndent--;
             mAllocator.endBlock();
 
-            mCodeGen.setConst(outJmpAddr, mCodeGen.getOpAddr());
+            mCodeGen.declareLabel(operatorEnd);
         }
         else
         {
-            mCodeGen.setConst(elseJmpAddr, mCodeGen.getOpAddr());
+            mCodeGen.declareLabel(elseBegin);
         }
         
         mIndent--;
@@ -122,16 +125,16 @@ public:
         tab(); std::cout << "WhileStmt\n";
         mIndent++;
 
-        uint32_t loopAddr = mCodeGen.getOpAddr();
+        auto loop = mLabelGenerator.next();
+        mCodeGen.declareLabel(loop);
 
         tab(); std::cout << "Condition:\n";
         mIndent++;
         visit(ctx->expr());
-        mCodeGen.compileNot();
 
-        uint32_t outJmpAddr = mCodeGen.getOpAddr();
-        mCodeGen.compileConst(0);
-        mCodeGen.compileCJmp();
+        auto loopEnd = mLabelGenerator.next();
+        mCodeGen.compileRef(loopEnd);
+        mCodeGen.compileCJmpz();
 
         mIndent--;
 
@@ -142,11 +145,10 @@ public:
         mIndent--;
         mAllocator.endBlock();
 
-        mCodeGen.compileConst(1);
-        mCodeGen.compileConst(loopAddr);
-        mCodeGen.compileCJmp();
+        mCodeGen.compileRef(loop);
+        mCodeGen.compileAJmp();
 
-        mCodeGen.setConst(outJmpAddr, mCodeGen.getOpAddr());
+        mCodeGen.declareLabel(loopEnd);
 
         mIndent--;
         mAllocator.endBlock();

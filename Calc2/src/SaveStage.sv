@@ -15,11 +15,15 @@ module SaveStage(
     output  logic                   fp_write_enable
 );
 
+logic           pc_we_local;
+
 BranchConditioner bc(
     .res_dst(dst),
     .reg_a(reg_a),
-    .q(pc_write_enable)
+    .q(pc_we_local)
 );
+
+always_comb pc_write_enable = enable & pc_we_local;
 
 always_comb begin
 

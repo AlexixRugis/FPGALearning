@@ -84,8 +84,46 @@ namespace Compiler
         mProgram.push_back(mAsm.stmem());
     }
 
-    void CodeGenerator::compileCJmp()
+    void CodeGenerator::compileCJmpz()
     {
         mProgram.push_back(mAsm.cjmpz());
+    }
+
+    void CodeGenerator::compileAJmp()
+    {
+        mProgram.push_back(mAsm.ajmp());
+    }
+
+    void CodeGenerator::declareLabel(const std::string& labelName)
+    {
+        if (mLabels.contains(labelName))
+        {
+            throw std::runtime_error(__FUNCTION__ ": label with name \'" + labelName + "\' already declared");
+        }
+
+        mLabels[labelName] = mProgram.size();
+    }
+
+    void CodeGenerator::compileRef(const std::string& labelName)
+    {
+        mRefs[labelName].push_back(mProgram.size());
+        mProgram.push_back(mAsm.lconst(0));
+    }
+
+    void CodeGenerator::resolveRefs()
+    {
+        for (const auto& [labelName, poses] : mRefs)
+        {
+            auto iter = mLabels.find(labelName);
+            if (iter == mLabels.end())
+            {
+                throw std::runtime_error(__FUNCTION__ ": label with name \'" + labelName + "\' is not declared");
+            }
+
+            for (auto pos : poses)
+            {
+                mProgram[pos] = mAsm.lconst(iter->second);
+            }
+        }
     }
 };

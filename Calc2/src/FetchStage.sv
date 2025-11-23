@@ -100,9 +100,9 @@ always_comb begin
                 op_b_src    = OPSRC_IMM;
                 res_dst     = STDST_FP;
             end
-            4'd11: begin                    // stack, imm -> pc
-                op_a_src    = OPSRC_STACK;
-                op_b_src    = OPSRC_IMM;
+            4'd11: begin                    // imm, stack -> pc
+                op_a_src    = OPSRC_IMM;
+                op_b_src    = OPSRC_STACK;
                 res_dst     = STDST_PC;
             end
             4'd12: begin

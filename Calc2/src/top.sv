@@ -94,7 +94,6 @@ logic lsa_start;
 logic ss_start;
 logic [31:0] reg_a;
 logic [31:0] reg_b;
-logic [31:0] cmd_dbg;
 logic [31:0] sp_dbg;
 
 logic [31:0] digit;
@@ -116,7 +115,7 @@ Processor p(
     .start_lsa_dbg(lsa_start),
     .start_ss_dbg(ss_start),
     .reg_a(reg_a), .reg_b(reg_b),
-    .cmd_dbg(cmd_dbg), .sp_dbg(sp_dbg)
+    .sp_dbg(sp_dbg)
 );
 
 // 00 - out_1
@@ -131,10 +130,9 @@ always_comb begin
     3'b000: digit = out_1;
     3'b001: digit = reg_a;
     3'b010: digit = reg_b;
-    3'b011: digit = cmd_dbg;
-    3'b100: digit = rom_addr;
-    3'b101: digit = sp_dbg;
-    3'b110: digit = rom_val;
+    3'b011: digit = rom_addr;
+    3'b100: digit = sp_dbg;
+    3'b101: digit = rom_val;
     default: digit = 32'hffffffff;
 
     endcase

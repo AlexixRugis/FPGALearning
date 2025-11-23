@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Assembler.h" />
     <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="LabelGenerator.h" />
     <ClInclude Include="MifExport.h" />
     <ClInclude Include="MyLanguageBaseVisitor.h" />
     <ClInclude Include="MyLanguageLexer.h" />

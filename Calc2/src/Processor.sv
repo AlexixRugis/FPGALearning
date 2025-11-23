@@ -17,7 +17,10 @@ module Processor(
     output  logic [31:0]        reg_b,
     output  logic [31:0]        fp_dbp,
     output  logic [31:0]        sp_dbg,
-    output  logic [31:0]        cmd_dbg,
+    output  operand_source_t    op_a_src_dbg,
+    output  operand_source_t    op_b_src_dbg,
+    output  alu_op_t            alu_op_dbg,
+    output  store_destination_t res_dst_dbg,
     output  logic               sp_incr_dbg,
     output  logic               pc_we_dbg,
     output  logic               start_fs_dbg,
@@ -232,6 +235,9 @@ always_comb fp_dbp = fp_val;
 always_comb sp_incr_dbg = sp_incr_enable;
 always_comb pc_we_dbg = pc_write_enable;
 always_comb sp_dbg = sp_val;
-always_comb cmd_dbg = { 18'b0, alu_op, res_dst, op_b_src, op_a_src };
+always_comb op_a_src_dbg = op_a_src;
+always_comb op_b_src_dbg = op_b_src;
+always_comb res_dst_dbg = res_dst;
+always_comb alu_op_dbg = alu_op;
 
 endmodule

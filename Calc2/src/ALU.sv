@@ -144,7 +144,7 @@ module Lesser(
     output  logic [31:0]            out
 );
 
-always_comb out = { 31'b0, op_a < op_b };
+always_comb out = { 31'b0, $signed(op_a) < $signed(op_b) };
 
 endmodule
 
@@ -154,7 +154,7 @@ module Greater(
     output  logic [31:0]            out
 );
 
-always_comb out = { 31'b0, op_a > op_b };
+always_comb out = { 31'b0, $signed(op_a) > $signed(op_b) };
 
 endmodule
 
@@ -164,7 +164,7 @@ module LesserEq(
     output  logic [31:0]            out
 );
 
-always_comb out = { 31'b0, op_a <= op_b };
+always_comb out = { 31'b0, $signed(op_a) <= $signed(op_b) };
 
 endmodule
 
@@ -174,7 +174,7 @@ module GreaterEq(
     output  logic [31:0]            out
 );
 
-always_comb out = { 31'b0, op_a >= op_b };
+always_comb out = { 31'b0, $signed(op_a) >= $signed(op_b) };
 
 endmodule
 
