@@ -5,26 +5,25 @@ module Register(
 
     input   logic [31:0]    write_data,
     input   logic           write_enable,
-    output  logic [31:0]    q
+    output  logic [31:0]    q,
+    output  logic [31:0]    next_q
 );
 
-logic [31:0]            local_q;
-
 always_comb begin
-    q = local_q;
+    next_q = q;
 
     if (clk_enable & write_enable) begin
-        q = write_data;
+        next_q = write_data;
     end
 end
 
 always_ff @(posedge clk or negedge arstn) begin
     
     if (~arstn) begin
-        local_q <= '0;
+        q <= '0;
     end
     else if (clk_enable & write_enable) begin
-        local_q <= q;
+        q <= next_q;
     end
 
 end

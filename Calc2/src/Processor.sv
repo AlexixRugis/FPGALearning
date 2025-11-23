@@ -1,3 +1,5 @@
+import ProcessorTypes::*;
+
 module Processor(
     input                       clk,
     input                       clk_en,
@@ -92,13 +94,14 @@ always_comb rom_addr = pc_val;
 logic               sp_decr_b;
 logic [31:0]        ram_addr_b;
 logic [31:0]        op_b_val;
+logic [31:0]        next_op_b_val;
 logic [31:0]        reg_b_write_data;
 
 AddrSelector addr_sel_b(
     .enable(clk_en & enable_fetch),
     .src(op_b_src),
     .stack_pointer(sp_val),
-    .mem_data('0),
+    .mem_addr('0),
 
     .addr(ram_addr_b),
     .decrement_sp(sp_decr_b)
@@ -107,6 +110,7 @@ AddrSelector addr_sel_b(
 OperandSourceSelector reg_b_data(
     .op_src(op_b_src),
     .in_imm(imm),
+    .in_stack(ram_data),
     .in_mem(ram_data),
     .in_fp(fp_val),
     .in_ppc(ppc_val),
@@ -120,7 +124,8 @@ Register reg_b_inst(
 
     .write_data(reg_b_write_data),
     .write_enable(enable_load_b),
-    .q(op_b_val)
+    .q(op_b_val),
+    .next_q(next_op_b_val)
 );
 
 always_comb pc_write_data = op_b_val;
@@ -136,7 +141,7 @@ AddrSelector addr_sel_a(
     .enable(clk_en & enable_load_b),
     .src(op_a_src),
     .stack_pointer(sp_val),
-    .mem_data(op_b_val),
+    .mem_addr(next_op_b_val),
     
     .addr(ram_addr_a),
     .decrement_sp(sp_decr_a)
@@ -145,6 +150,7 @@ AddrSelector addr_sel_a(
 OperandSourceSelector reg_a_data(
     .op_src(op_a_src),
     .in_imm(imm),
+    .in_stack(ram_data),
     .in_mem(ram_data),
     .in_fp(fp_val),
     .in_ppc(ppc_val),
@@ -176,33 +182,27 @@ always_comb fp_write_data = alu_res;
 // STORE RESULT
 
 logic [31:0]        ram_addr_store;
-logic               pc_write_enable_store;
 
 SaveStage ss(
     
     .enable(clk_en & enable_store),
 
-    .dst(res_dst), .sp(sp_val), .mem_addr(op_b_val),
-    .addr(ram_addr_store),
+    .dst(res_dst), .reg_a(reg_a), .sp(sp_val), 
+    .mem_addr(op_b_val), .addr(ram_addr_store),
     .mem_write_enable(ram_we), .increment_sp(sp_incr_enable),
     .fp_write_enable(fp_write_enable),
-    .pc_write_enable(pc_write_enable_store)
+    .pc_write_enable(pc_write_enable)
 );
 
 always_comb begin
-
-    case (res_dst)
-    STDST_PC:       pc_write_enable = pc_write_enable_store;
-    STDST_PC_Z:     pc_write_enable = pc_write_enable_store & (~|reg_a);
-    STDST_PC_NZ:    pc_write_enable = pc_write_enable_store & (|reg_a);
-    default:        pc_write_enable = 'b0;
-    endcase
-
-end
-
-always_comb begin
     sp_decr_enable = sp_decr_b | sp_decr_a;
-    ram_addr = ram_addr_b | ram_addr_a | ram_addr_store;
+
+    case (1'b1)
+    enable_fetch:   ram_addr = ram_addr_b;
+    enable_load_b:  ram_addr = ram_addr_a;
+    enable_store:   ram_addr = ram_addr_store;
+    default:        ram_addr = '0;
+    endcase
 end
 
 always_ff @(posedge clk or negedge arstn) begin

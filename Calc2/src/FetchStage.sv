@@ -1,3 +1,5 @@
+import ProcessorTypes::*;
+
 module FetchStage(
     input    logic                  clk,
     input    logic                  clk_enable,

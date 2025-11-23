@@ -62,9 +62,9 @@ namespace Compiler
         mProgram.push_back(mAsm.equ());
     }
 
-    void CodeGenerator::compileLe()
+    void CodeGenerator::compileLt()
     {
-        mProgram.push_back(mAsm.le());
+        mProgram.push_back(mAsm.lt());
     }
 
     void CodeGenerator::compileConst(uint32_t val)
@@ -86,6 +86,6 @@ namespace Compiler
 
     void CodeGenerator::compileCJmp()
     {
-        mProgram.push_back(mAsm.cjmp());
+        mProgram.push_back(mAsm.cjmpz());
     }
 };

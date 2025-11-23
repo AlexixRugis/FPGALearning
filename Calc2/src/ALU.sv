@@ -1,3 +1,5 @@
+import ProcessorTypes::*;
+
 module Negator(
     input   logic [31:0]            op_a,
     output  logic [31:0]            out

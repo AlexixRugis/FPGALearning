@@ -208,7 +208,7 @@ public:
             visit(ctx->summa(1));
             mIndent--;
 
-            mCodeGen.compileLe();
+            mCodeGen.compileLt();
 
             return {};
         }

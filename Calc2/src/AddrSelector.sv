@@ -1,8 +1,10 @@
+import ProcessorTypes::*;
+
 module AddrSelector(
     input   logic               enable,
     input   operand_source_t    src,
     input   logic [31:0]        stack_pointer,
-    input   logic [31:0]        mem_data,
+    input   logic [31:0]        mem_addr,
 
     output  logic [31:0]        addr,
     output  logic               decrement_sp
@@ -17,7 +19,7 @@ always_comb begin
             decrement_sp = 'd1;
         end
         OPSRC_ADDR: begin
-            addr = mem_data;
+            addr = mem_addr;
             decrement_sp = 'd0;
         end
         default: begin

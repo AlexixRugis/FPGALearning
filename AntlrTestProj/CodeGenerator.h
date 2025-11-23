@@ -22,7 +22,7 @@ namespace Compiler
         void compileShl();
         void compileShr();
         void compileEq();
-        void compileLe();
+        void compileLt();
 
         void compileConst(uint32_t val);
         void compileLoad(addr_t addr);

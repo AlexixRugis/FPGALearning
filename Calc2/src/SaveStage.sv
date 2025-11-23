@@ -1,8 +1,10 @@
-module SaveStage(
+import ProcessorTypes::*;
 
+module SaveStage(
     input   logic                   enable,
 
     input   store_destination_t     dst,
+    input   logic [31:0]            reg_a,
     input   logic [31:0]            sp,
     input   logic [31:0]            mem_addr,
     
@@ -13,12 +15,17 @@ module SaveStage(
     output  logic                   fp_write_enable
 );
 
+BranchConditioner bc(
+    .res_dst(dst),
+    .reg_a(reg_a),
+    .q(pc_write_enable)
+);
+
 always_comb begin
 
     addr                        = '0;
     mem_write_enable            = '0;
     increment_sp                = '0;
-    pc_write_enable             = '0;
     fp_write_enable             = '0;
 
     if (enable) begin
@@ -34,15 +41,6 @@ always_comb begin
         end
         STDST_FP: begin
             fp_write_enable     = 'b1;
-        end
-        STDST_PC: begin
-            pc_write_enable     = 'b1;
-        end
-        STDST_PC_Z: begin
-            pc_write_enable     = 'b1;
-        end
-        STDST_PC_NZ: begin
-            pc_write_enable     = 'b1;
         end
         default: begin
         end
