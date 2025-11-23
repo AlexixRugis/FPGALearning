@@ -15,7 +15,7 @@ module Processor(
 
     output  logic [31:0]        reg_a,
     output  logic [31:0]        reg_b,
-    output  logic [31:0]        fp_dbp,
+    output  logic [31:0]        fp_dbg,
     output  logic [31:0]        sp_dbg,
     output  operand_source_t    op_a_src_dbg,
     output  operand_source_t    op_b_src_dbg,
@@ -230,7 +230,7 @@ always_comb start_ss_dbg = enable_store;
 
 always_comb reg_a = op_a_val;
 always_comb reg_b = op_b_val;
-always_comb fp_dbp = fp_val;
+always_comb fp_dbg = fp_val;
 
 always_comb sp_incr_dbg = sp_incr_enable;
 always_comb pc_we_dbg = pc_write_enable;

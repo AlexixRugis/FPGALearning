@@ -22,6 +22,7 @@ logic               pc_we_dbg;
 logic [31:0]        reg_a;
 logic [31:0]        reg_b;
 logic [31:0]        sp_dbg;
+logic [31:0]        fp_dbg;
 logic               start_fs_dbg;
 logic               start_lsb_dbg;
 logic               start_lsa_dbg;
@@ -46,6 +47,7 @@ Processor p(
     .reg_a(reg_a),
     .reg_b(reg_b),
     .sp_dbg(sp_dbg),
+    .fp_dbg(fp_dbg),
     .pc_we_dbg(pc_we_dbg),
     .start_fs_dbg(start_fs_dbg),
     .start_lsb_dbg(start_lsb_dbg),

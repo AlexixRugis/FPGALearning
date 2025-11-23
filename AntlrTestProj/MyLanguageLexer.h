@@ -12,9 +12,10 @@
 class  MyLanguageLexer : public antlr4::Lexer {
 public:
   enum {
-    VAR = 1, PRINT = 2, IF = 3, ELSE = 4, WHILE = 5, LBRA = 6, RBRA = 7, 
-    LPAR = 8, RPAR = 9, PLUS = 10, MINUS = 11, MULT = 12, DIV = 13, LESS = 14, 
-    ASSIGN = 15, SEMICOLON = 16, IDENT = 17, NUMBER = 18, WS = 19
+    FUNC = 1, CALL = 2, VAR = 3, PRINT = 4, IF = 5, ELSE = 6, WHILE = 7, 
+    LBRA = 8, RBRA = 9, LPAR = 10, RPAR = 11, PLUS = 12, MINUS = 13, MULT = 14, 
+    DIV = 15, LESS = 16, ASSIGN = 17, SEMICOLON = 18, IDENT = 19, NUMBER = 20, 
+    WS = 21
   };
 
   explicit MyLanguageLexer(antlr4::CharStream *input);

@@ -19,6 +19,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitTop_level(MyLanguageParser::Top_levelContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitFunc_decl(MyLanguageParser::Func_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitStmt(MyLanguageParser::StmtContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -32,6 +40,10 @@ public:
   }
 
   virtual std::any visitWhile_stmt(MyLanguageParser::While_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitCall_stmt(MyLanguageParser::Call_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
 

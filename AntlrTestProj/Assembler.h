@@ -90,6 +90,11 @@ namespace Compiler
             return Const()(val);
         }
 
+        opcode_t lppc() const
+        {
+            return Op(OpSrc::PPC_IMM_STACK, OpAlu::A)();
+        }
+
         opcode_t lzero() const
         {
             return Const()(0);
@@ -100,6 +105,11 @@ namespace Compiler
             return Op(OpSrc::MEM_STACK_STACK, OpAlu::A)();
         }
 
+        opcode_t lfpmem(uint32_t addr) const
+        {
+            return Op(OpSrc::MEM_FPIMM_STACK, OpAlu::A, addr)();
+        }
+
         opcode_t lmema(uint32_t addr) const
         {
             return Lmema()(addr);
@@ -108,6 +118,11 @@ namespace Compiler
         opcode_t stmem() const
         {
             return Op(OpSrc::STACK_STACK_MEM, OpAlu::A)();
+        }
+
+        opcode_t stfpmem(uint32_t addr) const
+        {
+            return Op(OpSrc::STACK_FPIMM_MEM, OpAlu::A, addr)();
         }
 
         opcode_t stmema(uint32_t addr) const
@@ -223,6 +238,16 @@ namespace Compiler
         opcode_t cjmpnz() const
         {
             return Op(OpSrc::STACK_STACK_PC_NZ, OpAlu::A)();
+        }
+
+        opcode_t addfp(int32_t delta)
+        {
+            return Op(OpSrc::FP_IMM_FP, OpAlu::A, delta)();
+        }
+
+        opcode_t lfp()
+        {
+            return Op(OpSrc::STACK_IMM_FP, OpAlu::A)();
         }
         
     private:

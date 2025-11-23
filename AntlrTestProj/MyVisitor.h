@@ -3,6 +3,10 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <vector>
+#include <optional>
+#include <tuple>
+#include <any>
 
 #include "antlr4-runtime.h"
 #include "MyLanguageBaseVisitor.h"
@@ -14,7 +18,7 @@
 class MyVisitor final : public MyLanguageBaseVisitor
 {
 private:
-    Compiler::VariableAllocator mAllocator;
+    std::vector<Compiler::VariableAllocator> mAllocators;
     Compiler::CodeGenerator mCodeGen;
     Compiler::LabelGenerator mLabelGenerator;
     int mIndent = 0;
@@ -24,34 +28,110 @@ private:
         for (int i = 0; i < mIndent; i++) std::cout << "  ";
     }
 
-    bool isDeclared(const Compiler::ident_t& name)
+    std::optional<std::pair<Compiler::addr_t, Compiler::VariableAllocator::Scope>> getDeclaration(const std::string& varName) const
     {
-        return mAllocator.getAddr(name).has_value();
+        for (auto iter = mAllocators.rbegin(); iter != mAllocators.rend(); ++iter)
+        {
+            auto addr = iter->getAddr(varName);
+            if (addr.has_value())
+            {
+                return std::make_pair(addr.value(), iter->getScope());
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    bool isDeclared(const std::string& varName) const
+    {
+        return getDeclaration(varName).has_value();
     }
 
 public:
-    MyVisitor() : mAllocator(200) {}
+    using program_t = std::tuple<std::vector<Compiler::Assembler::opcode_t>, std::vector<std::pair<std::string, size_t>>>;
 
-    std::vector<Compiler::Assembler::opcode_t> visitAll(MyLanguageParser::ProgContext* ctx)
+    MyVisitor()
+    {
+        mAllocators.emplace_back(200, Compiler::VariableAllocator::GLOBAL);
+    }
+
+    program_t visitAll(MyLanguageParser::ProgContext* ctx)
     {
         visitProg(ctx);
-        
-        auto endLoop = mLabelGenerator.next();
-        mCodeGen.declareLabel(endLoop);
-        mCodeGen.compileRef(endLoop);
-        mCodeGen.compileAJmp();
 
         mCodeGen.resolveRefs();
 
-        return mCodeGen.getProgram();
+        return { mCodeGen.getProgram(), mCodeGen.getLabels() };
     }
 
     std::any visitProg(MyLanguageParser::ProgContext* ctx) override
     {
         tab(); std::cout << "Program\n";
         mIndent++;
-        visitChildren(ctx);
+
+        mCodeGen.compileConst(1024);
+        mCodeGen.compileLoadFp();
+
+        for (auto child : ctx->top_level())
+        {
+            if (auto varDecl = child->var_decl_stmt())
+            {
+                visitVar_decl_stmt(varDecl);
+            }
+        }
+
+        mCodeGen.compileRef("main");
+        mCodeGen.compileAJmp();
+        auto endLoop = mLabelGenerator.next();
+        mCodeGen.declareLabel(endLoop);
+        mCodeGen.compileRef(endLoop);
+        mCodeGen.compileAJmp();
+
+        for (auto child : ctx->top_level())
+        {
+            if (auto funcDecl = child->func_decl())
+            {
+                visitFunc_decl(funcDecl);
+            }
+        }
+
         mIndent--;
+
+        return {};
+    }
+
+    std::any visitTop_level(MyLanguageParser::Top_levelContext* ctx) override
+    {
+        return visitChildren(ctx);
+    }
+
+    std::any visitFunc_decl(MyLanguageParser::Func_declContext* ctx) override
+    {
+        mIndent++;
+        std::cout << "FUNC " << ctx->IDENT()->getText() << '\n';
+        mCodeGen.declareLabel(ctx->IDENT()->getText());
+        mAllocators.emplace_back(0, Compiler::VariableAllocator::STACK);
+
+        mCodeGen.compilePrologue();
+        visitStmts(ctx->stmts());
+        mCodeGen.compileEpilogue(mAllocators.back().getMaxAlloc());
+
+        mAllocators.pop_back();
+
+        mIndent--;
+
+        return {};
+    }
+
+    std::any visitCall_stmt(MyLanguageParser::Call_stmtContext* ctx) override
+    {
+        mIndent++;
+        std::cout << "CALL " << ctx->IDENT()->getText() << '\n';
+        mIndent--;
+
+        mCodeGen.compileRef(ctx->IDENT()->getText());
+        mCodeGen.compileAJmp();
+
         return {};
     }
 
@@ -69,7 +149,7 @@ public:
 
     std::any visitIf_stmt(MyLanguageParser::If_stmtContext* ctx) override
     {
-        mAllocator.startBlock();
+        mAllocators.back().startBlock();
 
         auto elseBegin = mLabelGenerator.next();
 
@@ -83,12 +163,12 @@ public:
         mCodeGen.compileCJmpz();
         mIndent--;
 
-        mAllocator.startBlock();
+        mAllocators.back().startBlock();
         tab(); std::cout << "Then:\n";
         mIndent++;
         visit(ctx->stmt(0));
         mIndent--;
-        mAllocator.endBlock();
+        mAllocators.back().endBlock();
 
         if (ctx->ELSE())
         {
@@ -98,12 +178,12 @@ public:
 
             mCodeGen.declareLabel(elseBegin);
 
-            mAllocator.startBlock();
+            mAllocators.back().startBlock();
             tab(); std::cout << "Else:\n";
             mIndent++;
             visit(ctx->stmt(1));
             mIndent--;
-            mAllocator.endBlock();
+            mAllocators.back().endBlock();
 
             mCodeGen.declareLabel(operatorEnd);
         }
@@ -113,14 +193,14 @@ public:
         }
         
         mIndent--;
-        mAllocator.endBlock();
+        mAllocators.back().endBlock();
 
         return {};
     }
 
     std::any visitWhile_stmt(MyLanguageParser::While_stmtContext* ctx) override
     {
-        mAllocator.startBlock();
+        mAllocators.back().startBlock();
 
         tab(); std::cout << "WhileStmt\n";
         mIndent++;
@@ -138,12 +218,12 @@ public:
 
         mIndent--;
 
-        mAllocator.startBlock();
+        mAllocators.back().startBlock();
         tab(); std::cout << "Body:\n";
         mIndent++;
         visit(ctx->stmt());
         mIndent--;
-        mAllocator.endBlock();
+        mAllocators.back().endBlock();
 
         mCodeGen.compileRef(loop);
         mCodeGen.compileAJmp();
@@ -151,13 +231,13 @@ public:
         mCodeGen.declareLabel(loopEnd);
 
         mIndent--;
-        mAllocator.endBlock();
+        mAllocators.back().endBlock();
         return {};
     }
 
     std::any visitVar_decl_stmt(MyLanguageParser::Var_decl_stmtContext* ctx) override
     {
-        Compiler::addr_t addr = mAllocator.alloc(ctx->IDENT()->getText());
+        Compiler::addr_t addr = mAllocators.back().alloc(ctx->IDENT()->getText());
 
         tab(); std::cout << "VarDecl: " << ctx->IDENT()->getText() << "\n";
         mIndent++;
@@ -165,15 +245,24 @@ public:
         mIndent++;
         visit(ctx->expr());
         mIndent -= 2;
-
-        mCodeGen.compileSave(addr);
+        
+        if (mAllocators.back().getScope() == Compiler::VariableAllocator::GLOBAL)
+        {
+            mCodeGen.compileSave(addr);
+        }
+        else
+        {
+            mCodeGen.compileStackSave(addr);
+        }
 
         return {};
     }
 
     std::any visitAssign_stmt(MyLanguageParser::Assign_stmtContext* ctx) override
     {
-        if (!isDeclared(ctx->IDENT()->getText()))
+        auto decl = getDeclaration(ctx->IDENT()->getText());
+
+        if (!decl.has_value())
         {
             throw std::runtime_error(__FUNCTION__ ": variable \'" + ctx->IDENT()->getText() + "\' is not declared.");
         }
@@ -183,7 +272,14 @@ public:
         visit(ctx->expr());
         mIndent--;
 
-        mCodeGen.compileSave(mAllocator.getAddr(ctx->IDENT()->getText()).value());
+        if (decl.value().second == Compiler::VariableAllocator::GLOBAL)
+        {
+            mCodeGen.compileSave(decl.value().first);
+        }
+        else
+        {
+            mCodeGen.compileStackSave(decl.value().first);
+        }
 
         return {};
     }
@@ -285,14 +381,23 @@ public:
             mCodeGen.compileConst(stoul(ctx->NUMBER()->getText()));
         } else if (ctx->IDENT())
         {
-            if (!isDeclared(ctx->IDENT()->getText()))
+            auto decl = getDeclaration(ctx->IDENT()->getText());
+
+            if (!decl.has_value())
             {
                 throw std::runtime_error(__FUNCTION__ ": variable \'" + ctx->IDENT()->getText() + "\' is not declared.");
             }
 
             tab(); std::cout << "Ident: " << ctx->IDENT()->getText() << "\n";
 
-            mCodeGen.compileLoad(mAllocator.getAddr(ctx->IDENT()->getText()).value());
+            if (decl.value().second == Compiler::VariableAllocator::GLOBAL)
+            {
+                mCodeGen.compileLoad(decl.value().first);
+            }
+            else
+            {
+                mCodeGen.compileStackLoad(decl.value().first);
+            }
         } else
         {
             tab(); std::cout << "Paren\n";

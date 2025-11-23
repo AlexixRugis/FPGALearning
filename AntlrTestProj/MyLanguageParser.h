@@ -12,15 +12,17 @@
 class  MyLanguageParser : public antlr4::Parser {
 public:
   enum {
-    VAR = 1, PRINT = 2, IF = 3, ELSE = 4, WHILE = 5, LBRA = 6, RBRA = 7, 
-    LPAR = 8, RPAR = 9, PLUS = 10, MINUS = 11, MULT = 12, DIV = 13, LESS = 14, 
-    ASSIGN = 15, SEMICOLON = 16, IDENT = 17, NUMBER = 18, WS = 19
+    FUNC = 1, CALL = 2, VAR = 3, PRINT = 4, IF = 5, ELSE = 6, WHILE = 7, 
+    LBRA = 8, RBRA = 9, LPAR = 10, RPAR = 11, PLUS = 12, MINUS = 13, MULT = 14, 
+    DIV = 15, LESS = 16, ASSIGN = 17, SEMICOLON = 18, IDENT = 19, NUMBER = 20, 
+    WS = 21
   };
 
   enum {
-    RuleProg = 0, RuleStmt = 1, RuleStmts = 2, RuleIf_stmt = 3, RuleWhile_stmt = 4, 
-    RuleVar_decl_stmt = 5, RuleAssign_stmt = 6, RulePrint_stmt = 7, RuleExpr = 8, 
-    RuleSumma = 9, RuleTerm = 10, RuleFactor = 11
+    RuleProg = 0, RuleTop_level = 1, RuleFunc_decl = 2, RuleStmt = 3, RuleStmts = 4, 
+    RuleIf_stmt = 5, RuleWhile_stmt = 6, RuleCall_stmt = 7, RuleVar_decl_stmt = 8, 
+    RuleAssign_stmt = 9, RulePrint_stmt = 10, RuleExpr = 11, RuleSumma = 12, 
+    RuleTerm = 13, RuleFactor = 14
   };
 
   explicit MyLanguageParser(antlr4::TokenStream *input);
@@ -41,10 +43,13 @@ public:
 
 
   class ProgContext;
+  class Top_levelContext;
+  class Func_declContext;
   class StmtContext;
   class StmtsContext;
   class If_stmtContext;
   class While_stmtContext;
+  class Call_stmtContext;
   class Var_decl_stmtContext;
   class Assign_stmtContext;
   class Print_stmtContext;
@@ -57,7 +62,8 @@ public:
   public:
     ProgContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    StmtsContext *stmts();
+    std::vector<Top_levelContext *> top_level();
+    Top_levelContext* top_level(size_t i);
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -65,6 +71,37 @@ public:
   };
 
   ProgContext* prog();
+
+  class  Top_levelContext : public antlr4::ParserRuleContext {
+  public:
+    Top_levelContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Func_declContext *func_decl();
+    Var_decl_stmtContext *var_decl_stmt();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Top_levelContext* top_level();
+
+  class  Func_declContext : public antlr4::ParserRuleContext {
+  public:
+    Func_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *FUNC();
+    antlr4::tree::TerminalNode *IDENT();
+    antlr4::tree::TerminalNode *LBRA();
+    StmtsContext *stmts();
+    antlr4::tree::TerminalNode *RBRA();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Func_declContext* func_decl();
 
   class  StmtContext : public antlr4::ParserRuleContext {
   public:
@@ -75,6 +112,7 @@ public:
     Var_decl_stmtContext *var_decl_stmt();
     Assign_stmtContext *assign_stmt();
     Print_stmtContext *print_stmt();
+    Call_stmtContext *call_stmt();
     antlr4::tree::TerminalNode *LBRA();
     StmtsContext *stmts();
     antlr4::tree::TerminalNode *RBRA();
@@ -135,6 +173,21 @@ public:
   };
 
   While_stmtContext* while_stmt();
+
+  class  Call_stmtContext : public antlr4::ParserRuleContext {
+  public:
+    Call_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *CALL();
+    antlr4::tree::TerminalNode *IDENT();
+    antlr4::tree::TerminalNode *SEMICOLON();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Call_stmtContext* call_stmt();
 
   class  Var_decl_stmtContext : public antlr4::ParserRuleContext {
   public:

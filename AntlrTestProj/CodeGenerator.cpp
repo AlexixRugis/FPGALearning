@@ -78,10 +78,25 @@ namespace Compiler
         mProgram.push_back(mAsm.lmem());
     }
 
+    void CodeGenerator::compileStackLoad(addr_t addr)
+    {
+        mProgram.push_back(mAsm.lfpmem(addr));
+    }
+
     void CodeGenerator::compileSave(addr_t addr)
     {
         mProgram.push_back(mAsm.lconst(addr));
         mProgram.push_back(mAsm.stmem());
+    }
+
+    void CodeGenerator::compileStackSave(addr_t addr)
+    {
+        mProgram.push_back(mAsm.stfpmem(addr));
+    }
+
+    void CodeGenerator::compilePushPpc()
+    {
+        mProgram.push_back(mAsm.lppc());
     }
 
     void CodeGenerator::compileCJmpz()
@@ -92,6 +107,27 @@ namespace Compiler
     void CodeGenerator::compileAJmp()
     {
         mProgram.push_back(mAsm.ajmp());
+    }
+
+    void CodeGenerator::compileLoadFp()
+    {
+        mProgram.push_back(mAsm.lfp());
+    }
+
+    void CodeGenerator::compilePrologue()
+    {
+        compilePushPpc();
+        mFpAdds.push_back(mProgram.size());
+        mProgram.push_back(0);
+    }
+
+    void CodeGenerator::compileEpilogue(uint32_t frameSize)
+    {
+        mProgram[mFpAdds.back()] = mAsm.addfp(static_cast<int32_t>(frameSize));
+        mFpAdds.pop_back();
+
+        mProgram.push_back(mAsm.addfp(-static_cast<int32_t>(frameSize)));
+        compileAJmp();
     }
 
     void CodeGenerator::declareLabel(const std::string& labelName)

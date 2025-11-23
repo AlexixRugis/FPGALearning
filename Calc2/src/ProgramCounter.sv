@@ -36,7 +36,6 @@ always_ff @(posedge clk or negedge arstn) begin
         end
         else if (incr_enable) begin
             local_pc <= pc + 'd1;
-            local_ppc <= local_pc;
         end
     end
 

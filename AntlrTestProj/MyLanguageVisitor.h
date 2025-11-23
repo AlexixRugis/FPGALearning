@@ -21,6 +21,10 @@ public:
    */
     virtual std::any visitProg(MyLanguageParser::ProgContext *context) = 0;
 
+    virtual std::any visitTop_level(MyLanguageParser::Top_levelContext *context) = 0;
+
+    virtual std::any visitFunc_decl(MyLanguageParser::Func_declContext *context) = 0;
+
     virtual std::any visitStmt(MyLanguageParser::StmtContext *context) = 0;
 
     virtual std::any visitStmts(MyLanguageParser::StmtsContext *context) = 0;
@@ -28,6 +32,8 @@ public:
     virtual std::any visitIf_stmt(MyLanguageParser::If_stmtContext *context) = 0;
 
     virtual std::any visitWhile_stmt(MyLanguageParser::While_stmtContext *context) = 0;
+
+    virtual std::any visitCall_stmt(MyLanguageParser::Call_stmtContext *context) = 0;
 
     virtual std::any visitVar_decl_stmt(MyLanguageParser::Var_decl_stmtContext *context) = 0;
 

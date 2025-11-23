@@ -40,11 +40,19 @@ int main()
     try
     {
         auto program = visitor.visitAll(tree);
+        auto opcodes = std::get<0>(program);
+        auto labels = std::get<1>(program);
 
-        std::cout << program.size() << std::endl;
+        std::cout << opcodes.size() << std::endl;
         uint32_t addr = 0;
-        for (auto instr : program)
+        size_t labelIndex = 0;
+        for (auto instr : opcodes)
         {
+            while (labelIndex < labels.size() && labels[labelIndex].second == addr)
+            {
+                std::cout << labels[labelIndex++].first << ":\n";
+            }
+
             std::cout << std::setw(16) << std::setfill(' ') << addr << ' ';
 
             print_hex32(instr);
@@ -53,13 +61,13 @@ int main()
             addr++;
         }
 
-        for (auto instr : program)
+        for (auto instr : opcodes)
         {
             print_hex32(instr);
             std::cout << ",\n";
         }
 
-        Compiler::saveMif("output.mif", program, 8192);
+        Compiler::saveMif("output.mif", opcodes, 8192);
         std::cout << "Saved results to output.mif\n" << std::endl;
     }
     catch (const std::runtime_error& e)

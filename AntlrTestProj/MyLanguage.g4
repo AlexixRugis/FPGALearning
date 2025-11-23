@@ -2,13 +2,17 @@ grammar MyLanguage;
 
 options { language=Cpp; }
 
-prog			: stmts;
+prog			: top_level*;
 
-stmt			: if_stmt | while_stmt | var_decl_stmt | assign_stmt | print_stmt | LBRA stmts RBRA;
+top_level		: func_decl | var_decl_stmt;
+func_decl		: FUNC IDENT LBRA stmts RBRA;
+
+stmt			: if_stmt | while_stmt | var_decl_stmt | assign_stmt | print_stmt | call_stmt | LBRA stmts RBRA;
 stmts			: stmt*;
 
 if_stmt			: IF LPAR expr RPAR stmt (ELSE stmt)?;
 while_stmt		: WHILE LPAR expr RPAR stmt;
+call_stmt		: CALL IDENT SEMICOLON;
 
 var_decl_stmt	: VAR IDENT ASSIGN expr SEMICOLON;
 assign_stmt		: IDENT ASSIGN expr SEMICOLON;
@@ -19,6 +23,8 @@ summa			: summa PLUS term | summa MINUS term | term;
 term			: term MULT factor | term DIV factor | factor;
 factor			: NUMBER | IDENT | LPAR expr RPAR;
 
+FUNC			: 'func';
+CALL			: 'call';
 VAR				: 'var';
 PRINT			: 'print';
 IF				: 'if';
