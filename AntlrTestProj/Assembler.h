@@ -105,9 +105,9 @@ namespace Compiler
             return Op(OpSrc::MEM_STACK_STACK, OpAlu::A)();
         }
 
-        opcode_t lfpmem(uint32_t addr) const
+        opcode_t lfpmem(int32_t addrdelta) const
         {
-            return Op(OpSrc::MEM_FPIMM_STACK, OpAlu::A, addr)();
+            return Op(OpSrc::MEM_FPIMM_STACK, OpAlu::A, addrdelta)();
         }
 
         opcode_t lmema(uint32_t addr) const
@@ -120,9 +120,9 @@ namespace Compiler
             return Op(OpSrc::STACK_STACK_MEM, OpAlu::A)();
         }
 
-        opcode_t stfpmem(uint32_t addr) const
+        opcode_t stfpmem(int32_t addrdelta) const
         {
-            return Op(OpSrc::STACK_FPIMM_MEM, OpAlu::A, addr)();
+            return Op(OpSrc::STACK_FPIMM_MEM, OpAlu::A, addrdelta)();
         }
 
         opcode_t stmema(uint32_t addr) const
@@ -318,7 +318,7 @@ namespace Compiler
                 return  (1u << 31)
                     | (static_cast<uint32_t>(addrMode))
                     | (static_cast<uint32_t>(aluOp) << 4)
-                    | (imm << 9);
+                    | ((imm & 0x3FFFFF) << 9);
             }
         };
 

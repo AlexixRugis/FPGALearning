@@ -100,7 +100,7 @@ namespace Compiler
 
     void CodeGenerator::compileStackLoad(addr_t addr)
     {
-        mProgram.push_back(mAsm.lfpmem(addr));
+        mProgram.push_back(mAsm.lfpmem(-static_cast<int32_t>(addr)));
     }
 
     void CodeGenerator::compileSave(addr_t addr)
@@ -111,7 +111,7 @@ namespace Compiler
 
     void CodeGenerator::compileStackSave(addr_t addr)
     {
-        mProgram.push_back(mAsm.stfpmem(addr));
+        mProgram.push_back(mAsm.stfpmem(-static_cast<int32_t>(addr)));
     }
 
     void CodeGenerator::compilePushPpc()
