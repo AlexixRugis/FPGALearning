@@ -7,6 +7,11 @@ namespace Compiler
         mProgram.push_back(mAsm.add());
     }
 
+    void CodeGenerator::compileNegate()
+    {
+        mProgram.push_back(mAsm.negate());
+    }
+
     void CodeGenerator::compileSub()
     {
         mProgram.push_back(mAsm.sub());

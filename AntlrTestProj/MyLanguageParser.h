@@ -297,6 +297,8 @@ public:
   public:
     FactorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *MINUS();
+    FactorContext *factor();
     antlr4::tree::TerminalNode *NUMBER();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *LPAR();

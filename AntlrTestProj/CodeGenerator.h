@@ -13,6 +13,7 @@ namespace Compiler
     {
     public:
         void compileAdd();
+        void compileNegate();
         void compileSub();
         void compileMul();
         void compileDiv();

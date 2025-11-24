@@ -17,7 +17,7 @@ func main {
     call bibafun;
 
     b = 10;
-    c = 5;
+    c = -5;
     print((10 + b) * c);
 
     if (c < b) {

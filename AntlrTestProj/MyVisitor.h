@@ -108,7 +108,7 @@ public:
     std::any visitFunc_decl(MyLanguageParser::Func_declContext* ctx) override
     {
         mIndent++;
-        std::cout << "FUNC " << ctx->IDENT()->getText() << '\n';
+        tab(); std::cout << "FUNC " << ctx->IDENT()->getText() << '\n';
         mCodeGen.declareLabel(ctx->IDENT()->getText());
         mAllocators.emplace_back(0, Compiler::VariableAllocator::STACK);
 
@@ -126,7 +126,7 @@ public:
     std::any visitCall_stmt(MyLanguageParser::Call_stmtContext* ctx) override
     {
         mIndent++;
-        std::cout << "CALL " << ctx->IDENT()->getText() << '\n';
+        tab(); std::cout << "CALL " << ctx->IDENT()->getText() << '\n';
         mIndent--;
 
         mCodeGen.compileRef(ctx->IDENT()->getText());
@@ -470,7 +470,15 @@ public:
             {
                 mCodeGen.compileStackLoad(decl.value().first);
             }
-        } else
+        } else if (ctx->MINUS())
+        {
+            tab(); std::cout << "Uminus\n";
+
+            visit(ctx->factor());
+
+            mCodeGen.compileNegate();
+        }
+        else
         {
             tab(); std::cout << "Paren\n";
             mIndent++;
