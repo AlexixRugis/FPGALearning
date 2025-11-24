@@ -1,0 +1,25 @@
+{
+  "name": "myLangHighlighter",
+  "displayName": "MyLangSyntaxHighlighter",
+  "description": "Just a stupid syntax highlighter",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "myLang",
+      "aliases": ["myLang", "myLang"],
+      "extensions": [".mylang"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "myLang",
+      "scopeName": "source.myLang",
+      "path": "./syntaxes/myLang.tmLanguage.json"
+    }]
+  }
+}

@@ -44,11 +44,9 @@
     <None Include="MyLanguage.g4">
       <Filter>Исходные файлы</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="input.txt">
+    <None Include="input.myLang">
       <Filter>Исходные файлы</Filter>
-    </Text>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyLanguageBaseVisitor.h">

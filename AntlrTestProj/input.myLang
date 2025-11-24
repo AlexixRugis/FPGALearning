@@ -49,8 +49,17 @@ func bibafun {
     }
 }
 
+// it's a very strange way to pass arguments to function but it works
 var fibArg = 0;
 var fibRet = 0;
+
+/*
+
+this is a multiline comment
+
+\(0.0)/
+
+*/
 
 func FiBboNacci {
     var localArg = fibArg;

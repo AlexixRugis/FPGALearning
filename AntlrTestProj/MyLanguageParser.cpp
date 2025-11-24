@@ -65,11 +65,11 @@ void mylanguageParserInitialize() {
       "", "FUNC", "CALL", "VAR", "PRINT", "IF", "ELSE", "WHILE", "LBRA", 
       "RBRA", "LPAR", "RPAR", "PLUS", "MINUS", "MULT", "DIV", "REM", "LESS", 
       "LESSEQUAL", "GREATER", "GREATEREQUAL", "EQUAL", "NOTEQUAL", "ASSIGN", 
-      "SEMICOLON", "IDENT", "NUMBER", "WS"
+      "SEMICOLON", "IDENT", "NUMBER", "WS", "LINE_COMMENT", "BLOCK_COMMENT"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,27,169,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,29,169,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
   	14,1,0,5,0,32,8,0,10,0,12,0,35,9,0,1,1,1,1,3,1,39,8,1,1,2,1,2,1,2,1,2,
   	1,2,1,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,57,8,3,1,4,5,4,60,

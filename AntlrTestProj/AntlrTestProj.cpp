@@ -25,7 +25,7 @@ void print_hex32(uint32_t v)
 
 int main()
 {
-    fstream ifs("input.txt");
+    fstream ifs("input.myLang");
     
     ANTLRInputStream input(ifs);
     MyLanguageLexer lexer(&input);

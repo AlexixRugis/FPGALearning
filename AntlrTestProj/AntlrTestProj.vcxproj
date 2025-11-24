@@ -145,10 +145,8 @@
     <ClCompile Include="VariableAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="input.myLang" />
     <None Include="MyLanguage.g4" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="input.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assembler.h" />
