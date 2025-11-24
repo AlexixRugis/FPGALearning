@@ -15,15 +15,17 @@ public:
     FUNC = 1, CALL = 2, VAR = 3, PRINT = 4, IF = 5, ELSE = 6, WHILE = 7, 
     LBRA = 8, RBRA = 9, LPAR = 10, RPAR = 11, PLUS = 12, MINUS = 13, MULT = 14, 
     DIV = 15, REM = 16, LESS = 17, LESSEQUAL = 18, GREATER = 19, GREATEREQUAL = 20, 
-    EQUAL = 21, NOTEQUAL = 22, ASSIGN = 23, SEMICOLON = 24, IDENT = 25, 
-    NUMBER = 26, WS = 27, LINE_COMMENT = 28, BLOCK_COMMENT = 29
+    EQUAL = 21, NOTEQUAL = 22, BITNOT = 23, BITOR = 24, BITAND = 25, BITXOR = 26, 
+    SHIFTLEFT = 27, SHIFTRIGHT = 28, ASSIGN = 29, SEMICOLON = 30, IDENT = 31, 
+    NUMBER = 32, WS = 33, LINE_COMMENT = 34, BLOCK_COMMENT = 35
   };
 
   enum {
     RuleProg = 0, RuleTop_level = 1, RuleFunc_decl = 2, RuleStmt = 3, RuleStmts = 4, 
     RuleIf_stmt = 5, RuleWhile_stmt = 6, RuleCall_stmt = 7, RuleVar_decl_stmt = 8, 
-    RuleAssign_stmt = 9, RulePrint_stmt = 10, RuleExpr = 11, RuleSumma = 12, 
-    RuleTerm = 13, RuleFactor = 14
+    RuleAssign_stmt = 9, RulePrint_stmt = 10, RuleExpr = 11, RuleBitwiseor = 12, 
+    RuleBitwisexor = 13, RuleBitwiseand = 14, RuleEqcomparison = 15, RuleComparison = 16, 
+    RuleShift = 17, RuleSumma = 18, RuleTerm = 19, RuleFactor = 20
   };
 
   explicit MyLanguageParser(antlr4::TokenStream *input);
@@ -55,6 +57,12 @@ public:
   class Assign_stmtContext;
   class Print_stmtContext;
   class ExprContext;
+  class BitwiseorContext;
+  class BitwisexorContext;
+  class BitwiseandContext;
+  class EqcomparisonContext;
+  class ComparisonContext;
+  class ShiftContext;
   class SummaContext;
   class TermContext;
   class FactorContext; 
@@ -244,14 +252,7 @@ public:
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<SummaContext *> summa();
-    SummaContext* summa(size_t i);
-    antlr4::tree::TerminalNode *LESS();
-    antlr4::tree::TerminalNode *LESSEQUAL();
-    antlr4::tree::TerminalNode *GREATER();
-    antlr4::tree::TerminalNode *GREATEREQUAL();
-    antlr4::tree::TerminalNode *EQUAL();
-    antlr4::tree::TerminalNode *NOTEQUAL();
+    BitwiseorContext *bitwiseor();
 
 
     virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -260,6 +261,101 @@ public:
 
   ExprContext* expr();
 
+  class  BitwiseorContext : public antlr4::ParserRuleContext {
+  public:
+    BitwiseorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    BitwisexorContext *bitwisexor();
+    BitwiseorContext *bitwiseor();
+    antlr4::tree::TerminalNode *BITOR();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  BitwiseorContext* bitwiseor();
+  BitwiseorContext* bitwiseor(int precedence);
+  class  BitwisexorContext : public antlr4::ParserRuleContext {
+  public:
+    BitwisexorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    BitwiseandContext *bitwiseand();
+    BitwisexorContext *bitwisexor();
+    antlr4::tree::TerminalNode *BITXOR();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  BitwisexorContext* bitwisexor();
+  BitwisexorContext* bitwisexor(int precedence);
+  class  BitwiseandContext : public antlr4::ParserRuleContext {
+  public:
+    BitwiseandContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    EqcomparisonContext *eqcomparison();
+    BitwiseandContext *bitwiseand();
+    antlr4::tree::TerminalNode *BITAND();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  BitwiseandContext* bitwiseand();
+  BitwiseandContext* bitwiseand(int precedence);
+  class  EqcomparisonContext : public antlr4::ParserRuleContext {
+  public:
+    EqcomparisonContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ComparisonContext *comparison();
+    EqcomparisonContext *eqcomparison();
+    antlr4::tree::TerminalNode *EQUAL();
+    antlr4::tree::TerminalNode *NOTEQUAL();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  EqcomparisonContext* eqcomparison();
+  EqcomparisonContext* eqcomparison(int precedence);
+  class  ComparisonContext : public antlr4::ParserRuleContext {
+  public:
+    ComparisonContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ShiftContext *shift();
+    ComparisonContext *comparison();
+    antlr4::tree::TerminalNode *LESS();
+    antlr4::tree::TerminalNode *LESSEQUAL();
+    antlr4::tree::TerminalNode *GREATER();
+    antlr4::tree::TerminalNode *GREATEREQUAL();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ComparisonContext* comparison();
+  ComparisonContext* comparison(int precedence);
+  class  ShiftContext : public antlr4::ParserRuleContext {
+  public:
+    ShiftContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    SummaContext *summa();
+    ShiftContext *shift();
+    antlr4::tree::TerminalNode *SHIFTLEFT();
+    antlr4::tree::TerminalNode *SHIFTRIGHT();
+
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ShiftContext* shift();
+  ShiftContext* shift(int precedence);
   class  SummaContext : public antlr4::ParserRuleContext {
   public:
     SummaContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -299,6 +395,7 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *MINUS();
     FactorContext *factor();
+    antlr4::tree::TerminalNode *BITNOT();
     antlr4::tree::TerminalNode *NUMBER();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *LPAR();
@@ -315,6 +412,12 @@ public:
 
   bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;
 
+  bool bitwiseorSempred(BitwiseorContext *_localctx, size_t predicateIndex);
+  bool bitwisexorSempred(BitwisexorContext *_localctx, size_t predicateIndex);
+  bool bitwiseandSempred(BitwiseandContext *_localctx, size_t predicateIndex);
+  bool eqcomparisonSempred(EqcomparisonContext *_localctx, size_t predicateIndex);
+  bool comparisonSempred(ComparisonContext *_localctx, size_t predicateIndex);
+  bool shiftSempred(ShiftContext *_localctx, size_t predicateIndex);
   bool summaSempred(SummaContext *_localctx, size_t predicateIndex);
   bool termSempred(TermContext *_localctx, size_t predicateIndex);
 

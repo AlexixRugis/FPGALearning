@@ -63,6 +63,30 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitBitwiseor(MyLanguageParser::BitwiseorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitBitwisexor(MyLanguageParser::BitwisexorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitBitwiseand(MyLanguageParser::BitwiseandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitEqcomparison(MyLanguageParser::EqcomparisonContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitComparison(MyLanguageParser::ComparisonContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitShift(MyLanguageParser::ShiftContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitSumma(MyLanguageParser::SummaContext *ctx) override {
     return visitChildren(ctx);
   }

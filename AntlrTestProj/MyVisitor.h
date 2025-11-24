@@ -298,12 +298,100 @@ public:
 
     std::any visitExpr(MyLanguageParser::ExprContext* ctx) override
     {
+        return visit(ctx->bitwiseor());
+    }
+
+    std::any visitBitwiseor(MyLanguageParser::BitwiseorContext* ctx) override
+    {
+        if (ctx->BITOR())
+        {
+            tab(); std::cout << "& (BitwiseAnd)\n";
+            mIndent++;
+            visit(ctx->bitwiseor());
+            visit(ctx->bitwisexor());
+            mIndent--;
+
+            mCodeGen.compileAnd();
+
+            return {};
+        }
+
+        return visit(ctx->bitwisexor());
+    }
+
+    std::any visitBitwisexor(MyLanguageParser::BitwisexorContext* ctx) override
+    {
+        if (ctx->BITXOR())
+        {
+            tab(); std::cout << "^ (BitwiseXor)\n";
+            mIndent++;
+            visit(ctx->bitwisexor());
+            visit(ctx->bitwiseand());
+            mIndent--;
+
+            mCodeGen.compileAnd();
+
+            return {};
+        }
+
+        return visit(ctx->bitwiseand());
+    }
+
+    std::any visitBitwiseand(MyLanguageParser::BitwiseandContext* ctx) override
+    {
+        if (ctx->BITAND())
+        {
+            tab(); std::cout << "& (BitwiseAnd)\n";
+            mIndent++;
+            visit(ctx->bitwiseand());
+            visit(ctx->eqcomparison());
+            mIndent--;
+
+            mCodeGen.compileAnd();
+
+            return {};
+        }
+
+        return visit(ctx->eqcomparison());
+    }
+
+    std::any visitEqcomparison(MyLanguageParser::EqcomparisonContext* ctx) override
+    {
+        if (ctx->EQUAL())
+        {
+            tab(); std::cout << "== (EqualExpr)\n";
+            mIndent++;
+            visit(ctx->eqcomparison());
+            visit(ctx->comparison());
+            mIndent--;
+
+            mCodeGen.compileEq();
+
+            return {};
+        } else if (ctx->NOTEQUAL())
+        {
+            tab(); std::cout << "!= (NotEqualExpr)\n";
+            mIndent++;
+            visit(ctx->eqcomparison());
+            visit(ctx->comparison());
+            mIndent--;
+
+            mCodeGen.compileNeq();
+
+            return {};
+        }
+
+        return visit(ctx->comparison());
+    }
+
+    std::any visitComparison(MyLanguageParser::ComparisonContext* ctx) override
+    {
         if (ctx->LESS())
         {
             tab(); std::cout << "< (LessExpr)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->comparison());
+            visit(ctx->shift());
             mIndent--;
 
             mCodeGen.compileLt();
@@ -314,8 +402,8 @@ public:
         {
             tab(); std::cout << "> (GreaterExpr)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->comparison());
+            visit(ctx->shift());
             mIndent--;
 
             mCodeGen.compileGt();
@@ -326,8 +414,8 @@ public:
         {
             tab(); std::cout << "<= (LessEqualExpr)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->comparison());
+            visit(ctx->shift());
             mIndent--;
 
             mCodeGen.compileLe();
@@ -338,40 +426,46 @@ public:
         {
             tab(); std::cout << ">= (GreaterEqualExpr)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->comparison());
+            visit(ctx->shift());
             mIndent--;
 
             mCodeGen.compileGe();
 
             return {};
         }
-        else if (ctx->EQUAL())
+        
+        return visit(ctx->shift());
+    }
+
+    std::any visitShift(MyLanguageParser::ShiftContext* ctx) override
+    {
+        if (ctx->SHIFTLEFT())
         {
-            tab(); std::cout << "== (EqualExpr)\n";
+            tab(); std::cout << "<< (Shleft)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->shift());
+            visit(ctx->summa());
             mIndent--;
 
-            mCodeGen.compileEq();
+            mCodeGen.compileShl();
 
             return {};
         }
-        else if (ctx->NOTEQUAL())
+        else if (ctx->SHIFTRIGHT())
         {
-            tab(); std::cout << "!= (NotEqualExpr)\n";
+            tab(); std::cout << ">> (Shright)\n";
             mIndent++;
-            visit(ctx->summa(0));
-            visit(ctx->summa(1));
+            visit(ctx->shift());
+            visit(ctx->summa());
             mIndent--;
 
-            mCodeGen.compileNeq();
+            mCodeGen.compileShr();
 
             return {};
         }
-
-        return visitChildren(ctx); // просто сумма
+        
+        return visit(ctx->summa());
     }
 
     std::any visitSumma(MyLanguageParser::SummaContext* ctx) override
@@ -477,6 +571,14 @@ public:
             visit(ctx->factor());
 
             mCodeGen.compileNegate();
+        }
+        else if (ctx->BITNOT())
+        {
+            tab(); std::cout << "Bitnot\n";
+
+            visit(ctx->factor());
+
+            mCodeGen.compileNot();
         }
         else
         {

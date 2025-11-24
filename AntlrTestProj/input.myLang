@@ -14,6 +14,14 @@ func main {
     call FiBboNacci;
     print(fibRet);
 
+    fastPowA = 3;
+    fastPowPow = 6;
+    call fastpow;
+    print(fastPowRet);
+
+    var delay = 10;
+    while (delay) delay = delay - 1;
+
     call bibafun;
 
     b = 10;
@@ -74,5 +82,24 @@ func FiBboNacci {
         call FiBboNacci;
         ans = ans + fibRet;
         fibRet = ans;
+    }
+}
+
+
+var fastPowA = 1;
+var fastPowPow = 1;
+var fastPowRet = 0;
+
+func fastpow {
+
+    fastPowRet = 1;
+
+    while (fastPowPow != 0) {
+        if (fastPowPow & 1) {
+            fastPowRet = fastPowRet * fastPowA;
+        }
+
+        fastPowA = fastPowA * fastPowA;
+        fastPowPow = fastPowPow >> 1;
     }
 }

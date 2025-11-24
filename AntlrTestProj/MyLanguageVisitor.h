@@ -43,6 +43,18 @@ public:
 
     virtual std::any visitExpr(MyLanguageParser::ExprContext *context) = 0;
 
+    virtual std::any visitBitwiseor(MyLanguageParser::BitwiseorContext *context) = 0;
+
+    virtual std::any visitBitwisexor(MyLanguageParser::BitwisexorContext *context) = 0;
+
+    virtual std::any visitBitwiseand(MyLanguageParser::BitwiseandContext *context) = 0;
+
+    virtual std::any visitEqcomparison(MyLanguageParser::EqcomparisonContext *context) = 0;
+
+    virtual std::any visitComparison(MyLanguageParser::ComparisonContext *context) = 0;
+
+    virtual std::any visitShift(MyLanguageParser::ShiftContext *context) = 0;
+
     virtual std::any visitSumma(MyLanguageParser::SummaContext *context) = 0;
 
     virtual std::any visitTerm(MyLanguageParser::TermContext *context) = 0;
