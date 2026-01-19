@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2025.11.03.11:27:34"
+ date="2026.01.19.22:20:12"
  outputDirectory="C:/GitHub_Repos/FPGALearning/Calc2/uart/">
  <perimeter>
   <parameter
@@ -133,13 +133,13 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="uart:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=5CSEMA5F31C6,AUTO_DEVICE_FAMILY=Cyclone V,AUTO_DEVICE_SPEEDGRADE=6,AUTO_GENERATION_ID=1762158453,AUTO_UNIQUE_ID=(clock_source:22.1:clockFrequency=50000000,clockFrequencyKnown=true,inputClockFrequency=0,resetSynchronousEdges=NONE)(altera_up_avalon_rs232:17.1:AUTO_CLK_CLOCK_RATE=50000000,AUTO_DEVICE_FAMILY=Cyclone V,avalon_bus_type=Streaming,baud=115200,data_bits=8,parity=None,ref_clk_freq=5.0E7,stop_bits=2)(clock:22.1:)(reset:22.1:)"
+   parameterizationKey="uart:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=5CSEMA5F31C6,AUTO_DEVICE_FAMILY=Cyclone V,AUTO_DEVICE_SPEEDGRADE=6,AUTO_GENERATION_ID=1768850411,AUTO_UNIQUE_ID=(clock_source:22.1:clockFrequency=50000000,clockFrequencyKnown=true,inputClockFrequency=0,resetSynchronousEdges=NONE)(altera_up_avalon_rs232:17.1:AUTO_CLK_CLOCK_RATE=50000000,AUTO_DEVICE_FAMILY=Cyclone V,avalon_bus_type=Streaming,baud=115200,data_bits=8,parity=None,ref_clk_freq=5.0E7,stop_bits=1)(clock:22.1:)(reset:22.1:)"
    instancePathKey="uart"
    kind="uart"
    version="1.0"
    name="uart">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1762158453" />
+  <parameter name="AUTO_GENERATION_ID" value="1768850411" />
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="-1" />
@@ -226,14 +226,14 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_up_avalon_rs232:17.1:AUTO_CLK_CLOCK_RATE=50000000,AUTO_DEVICE_FAMILY=Cyclone V,avalon_bus_type=Streaming,baud=115200,data_bits=8,parity=None,ref_clk_freq=5.0E7,stop_bits=2"
+   parameterizationKey="altera_up_avalon_rs232:17.1:AUTO_CLK_CLOCK_RATE=50000000,AUTO_DEVICE_FAMILY=Cyclone V,avalon_bus_type=Streaming,baud=115200,data_bits=8,parity=None,ref_clk_freq=5.0E7,stop_bits=1"
    instancePathKey="uart:.:rs232_0"
    kind="altera_up_avalon_rs232"
    version="17.1"
    name="uart_rs232_0">
   <parameter name="baud" value="115200" />
   <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
-  <parameter name="stop_bits" value="2" />
+  <parameter name="stop_bits" value="1" />
   <parameter name="ref_clk_freq" value="5.0E7" />
   <parameter name="avalon_bus_type" value="Streaming" />
   <parameter name="data_bits" value="8" />

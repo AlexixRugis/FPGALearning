@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="uart" kind="uart" version="1.0" fabric="QSYS">
  <!-- Format version 22.1 922 (Future versions may contain additional information.) -->
- <!-- 2025.11.23.23:48:55 -->
+ <!-- 2026.01.19.22:20:28 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1763930935</value>
+  <value>1768850428</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -448,7 +448,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="stop_bits">
    <type>int</type>
-   <value>2</value>
+   <value>1</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

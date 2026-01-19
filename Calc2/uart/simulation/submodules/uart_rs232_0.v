@@ -59,7 +59,7 @@ parameter CW							= 9;		// Baud counter width
 parameter BAUD_TICK_COUNT			= 434;
 parameter HALF_BAUD_TICK_COUNT	= 217;
 
-parameter TDW							= 11;		// Total data width
+parameter TDW							= 10;		// Total data width
 parameter DW							= 8;		// Data width
 parameter ODD_PARITY					= 1'b0;
 

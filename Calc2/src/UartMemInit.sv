@@ -123,8 +123,8 @@ end
 
 always_comb begin
     case (state)
-        S_CMD, S_ADDR, S_DATA: from_uart_ready = 1;
-        default:               from_uart_ready = 0;
+        S_CMD, S_ADDR, S_DATA: from_uart_ready = '1;
+        default:               from_uart_ready = '0;
     endcase
     state_dbg = state;
 end
