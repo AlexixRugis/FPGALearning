@@ -2,6 +2,10 @@ import serial
 import struct
 import time
 
+from line_profiler import LineProfiler
+
+lp = LineProfiler()
+
 # Настройки COM-порта
 PORT = 'COM13'     # <-- поменяй на свой порт
 BAUD = 115200
@@ -21,15 +25,19 @@ def read_word(ser: serial.Serial, addr: int):
     packet = bytes([cmd_read, ]) + addr_bytes
     ser.write(packet)
     ser.flush()
-
+    
     response = ser.read(4)
+    
     return response
+
+lp.add_function(read_word)
+lp.enable_by_count()
 
 # Формат команд:
 # [CMD][ADDR][DATA0][DATA1][DATA2][DATA3]
 # CMD: 0x00 = WRITE, 0x01 = READ
 
-with serial.Serial(PORT, BAUD, timeout=2, stopbits=2) as ser:
+with serial.Serial(PORT, BAUD, stopbits=2) as ser:
     # ---------------------------
     # 1. Команда записи
     # ---------------------------
@@ -106,3 +114,8 @@ with serial.Serial(PORT, BAUD, timeout=2, stopbits=2) as ser:
                 break
         
         addr+=1
+        
+lp.disable_by_count()
+
+# Выводим результаты
+lp.print_stats()
