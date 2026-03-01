@@ -6,12 +6,16 @@ module Processor(
     input                       arstn,
     
     output  logic [31:0]        rom_addr,
+    output  logic               rom_req,
     input   logic [31:0]        rom_data,
+    input   logic               rom_ack,
     
     output  logic [31:0]        ram_addr,
-    input   logic [31:0]        ram_data,
     output  logic [31:0]        ram_write_data,
     output  logic               ram_we,
+    output  logic               ram_req,
+    input   logic [31:0]        ram_data,
+    input   logic               ram_ack,
 
     output  logic [31:0]        reg_a,
     output  logic [31:0]        reg_b,
@@ -208,17 +212,48 @@ always_comb begin
     endcase
 end
 
+enum logic [1:0] {
+    S_FETCH =   2'b00,
+    S_LOAD_B =  2'b01,
+    S_LOAD_A =  2'b10,
+    S_STORE =   2'b11
+} cur_state, next_state;
+
+always_comb begin
+    next_state = cur_state;
+
+    enable_fetch = '0;
+    enable_load_b = '0;
+    enable_load_a = '0;
+    enable_store = '0;
+
+    case (cur_state)
+    S_FETCH: begin
+        enable_fetch = '1;
+        next_state = S_LOAD_B;
+    end
+    S_LOAD_B: begin
+        enable_load_b = '1;
+        next_state = S_LOAD_A;
+    end
+    S_LOAD_A: begin
+        enable_load_a = '1;
+        next_state = S_STORE;
+    end
+    S_STORE: begin
+        enable_store = '1;
+        next_state = S_FETCH;
+    end
+    endcase
+end
+
 always_ff @(posedge clk or negedge arstn) begin
-
     if (~arstn) begin
-        { enable_fetch, enable_load_b, enable_load_a, enable_store }
-            <= { 1'b1, 1'b0, 1'b0, 1'b0 };
+        cur_state <= S_FETCH;
     end
-    else if (clk_en) begin
-        { enable_fetch, enable_load_b, enable_load_a, enable_store }
-            <= { enable_store, enable_fetch, enable_load_b, enable_load_a };
+    else begin
+        cur_state <= next_state;
     end
-
 end
 
 // DEBUG
