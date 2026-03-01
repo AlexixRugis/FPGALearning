@@ -11,27 +11,32 @@ module AddrSelector(
 );
 
 always_comb begin
+    addr = '0;
+    decrement_sp = '0;
 
     if (enable) begin
         case (src)
         OPSRC_STACK: begin
-            addr = stack_pointer + 32'hFFFFFFFF;
             decrement_sp = 'd1;
         end
         OPSRC_ADDR: begin
-            addr = mem_addr;
             decrement_sp = 'd0;
         end
         default: begin
-            addr = '0;
-            decrement_sp = 'd0;
         end
         endcase
     end
-    else begin
-        addr = '0;
-        decrement_sp = '0;
-    end
+
+    case (src)
+        OPSRC_STACK: begin
+            addr = stack_pointer + 32'hFFFFFFFF; // sp - 1
+        end
+        OPSRC_ADDR: begin
+            addr = mem_addr;
+        end
+        default: begin
+        end
+    endcase
 end
 
 endmodule

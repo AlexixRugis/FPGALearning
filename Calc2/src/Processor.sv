@@ -26,6 +26,7 @@ module Processor(
     output  alu_op_t            alu_op_dbg,
     output  store_destination_t res_dst_dbg,
     output  logic               sp_incr_dbg,
+    output  logic               sp_decr_dbg,
     output  logic               pc_we_dbg,
     output  logic               start_fs_dbg,
     output  logic               start_lsb_dbg,
@@ -105,7 +106,7 @@ logic [31:0]        next_op_b_val;
 logic [31:0]        reg_b_write_data;
 
 AddrSelector addr_sel_b(
-    .enable(clk_en & enable_fetch),
+    .enable(clk_en & enable_load_b),
     .src(op_b_src),
     .stack_pointer(sp_val),
     .mem_addr('0),
@@ -145,10 +146,10 @@ logic [31:0]        op_a_val;
 logic [31:0]        reg_a_write_data;
 
 AddrSelector addr_sel_a(
-    .enable(clk_en & enable_load_b),
+    .enable(clk_en & enable_load_a),
     .src(op_a_src),
     .stack_pointer(sp_val),
-    .mem_addr(next_op_b_val),
+    .mem_addr(op_b_val),
     
     .addr(ram_addr_a),
     .decrement_sp(sp_decr_a)
@@ -189,6 +190,7 @@ always_comb fp_write_data = alu_res;
 // STORE RESULT
 
 logic [31:0]        ram_addr_store;
+logic               ram_we_internal;
 
 SaveStage ss(
     
@@ -196,21 +198,10 @@ SaveStage ss(
 
     .dst(res_dst), .reg_a(reg_a), .sp(sp_val), 
     .mem_addr(op_b_val), .addr(ram_addr_store),
-    .mem_write_enable(ram_we), .increment_sp(sp_incr_enable),
+    .mem_write_enable(ram_we_internal), .increment_sp(sp_incr_enable),
     .fp_write_enable(fp_write_enable),
     .pc_write_enable(pc_write_enable)
 );
-
-always_comb begin
-    sp_decr_enable = sp_decr_b | sp_decr_a;
-
-    case (1'b1)
-    enable_fetch:   ram_addr = ram_addr_b;
-    enable_load_b:  ram_addr = ram_addr_a;
-    enable_store:   ram_addr = ram_addr_store;
-    default:        ram_addr = '0;
-    endcase
-end
 
 enum logic [1:0] {
     S_FETCH =   2'b00,
@@ -222,6 +213,11 @@ enum logic [1:0] {
 always_comb begin
     next_state = cur_state;
 
+    rom_req = '0;
+    ram_req = '0;
+    ram_we = '0;
+    ram_addr = '0;
+    sp_decr_enable = '0;
     enable_fetch = '0;
     enable_load_b = '0;
     enable_load_a = '0;
@@ -229,20 +225,45 @@ always_comb begin
 
     case (cur_state)
     S_FETCH: begin
-        enable_fetch = '1;
-        next_state = S_LOAD_B;
+        rom_req = '1;
+        if (rom_ack) begin
+            rom_req = '0;
+            enable_fetch = '1;
+            next_state = S_LOAD_B;
+        end
     end
     S_LOAD_B: begin
-        enable_load_b = '1;
-        next_state = S_LOAD_A;
+        ram_req = '1;
+        ram_addr = ram_addr_b;
+
+        if (ram_ack) begin
+            ram_req = '0;
+            enable_load_b = '1;
+            sp_decr_enable = sp_decr_b;
+            next_state = S_LOAD_A;    
+        end
     end
     S_LOAD_A: begin
-        enable_load_a = '1;
-        next_state = S_STORE;
+        ram_req = '1;
+        ram_addr = ram_addr_a;
+
+        if (ram_ack) begin
+            ram_req = '0;
+            enable_load_a = '1;
+            sp_decr_enable = sp_decr_a;
+            next_state = S_STORE;
+        end
     end
     S_STORE: begin
-        enable_store = '1;
-        next_state = S_FETCH;
+        ram_req = '1;
+        ram_addr = ram_addr_store;
+        ram_we = ram_we_internal;
+
+        if (ram_ack) begin
+            ram_req = '0;
+            enable_store = '1;
+            next_state = S_FETCH;
+        end
     end
     endcase
 end
@@ -251,7 +272,7 @@ always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
         cur_state <= S_FETCH;
     end
-    else begin
+    else if (clk_en) begin
         cur_state <= next_state;
     end
 end
@@ -268,6 +289,7 @@ always_comb reg_b = op_b_val;
 always_comb fp_dbg = fp_val;
 
 always_comb sp_incr_dbg = sp_incr_enable;
+always_comb sp_decr_dbg = sp_decr_enable;
 always_comb pc_we_dbg = pc_write_enable;
 always_comb sp_dbg = sp_val;
 always_comb op_a_src_dbg = op_a_src;

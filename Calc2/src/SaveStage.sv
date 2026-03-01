@@ -35,13 +35,7 @@ always_comb begin
     if (enable) begin
         case (dst)
         STDST_STACK: begin
-            addr                = sp;
-            mem_write_enable    = 'b1;
             increment_sp        = 'b1;
-        end
-        STDST_MEM: begin
-            addr                = mem_addr;
-            mem_write_enable    = 'b1;
         end
         STDST_FP: begin
             fp_write_enable     = 'b1;
@@ -51,6 +45,18 @@ always_comb begin
         endcase
     end
 
+    case (dst)
+        STDST_STACK: begin
+            addr                = sp;
+            mem_write_enable    = 'b1;
+        end
+        STDST_MEM: begin
+            addr                = mem_addr;
+            mem_write_enable    = 'b1;
+        end
+        default: begin
+        end
+    endcase
 end
 
 endmodule

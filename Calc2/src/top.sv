@@ -52,6 +52,15 @@ rom rom(.clock_a(clk_50_mhz), .clock_b(clk_50_mhz),
     .enable_b(1'b1),
     .wren_b(port_b_we));
 
+logic               rom_req;
+logic               rom_ack;
+logic [31:0]        rom_port_addr;
+logic [31:0]        rom_port_data;
+
+RomPort rom_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
+    .addr(rom_port_addr), .req(rom_req), .data(rom_port_data), .ack(rom_ack), 
+    .rom_addr(rom_addr), .rom_data(rom_val));
+
 uart uart(
 	.clk_clk(clk_50_mhz),
 	.reset_reset_n(arstn),
@@ -103,13 +112,26 @@ mmio ram(
     .address(ram_addr), .data(ram_write_data), 
     .write_en(ram_we), .q(ram_val), .out_1(out_1));
 
+logic [31:0]        ram_port_addr;
+logic [31:0]        ram_port_data;
+logic [31:0]        ram_port_write_data;
+logic               ram_port_we;
+logic               ram_req;
+logic               ram_ack;
+
+RamPort ram_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
+    .addr(ram_port_addr), .write_data(ram_port_write_data), .wr_en(ram_port_we),
+    .req(ram_req), .data(ram_port_data), .ack(ram_ack),
+    .ram_addr(ram_addr), .ram_write_data(ram_write_data), .ram_wr_en(ram_we), .ram_data(ram_val));
+
 Processor p(
     .clk(clk_50_mhz),
     .clk_en(clk_en),
     .arstn(arstn),
-    .rom_addr(rom_addr), .rom_data(rom_val),
-    .ram_addr(ram_addr), .ram_data(ram_val),
-    .ram_write_data(ram_write_data), .ram_we(ram_we),
+    .rom_addr(rom_port_addr), .rom_data(rom_port_data),
+    .rom_req(rom_req), .rom_ack(rom_ack),
+    .ram_addr(ram_port_addr), .ram_data(ram_port_data), .ram_req(ram_req),
+    .ram_write_data(ram_port_write_data), .ram_we(ram_port_we), .ram_ack(ram_ack),
     .start_fs_dbg(fs_start),
     .start_lsb_dbg(lsb_start),
     .start_lsa_dbg(lsa_start),
