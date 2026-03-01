@@ -43,6 +43,8 @@ operand_source_t    op_a_src;
 operand_source_t    op_b_src;
 store_destination_t res_dst;
 alu_op_t            alu_op;
+logic               halt_req;
+logic               halted;
 
 mmio ram(
     .clk(clk), .clk_en(clk_en), .arstn(arstn),
@@ -69,6 +71,8 @@ Processor p(
     .rom_req(rom_req), .rom_ack(rom_ack),
     .ram_addr(ram_port_addr), .ram_data(ram_port_data), .ram_req(ram_req),
     .ram_write_data(ram_port_write_data), .ram_we(ram_port_we), .ram_ack(ram_ack),
+    .halt_req(halt_req),
+    .halted(halted),
     .reg_a(reg_a),
     .reg_b(reg_b),
     .sp_dbg(sp_dbg),
@@ -112,6 +116,15 @@ initial begin
     // forever begin
     //     #1 clk_en <= ~clk_en;
     // end
+
+end
+
+initial begin
+
+    halt_req <= '0;
+
+    #50 halt_req <= '1;
+    #9.5 halt_req <= '0;
 
 end
 

@@ -17,6 +17,9 @@ module Processor(
     input   logic [31:0]        ram_data,
     input   logic               ram_ack,
 
+    input   logic               halt_req,
+    output  logic               halted,
+
     output  logic [31:0]        reg_a,
     output  logic [31:0]        reg_b,
     output  logic [31:0]        fp_dbg,
@@ -203,11 +206,12 @@ SaveStage ss(
     .pc_write_enable(pc_write_enable)
 );
 
-enum logic [1:0] {
-    S_FETCH =   2'b00,
-    S_LOAD_B =  2'b01,
-    S_LOAD_A =  2'b10,
-    S_STORE =   2'b11
+enum logic [2:0] {
+    S_HALT      = 3'b000,
+    S_FETCH     = 3'b001,
+    S_LOAD_B    = 3'b010,
+    S_LOAD_A    = 3'b011,
+    S_STORE     = 3'b100
 } cur_state, next_state;
 
 always_comb begin
@@ -222,8 +226,16 @@ always_comb begin
     enable_load_b = '0;
     enable_load_a = '0;
     enable_store = '0;
+    halted = '0;
 
     case (cur_state)
+    S_HALT: begin
+        halted = '1;
+
+        if (~halt_req) begin
+            next_state = S_FETCH;
+        end
+    end
     S_FETCH: begin
         rom_req = '1;
         if (rom_ack) begin
@@ -262,7 +274,8 @@ always_comb begin
         if (ram_ack) begin
             ram_req = '0;
             enable_store = '1;
-            next_state = S_FETCH;
+
+            next_state = halt_req ? S_HALT : S_FETCH;
         end
     end
     endcase
@@ -270,7 +283,7 @@ end
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        cur_state <= S_FETCH;
+        cur_state <= S_HALT;
     end
     else if (clk_en) begin
         cur_state <= next_state;
