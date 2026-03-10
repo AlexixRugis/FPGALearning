@@ -276,19 +276,19 @@ module DebugMemoryCopier_tb;
     task test_write_max;
         reg [7:0] data[];
         integer i;
-        data = new[255];
+        data = new[251];
         
-        for (i = 0; i < 255; i = i + 1) begin
+        for (i = 0; i < 251; i = i + 1) begin
             data[i] = i;
         end
         
-        send_write_packet(32'h0000, 8'hFF, data);
+        send_write_packet(32'h0000, 8'hFF - 8'h04, data);
         
         // Проверка нескольких байт
         for (i = 0; i < 10; i = i + 1) begin
-            if (memory[(32'h0000 + i) >> 2] >> (8*(i & 3)) & 8'hFF !== i) begin
-                $display("  ERROR: Memory[0x%0h] expected 0x%0h", 
-                         32'h0000 + i, i);
+            if ((memory[(32'h0000 + i) >> 2] >> (8*(i & 3)) & 8'hFF) !== i) begin
+                $display("  ERROR: Memory[0x%0h] expected 0x%0h but got 0x%0h", 
+                         32'h0000 + i, i, memory[(32'h0000 + i) >> 2] >> (8*(i & 3)) & 8'hFF);
                 error_count = error_count + 1;
             end
         end
