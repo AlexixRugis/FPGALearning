@@ -28,11 +28,15 @@ logic [31:0]    data_addr_internal;
 logic [7:0]    data_write_data_internal;
 logic [7:0]     data_data_internal;
 
-// TODO: move this to separate module
-assign data_addr = {data_addr_internal[31:2], 2'b00};
-assign data_wr_mask = 4'b0001 << data_addr_internal[1:0];
-assign data_write_data = data_write_data_internal << {data_addr_internal[1:0], 3'b000};
-assign data_data_internal = data_data >> {data_addr_internal[1:0], 3'b000};
+ByteToWordAddrConverter addr_converter(
+    .byte_addr(data_addr_internal),
+    .write_data(data_write_data_internal),
+    .word_addr(data_addr),
+    .write_data_extended(data_write_data),
+    .write_data_mask(data_wr_mask),
+    .read_data_extended(data_data),
+    .read_data(data_data_internal)
+);
 
 logic [31:0]    start_addr;
 logic [7:0]     read_len;

@@ -9,7 +9,7 @@ if ($LASTEXITCODE -eq 0) {
     vvp PacketBuffer_tb.vvp
 }
 echo "DebugMemoryCopier.sv TESTING"
-iverilog -g2012 -o DebugMemoryCopier_tb.vvp ./DebugMemoryCopier_tb.sv ../../src/DebugModule/DebugMemoryCopier.sv
+iverilog -g2012 -o DebugMemoryCopier_tb.vvp ./DebugMemoryCopier_tb.sv ../../src/DebugModule/DebugMemoryCopier.sv ../../src/DebugModule/ByteToWordAddrConverter.sv
 if ($LASTEXITCODE -eq 0) {
     vvp DebugMemoryCopier_tb.vvp
 }
