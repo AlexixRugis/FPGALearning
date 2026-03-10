@@ -21,7 +21,9 @@ module DebugMemoryCopier(
     output logic [3:0]      data_wr_mask,
     output logic            data_req,
     input  logic [31:0]     data_data,
-    input  logic            data_ack
+    input  logic            data_ack,
+
+    output logic [7:0]      read_len
 );
 
 logic [31:0]    data_addr_internal;
@@ -39,7 +41,6 @@ ByteToWordAddrConverter addr_converter(
 );
 
 logic [31:0]    start_addr;
-logic [7:0]     read_len;
 
 logic [7:0]     data_ptr;
 logic [7:0]     next_data_ptr;

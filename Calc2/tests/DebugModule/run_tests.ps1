@@ -13,3 +13,8 @@ iverilog -g2012 -o DebugMemoryCopier_tb.vvp ./DebugMemoryCopier_tb.sv ../../src/
 if ($LASTEXITCODE -eq 0) {
     vvp DebugMemoryCopier_tb.vvp
 }
+echo "DebugModule.sv TESTING"
+iverilog -g2012 -o DebugModule_tb.vvp ./DebugModule_tb.sv ../../src/DebugModule/DebugModule.sv ../../src/DebugModule/PacketBuffer.sv ../../src/DebugModule/PacketParser.sv ../../src/DebugModule/DebugMemoryCopier.sv ../../src/DebugModule/ByteToWordAddrConverter.sv
+if ($LASTEXITCODE -eq 0) {
+    vvp DebugModule_tb.vvp
+}
