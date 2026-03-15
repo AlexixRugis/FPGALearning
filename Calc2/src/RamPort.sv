@@ -23,6 +23,17 @@ enum logic [1:0] {
     S_WAIT_DATA
 } cur_state;
 
+//assign ack = (cur_state == S_WAIT_DATA);
+
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
+        ack <= '0;
+    end
+    else if (clk_en) begin
+        ack <= req;
+    end
+end
+
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
         cur_state <= S_IDLE;
@@ -50,6 +61,5 @@ assign ram_byte_en = wr_mask;
 assign ram_write_data = write_data;
 
 assign data = ram_data;
-assign ack = cur_state == S_WAIT_DATA;
 
 endmodule

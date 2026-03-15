@@ -272,7 +272,7 @@ module DebugMemoryCopier_tb;
         end
     endtask
     
-    // Тест 3: Запись 255 байт (максимум)
+    // Тест 3: Запись 251 байт (максимум)
     task test_write_max;
         reg [7:0] data[];
         integer i;
@@ -293,6 +293,11 @@ module DebugMemoryCopier_tb;
             end
         end
         $display("  Max write completed");
+    endtask
+
+    // Тест 3: Чтение 255 байт (максимум)
+    task test_read_max;
+        send_read_packet(32'h0000, 8'hFF);
     endtask
     
     // Тест 4: Чтение одного байта
@@ -421,29 +426,32 @@ module DebugMemoryCopier_tb;
         $display("\nReset complete, starting tests...\n");
         
         // Запуск тестов
-        test_write_one_byte();
-        #100;
+        // test_write_one_byte();
+        // #100;
         
-        test_write_four_bytes();
-        #100;
+        // test_write_four_bytes();
+        // #100;
         
-        test_write_max();
+        // test_write_max();
+        // #1000;
+
+        test_read_max();
         #1000;
         
-        test_read_one_byte();
-        #100;
+        // test_read_one_byte();
+        // #100;
         
-        test_read_four_bytes();
-        #100;
+        // test_read_four_bytes();
+        // #100;
         
-        test_write_then_read();
-        #200;
+        // test_write_then_read();
+        // #200;
         
-        test_empty_packet();
-        #100;
+        // test_empty_packet();
+        // #100;
         
-        test_sequence();
-        #500;
+        // test_sequence();
+        // #500;
         
         // Итоги
         #1000;

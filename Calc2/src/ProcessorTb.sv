@@ -120,7 +120,10 @@ initial begin
     #0.5 clk_en <= 1'b1;
 
     // forever begin
-    //     #1 clk_en <= ~clk_en;
+    //     #10
+    //     clk_en <= 1'b1;
+    //     #1 
+    //     clk_en <= 1'b0;
     // end
 
 end

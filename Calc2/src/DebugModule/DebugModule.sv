@@ -237,10 +237,6 @@ always_comb begin
     out_len = 'x;
     out_len_we = 1'b0;
 
-    out_payload = 'x;
-    out_payload_addr = 'x;
-    out_payload_we = 1'b0;
-
     prog_mem_copy_req = 1'b0;
     prog_mem_copy_write = 'x;
 
