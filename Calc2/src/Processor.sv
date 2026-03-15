@@ -13,11 +13,13 @@ module Processor(
     output  logic [31:0]        ram_addr,
     output  logic [31:0]        ram_write_data,
     output  logic               ram_we,
+    output  logic [3:0]         ram_we_mask,
     output  logic               ram_req,
     input   logic [31:0]        ram_data,
     input   logic               ram_ack,
 
     input   logic               halt_req,
+    input   logic               resume_req,
     output  logic               halted,
 
     output  logic [31:0]        reg_a,
@@ -34,8 +36,55 @@ module Processor(
     output  logic               start_fs_dbg,
     output  logic               start_lsb_dbg,
     output  logic               start_lsa_dbg,
-    output  logic               start_ss_dbg
+    output  logic               start_ss_dbg,
+
+    input   logic [31:0]        mem_debug_addr,
+    input   logic [31:0]        mem_debug_write_data,
+    input   logic               mem_debug_wr_enable,
+    input   logic [3:0]         mem_debug_wr_mask,
+    input   logic               mem_debug_req,
+    output  logic [31:0]        mem_debug_data,
+    output  logic               mem_debug_ack
 );
+
+// DATA MEM INTERFACE
+
+logic [31:0]        ram_addr_internal;
+logic [31:0]        ram_write_data_internal;
+logic               ram_we_internal;
+logic [3:0]         ram_we_mask_internal;
+logic               ram_req_internal;
+logic               ram_ack_internal;
+logic [31:0]        ram_data_internal;
+
+always_comb begin
+    if (halted) begin
+        ram_addr = mem_debug_addr;
+        ram_write_data = mem_debug_write_data;
+        ram_we = mem_debug_wr_enable;
+        ram_we_mask = mem_debug_wr_mask;
+        ram_req = mem_debug_req;
+
+        mem_debug_ack = ram_ack;
+        ram_ack_internal = '0;
+        mem_debug_data = ram_data;
+        ram_data_internal = '0;
+    end
+    else begin
+        ram_addr = ram_addr_internal;
+        ram_write_data = ram_write_data_internal;
+        ram_we = ram_we_internal;
+        ram_we_mask = ram_we_mask_internal;
+        ram_req = ram_req_internal;
+        
+        mem_debug_ack = '0;
+        ram_ack_internal = ram_ack;
+        mem_debug_data = '0;
+        ram_data_internal = ram_data;
+    end
+end
+
+assign ram_we_mask_internal = 4'b1111;
 
 // STACK POINTER
 
@@ -121,8 +170,8 @@ AddrSelector addr_sel_b(
 OperandSourceSelector reg_b_data(
     .op_src(op_b_src),
     .in_imm(imm),
-    .in_stack(ram_data),
-    .in_mem(ram_data),
+    .in_stack(ram_data_internal),
+    .in_mem(ram_data_internal),
     .in_fp(fp_val),
     .in_ppc(ppc_val),
     .q(reg_b_write_data)
@@ -161,8 +210,8 @@ AddrSelector addr_sel_a(
 OperandSourceSelector reg_a_data(
     .op_src(op_a_src),
     .in_imm(imm),
-    .in_stack(ram_data),
-    .in_mem(ram_data),
+    .in_stack(ram_data_internal),
+    .in_mem(ram_data_internal),
     .in_fp(fp_val),
     .in_ppc(ppc_val),
     .q(reg_a_write_data)
@@ -187,13 +236,13 @@ ALU alu(
     .iop(alu_op), .result(alu_res)
 );
 
-always_comb ram_write_data = alu_res;
+always_comb ram_write_data_internal = alu_res;
 always_comb fp_write_data = alu_res;
 
 // STORE RESULT
 
 logic [31:0]        ram_addr_store;
-logic               ram_we_internal;
+logic               ram_we_store;
 
 SaveStage ss(
     
@@ -201,7 +250,7 @@ SaveStage ss(
 
     .dst(res_dst), .reg_a(reg_a), .sp(sp_val), 
     .mem_addr(op_b_val), .addr(ram_addr_store),
-    .mem_write_enable(ram_we_internal), .increment_sp(sp_incr_enable),
+    .mem_write_enable(ram_we_store), .increment_sp(sp_incr_enable),
     .fp_write_enable(fp_write_enable),
     .pc_write_enable(pc_write_enable)
 );
@@ -218,9 +267,9 @@ always_comb begin
     next_state = cur_state;
 
     rom_req = '0;
-    ram_req = '0;
-    ram_we = '0;
-    ram_addr = '0;
+    ram_req_internal = '0;
+    ram_we_internal = '0;
+    ram_addr_internal = '0;
     sp_decr_enable = '0;
     enable_fetch = '0;
     enable_load_b = '0;
@@ -232,7 +281,7 @@ always_comb begin
     S_HALT: begin
         halted = '1;
 
-        if (~halt_req) begin
+        if (resume_req) begin
             next_state = S_FETCH;
         end
     end
@@ -245,34 +294,34 @@ always_comb begin
         end
     end
     S_LOAD_B: begin
-        ram_req = '1;
-        ram_addr = ram_addr_b;
+        ram_req_internal = '1;
+        ram_addr_internal = ram_addr_b;
 
-        if (ram_ack) begin
-            ram_req = '0;
+        if (ram_ack_internal) begin
+            ram_req_internal = '0;
             enable_load_b = '1;
             sp_decr_enable = sp_decr_b;
             next_state = S_LOAD_A;    
         end
     end
     S_LOAD_A: begin
-        ram_req = '1;
-        ram_addr = ram_addr_a;
+        ram_req_internal = '1;
+        ram_addr_internal = ram_addr_a;
 
-        if (ram_ack) begin
-            ram_req = '0;
+        if (ram_ack_internal) begin
+            ram_req_internal = '0;
             enable_load_a = '1;
             sp_decr_enable = sp_decr_a;
             next_state = S_STORE;
         end
     end
     S_STORE: begin
-        ram_req = '1;
-        ram_addr = ram_addr_store;
-        ram_we = ram_we_internal;
+        ram_req_internal = '1;
+        ram_addr_internal = ram_addr_store;
+        ram_we_internal = ram_we_store;
 
-        if (ram_ack) begin
-            ram_req = '0;
+        if (ram_ack_internal) begin
+            ram_req_internal = '0;
             enable_store = '1;
 
             next_state = halt_req ? S_HALT : S_FETCH;
@@ -283,7 +332,7 @@ end
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        cur_state <= S_HALT;
+        cur_state <= halt_req ? S_HALT : S_FETCH;
     end
     else if (clk_en) begin
         cur_state <= next_state;

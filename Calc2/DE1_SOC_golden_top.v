@@ -233,6 +233,7 @@ top top(
     .arstn(KEY[0]),
     .uart_rx(GPIO_0[7]),
     .uart_tx(GPIO_0[9]),
+    .btnn(KEY[3:0]),
     .sw(SW[3:0]),
     .hex_0(HEX0),
     .hex_1(HEX1),

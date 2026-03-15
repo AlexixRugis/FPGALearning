@@ -6,6 +6,7 @@ module RamPort(
     input   logic [31:0]    addr,
     input   logic [31:0]    write_data,
     input   logic           wr_en,
+    input   logic [3:0]     wr_mask,
     input   logic           req,
     output  logic [31:0]    data,
     output  logic           ack,
@@ -13,6 +14,7 @@ module RamPort(
     output  logic [31:0]    ram_addr,
     output  logic [31:0]    ram_write_data,
     output  logic           ram_wr_en,
+    output  logic [3:0]     ram_byte_en,
     input   logic [31:0]    ram_data
 );
 
@@ -44,6 +46,7 @@ end
 
 assign ram_addr = addr;
 assign ram_wr_en = req & wr_en;
+assign ram_byte_en = wr_mask;
 assign ram_write_data = write_data;
 
 assign data = ram_data;

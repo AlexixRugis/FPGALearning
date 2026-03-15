@@ -34,6 +34,7 @@
 
 module ram (
 	address,
+	byteena,
 	clken,
 	clock,
 	data,
@@ -41,6 +42,7 @@ module ram (
 	q);
 
 	input	[12:0]  address;
+	input	[3:0]  byteena;
 	input	  clken;
 	input	  clock;
 	input	[31:0]  data;
@@ -49,6 +51,7 @@ module ram (
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
+	tri1	[3:0]  byteena;
 	tri1	  clken;
 	tri1	  clock;
 `ifndef ALTERA_RESERVED_QIS
@@ -65,7 +68,7 @@ endmodule
 // Retrieval info: PRIVATE: AclrByte NUMERIC "0"
 // Retrieval info: PRIVATE: AclrData NUMERIC "0"
 // Retrieval info: PRIVATE: AclrOutput NUMERIC "0"
-// Retrieval info: PRIVATE: BYTE_ENABLE NUMERIC "0"
+// Retrieval info: PRIVATE: BYTE_ENABLE NUMERIC "1"
 // Retrieval info: PRIVATE: BYTE_SIZE NUMERIC "8"
 // Retrieval info: PRIVATE: BlankMemory NUMERIC "1"
 // Retrieval info: PRIVATE: CLOCK_ENABLE_INPUT_A NUMERIC "1"
@@ -94,6 +97,7 @@ endmodule
 // Retrieval info: PRIVATE: WidthData NUMERIC "32"
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
+// Retrieval info: CONSTANT: BYTE_SIZE NUMERIC "8"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "NORMAL"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone V"
@@ -107,14 +111,16 @@ endmodule
 // Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_PORT_A STRING "NEW_DATA_NO_NBE_READ"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "13"
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "32"
-// Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
+// Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "4"
 // Retrieval info: USED_PORT: address 0 0 13 0 INPUT NODEFVAL "address[12..0]"
+// Retrieval info: USED_PORT: byteena 0 0 4 0 INPUT VCC "byteena[3..0]"
 // Retrieval info: USED_PORT: clken 0 0 0 0 INPUT VCC "clken"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
 // Retrieval info: USED_PORT: data 0 0 32 0 INPUT NODEFVAL "data[31..0]"
 // Retrieval info: USED_PORT: q 0 0 32 0 OUTPUT NODEFVAL "q[31..0]"
 // Retrieval info: USED_PORT: wren 0 0 0 0 INPUT NODEFVAL "wren"
 // Retrieval info: CONNECT: @address_a 0 0 13 0 address 0 0 13 0
+// Retrieval info: CONNECT: @byteena_a 0 0 4 0 byteena 0 0 4 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @clocken0 0 0 0 0 clken 0 0 0 0
 // Retrieval info: CONNECT: @data_a 0 0 32 0 data 0 0 32 0

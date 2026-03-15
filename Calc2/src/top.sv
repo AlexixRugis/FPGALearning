@@ -5,6 +5,7 @@ module top(
     input   logic           uart_rx,
     output  logic           uart_tx,
 
+    input   logic [3:0]     btnn,
     input   logic [3:0]     sw,
     output  logic [6:0]     hex_0,
     output  logic [6:0]     hex_1,
@@ -18,10 +19,10 @@ module top(
     output  logic           led_state_3
 );
 
-logic [17:0] cnt;
+logic [16:0] cnt;
 
 always @(posedge clk_50_mhz) begin
-	cnt <= cnt + 18'd1;
+	cnt <= cnt + 1'd1;
 end
 
 logic clk_en;
@@ -96,6 +97,7 @@ logic [31:0] ram_addr;
 logic [31:0] ram_val;
 logic [31:0] ram_write_data;
 logic ram_we;
+logic [3:0] ram_mask;
 logic [31:0] out_1;
 logic fs_start;
 logic lsb_start;
@@ -107,22 +109,27 @@ logic [31:0] sp_dbg;
 
 logic [31:0] digit;
 
+logic halted;
+logic halt_req;
+logic resume_req;
+
 mmio ram(
     .clk(clk_50_mhz), .clk_en(clk_en), .arstn(arstn),
     .address(ram_addr), .data(ram_write_data), 
-    .write_en(ram_we), .q(ram_val), .out_1(out_1));
+    .write_en(ram_we), .write_mask(ram_mask), .q(ram_val), .out_1(out_1));
 
 logic [31:0]        ram_port_addr;
 logic [31:0]        ram_port_data;
 logic [31:0]        ram_port_write_data;
 logic               ram_port_we;
+logic [3:0]         ram_port_mask;
 logic               ram_req;
 logic               ram_ack;
 
 RamPort ram_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
-    .addr(ram_port_addr), .write_data(ram_port_write_data), .wr_en(ram_port_we),
+    .addr(ram_port_addr), .write_data(ram_port_write_data), .wr_en(ram_port_we), .wr_mask(ram_port_mask),
     .req(ram_req), .data(ram_port_data), .ack(ram_ack),
-    .ram_addr(ram_addr), .ram_write_data(ram_write_data), .ram_wr_en(ram_we), .ram_data(ram_val));
+    .ram_addr(ram_addr), .ram_write_data(ram_write_data), .ram_wr_en(ram_we), .ram_byte_en(ram_mask), .ram_data(ram_val));
 
 Processor p(
     .clk(clk_50_mhz),
@@ -131,14 +138,23 @@ Processor p(
     .rom_addr(rom_port_addr), .rom_data(rom_port_data),
     .rom_req(rom_req), .rom_ack(rom_ack),
     .ram_addr(ram_port_addr), .ram_data(ram_port_data), .ram_req(ram_req),
-    .ram_write_data(ram_port_write_data), .ram_we(ram_port_we), .ram_ack(ram_ack),
+    .ram_write_data(ram_port_write_data), .ram_we(ram_port_we), .ram_we_mask(ram_port_mask), .ram_ack(ram_ack),
     .start_fs_dbg(fs_start),
     .start_lsb_dbg(lsb_start),
     .start_lsa_dbg(lsa_start),
     .start_ss_dbg(ss_start),
     .reg_a(reg_a), .reg_b(reg_b),
-    .sp_dbg(sp_dbg)
+    .sp_dbg(sp_dbg),
+
+    .halted(halted),
+    .halt_req(halt_req),
+    .resume_req(resume_req),
+
+    .mem_debug_req(1'b0)
 );
+
+assign halt_req = ~btnn[1];
+assign resume_req = ~btnn[2];
 
 // 00 - out_1
 // 01 - reg_a
@@ -167,6 +183,7 @@ SevenSegmentInd ind_2(.digit(digit[11:8]), .out(hex_2));
 SevenSegmentInd ind_3(.digit(digit[15:12]), .out(hex_3));
 
 assign led_state_0 = sw[3];
+assign led_state_1 = halted;
 
 /*assign led_state_0 = fs_start;
 assign led_state_1 = lsb_start;
