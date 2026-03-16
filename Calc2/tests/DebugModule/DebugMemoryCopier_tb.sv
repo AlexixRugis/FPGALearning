@@ -426,32 +426,32 @@ module DebugMemoryCopier_tb;
         $display("\nReset complete, starting tests...\n");
         
         // Запуск тестов
-        // test_write_one_byte();
-        // #100;
+        test_write_one_byte();
+        #100;
         
-        // test_write_four_bytes();
-        // #100;
+        test_write_four_bytes();
+        #100;
         
-        // test_write_max();
-        // #1000;
+        test_write_max();
+        #1000;
 
         test_read_max();
         #1000;
         
-        // test_read_one_byte();
-        // #100;
+        test_read_one_byte();
+        #100;
         
-        // test_read_four_bytes();
-        // #100;
+        test_read_four_bytes();
+        #100;
         
-        // test_write_then_read();
-        // #200;
+        test_write_then_read();
+        #200;
         
-        // test_empty_packet();
-        // #100;
+        test_empty_packet();
+        #100;
         
-        // test_sequence();
-        // #500;
+        test_sequence();
+        #500;
         
         // Итоги
         #1000;

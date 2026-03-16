@@ -1,15 +1,102 @@
-var n = 5;
-var result = 1;
+var b = 0;
+var c = 12;
 
-func factorial {
-    var i = 1;
-    while (i <= n) {
-        result = result * i;
-        i = i + 1;
-    }
+func routine2 {
+    var data = 0;
+    var pipip = 120;
+    data = (data + pipip) / 2;
+    print(data);
 }
 
 func main {
-    call factorial;
-    print(result);
+
+    fibArg = 5;
+    call FiBboNacci;
+    print(fibRet);
+
+    fastPowA = 3;
+    fastPowPow = 6;
+    call fastpow;
+    print(fastPowRet);
+
+    var delay = 10;
+    while (delay) delay = delay - 1;
+
+    call bibafun;
+
+    b = 10;
+    c = -5;
+    print((10 + b) * c);
+
+    if (c < b) {
+        print(1);
+    }
+    else {
+        print(2);
+    }
+
+    while (1) {
+        var a = 0;
+        a = 0;
+        print(a);
+        while (a < 10) {
+            a = a + 1;
+            print(a);
+        }
+
+        call routine2;
+}
+
+func bibafun {
+    var biba = 10;
+    while (biba >= 0) {
+        if (biba % 2 == 0) print(biba);
+        biba = biba - 1;
+    }
+}
+
+// it's a very strange way to pass arguments to function but it works
+var fibArg = 0;
+var fibRet = 0;
+
+/*
+
+this is a multiline comment
+
+\(0.0)/
+
+*/
+
+func FiBboNacci {
+    var localArg = fibArg;
+    var ans = 0;
+    
+    if (localArg <= 2) fibRet = 1;
+    else {
+        fibArg = localArg - 1;
+        call FiBboNacci;
+        ans = ans + fibRet;
+        fibArg = localArg - 2;
+        call FiBboNacci;
+        ans = ans + fibRet;
+        fibRet = ans;
+    }
+}
+
+var fastPowA = 1;
+var fastPowPow = 1;
+var fastPowRet = 0;
+
+func fastpow {
+
+    fastPowRet = 1;
+
+    while (fastPowPow != 0) {
+        if (fastPowPow & 1) {
+            fastPowRet = fastPowRet * fastPowA;
+        }
+
+        fastPowA = fastPowA * fastPowA;
+        fastPowPow = fastPowPow >> 1;
+    }
 }

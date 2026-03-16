@@ -803,6 +803,9 @@ set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ProgramCounterTb -section
 set_global_assignment -name EDA_TEST_BENCH_FILE src/FetchStageTb.sv -section_id FetchStageTb
 set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section_id ProgramCounterTb
 set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
+set_global_assignment -name ENABLE_SIGNALTAP ON
+set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
+set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/DebugMemoryBridge.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/PacketParser.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/PacketBuffer.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/DebugModule.sv
@@ -841,8 +844,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE src/OperandSourceSelector.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/BranchConditioner.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ProcessorTypes.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/RomPort.sv
-set_global_assignment -name ENABLE_SIGNALTAP ON
-set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

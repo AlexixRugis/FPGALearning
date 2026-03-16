@@ -22,26 +22,6 @@ class Command(IntEnum):
     CMD_WRITE_PROG    = 0x03
     CMD_READ_DATA     = 0x04
     CMD_WRITE_DATA    = 0x05
-    
-    # Дополнительные команды из полной таблицы
-    CMD_READ_GPR      = 0x01   # Чтение регистра общего назначения
-    CMD_WRITE_GPR     = 0x02   # Запись регистра общего назначения
-    CMD_READ_CSR      = 0x03   # Чтение системного регистра
-    CMD_WRITE_CSR     = 0x04   # Запись системного регистра
-    CMD_READ_MEM      = 0x05   # Чтение памяти
-    CMD_WRITE_MEM     = 0x06   # Запись памяти
-    CMD_STEP          = 0x09   # Выполнить одну инструкцию
-    CMD_RESET         = 0x0A   # Сброс ядра
-    CMD_GET_STATUS    = 0x0B   # Получить состояние ядра
-    CMD_SET_BREAK     = 0x0C   # Установка точки останова
-    CMD_CLEAR_BREAK   = 0x0D   # Снять точку останова
-    CMD_READ_MEM_WORD = 0x0E   # Чтение 32-битного слова
-    CMD_WRITE_MEM_WORD = 0x0F  # Запись 32-битного слова
-    CMD_READ_PC       = 0x10   # Чтение PC
-    CMD_WRITE_PC      = 0x11   # Запись PC
-    CMD_READ_SP       = 0x12   # Чтение SP (x2)
-    CMD_READ_FP       = 0x13   # Чтение FP (x8)
-    CMD_READ_RA       = 0x14   # Чтение RA (x1)
 
 
 # ============================================================================
@@ -49,18 +29,6 @@ class Command(IntEnum):
 # ============================================================================
 class Status(IntEnum):
     STATUS_OK            = 0x00
-    STATUS_INVALID_CMD   = 0x01
-    STATUS_INVALID_LEN   = 0x02
-    STATUS_PARITY_ERROR  = 0x03
-    STATUS_HALT_REQUIRED = 0x04
-    STATUS_HALT_FAILED   = 0x05
-    STATUS_INVALID_ADDR  = 0x06
-    STATUS_INVALID_REG   = 0x07
-    STATUS_BREAK_FULL    = 0x08
-    STATUS_TIMEOUT       = 0x09
-    STATUS_UNKNOWN       = 0xFF
-    
-    # Кастомные коды из вашего модуля
     STATUS_ERROR_PARITY  = 0xFF
     STATUS_ERROR_ARGS    = 0xFE
     STATUS_ERROR_CMD     = 0xFD
@@ -202,143 +170,8 @@ class UARTDebugger:
         status, _, _ = self.execute_command(Command.CMD_RESUME, b'')
         return status == Status.STATUS_OK
     
-    def step(self) -> bool:
-        """Выполнить одну инструкцию"""
-        status, _, _ = self.execute_command(Command.CMD_STEP, b'')
-        return status == Status.STATUS_OK
-    
-    def reset(self, hard: bool = False) -> bool:
-        """Сброс ядра"""
-        data = bytes([0x01 if hard else 0x00])
-        status, _, _ = self.execute_command(Command.CMD_RESET, data)
-        return status == Status.STATUS_OK
-    
-    def get_status(self) -> Optional[int]:
-        """Получение статуса ядра"""
-        status, _, data = self.execute_command(Command.CMD_GET_STATUS, b'')
-        if status == Status.STATUS_OK and len(data) >= 4:
-            return struct.unpack('<I', data[:4])[0]
-        return None
-    
     # ========================================================================
-    # Работа с регистрами
-    # ========================================================================
-    
-    def read_gpr(self, reg_num: int) -> Optional[int]:
-        """Чтение регистра общего назначения"""
-        if reg_num < 0 or reg_num > 31:
-            raise ValueError(f"Invalid register number: {reg_num}")
-        
-        data = bytes([reg_num])
-        status, _, resp_data = self.execute_command(Command.CMD_READ_GPR, data)
-        
-        if status == Status.STATUS_OK and len(resp_data) >= 4:
-            return struct.unpack('<I', resp_data[:4])[0]
-        return None
-    
-    def write_gpr(self, reg_num: int, value: int) -> bool:
-        """Запись регистра общего назначения"""
-        if reg_num < 0 or reg_num > 31:
-            raise ValueError(f"Invalid register number: {reg_num}")
-        
-        data = bytes([reg_num]) + struct.pack('<I', value)
-        status, _, _ = self.execute_command(Command.CMD_WRITE_GPR, data)
-        return status == Status.STATUS_OK
-    
-    def read_pc(self) -> Optional[int]:
-        """Чтение Program Counter"""
-        status, _, data = self.execute_command(Command.CMD_READ_PC, b'')
-        if status == Status.STATUS_OK and len(data) >= 4:
-            return struct.unpack('<I', data[:4])[0]
-        return None
-    
-    def write_pc(self, value: int) -> bool:
-        """Запись Program Counter"""
-        data = struct.pack('<I', value)
-        status, _, _ = self.execute_command(Command.CMD_WRITE_PC, data)
-        return status == Status.STATUS_OK
-    
-    def read_sp(self) -> Optional[int]:
-        """Чтение Stack Pointer"""
-        status, _, data = self.execute_command(Command.CMD_READ_SP, b'')
-        if status == Status.STATUS_OK and len(data) >= 4:
-            return struct.unpack('<I', data[:4])[0]
-        return None
-    
-    def read_fp(self) -> Optional[int]:
-        """Чтение Frame Pointer"""
-        status, _, data = self.execute_command(Command.CMD_READ_FP, b'')
-        if status == Status.STATUS_OK and len(data) >= 4:
-            return struct.unpack('<I', data[:4])[0]
-        return None
-    
-    def read_ra(self) -> Optional[int]:
-        """Чтение Return Address"""
-        status, _, data = self.execute_command(Command.CMD_READ_RA, b'')
-        if status == Status.STATUS_OK and len(data) >= 4:
-            return struct.unpack('<I', data[:4])[0]
-        return None
-    
-    # ========================================================================
-    # Работа с памятью
-    # ========================================================================
-    
-    def read_mem(self, address: int, size: int) -> Optional[bytes]:
-        """
-        Чтение из памяти
-        
-        Args:
-            address: 32-битный адрес
-            size: количество байт (1-255)
-        """
-        if size < 1 or size > 255:
-            raise ValueError(f"Invalid size: {size}")
-        
-        # Адрес в big-endian как в вашем протоколе
-        addr_bytes = struct.pack('>I', address)
-        data = addr_bytes + bytes([size])
-        
-        status, _, resp_data = self.execute_command(Command.CMD_READ_PROG, data)
-        
-        if status == Status.STATUS_OK:
-            return resp_data
-        return None
-    
-    def write_mem(self, address: int, data_bytes: bytes) -> bool:
-        """
-        Запись в память
-        
-        Args:
-            address: 32-битный адрес
-            data_bytes: данные для записи (1-255 байт)
-        """
-        if len(data_bytes) < 1 or len(data_bytes) > 255:
-            raise ValueError(f"Invalid data length: {len(data_bytes)}")
-        
-        # Адрес в big-endian + данные
-        addr_bytes = struct.pack('>I', address)
-        data = addr_bytes + data_bytes
-        
-        status, _, _ = self.execute_command(Command.CMD_WRITE_PROG, data)
-        return status == Status.STATUS_OK
-    
-    def read_mem_word(self, address: int) -> Optional[int]:
-        """Чтение 32-битного слова из памяти"""
-        data = struct.pack('>I', address)
-        status, _, resp_data = self.execute_command(Command.CMD_READ_MEM_WORD, data)
-        
-        if status == Status.STATUS_OK and len(resp_data) >= 4:
-            return struct.unpack('<I', resp_data[:4])[0]
-        return None
-    
-    def write_mem_word(self, address: int, value: int) -> bool:
-        """Запись 32-битного слова в память"""
-        data = struct.pack('>I', address) + struct.pack('<I', value)
-        status, _, _ = self.execute_command(Command.CMD_WRITE_MEM_WORD, data)
-        return status == Status.STATUS_OK
-    
-    # ========================================================================
-    # Работа с программной памятью (отдельно)
+    # Работа с программной памятью
     # ========================================================================
     
     def read_prog(self, address: int, size: int) -> Optional[bytes]:
@@ -367,7 +200,7 @@ class UARTDebugger:
         return status == Status.STATUS_OK
     
     # ========================================================================
-    # Работа с памятью данных (отдельно)
+    # Работа с памятью данных
     # ========================================================================
     
     def read_data(self, address: int, size: int) -> Optional[bytes]:
@@ -411,52 +244,60 @@ def main():
         # Подключение
         debugger.connect()
         
-        # Тест 1: HALT
         print("\n--- Test 1: HALT ---")
         if debugger.halt():
             print("Core halted successfully")
         else:
             print("Failed to halt core")
         
-        # # Тест 2: Чтение PC
-        # print("\n--- Test 2: READ PC ---")
-        # pc = debugger.read_pc()
-        # if pc is not None:
-        #     print(f"PC = 0x{pc:08X}")
-        
-        # # Тест 3: Чтение SP
-        # print("\n--- Test 3: READ SP ---")
-        # sp = debugger.read_sp()
-        # if sp is not None:
-        #     print(f"SP = 0x{sp:08X}")
-        
-        # Тест 5: Чтение из памяти
-        print("\n--- Test 5: READ MEMORY ---")
-        read_data = debugger.read_mem(0x0000, 100)
+        # prog memory tests
+        print("\n--- Test 2: READ MEMORY CHUNK ---")
+        read_data = debugger.read_prog(0x0000, 100)
         if read_data:
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
         
-        print("\n--- Test 5: READ MEMORY ---")
-        read_data = debugger.read_mem(0x0020, 4)
+        print("\n--- Test 3: READ MEMORY WORD ---")
+        read_data = debugger.read_prog(0x0020, 4)
         if read_data:
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
         
-        # Тест 4: Запись в память
-        print("\n--- Test 4: WRITE MEMORY ---")
+        print("\n--- Test 4: WRITE MEMORY NON ALIGNED ---")
         test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
-        if debugger.write_mem(0x0023, test_data):
+        if debugger.write_prog(0x0023, test_data):
             print(f"Written {len(test_data)} bytes to 0x0023")
         
-        # Тест 5: Чтение из памяти
-        print("\n--- Test 5: READ MEMORY ---")
-        read_data = debugger.read_mem(0x0023, 6)
+        print("\n--- Test 5: READ MEMORY NON ALIGNED ---")
+        read_data = debugger.read_prog(0x0023, 6)
+        if read_data:
+            print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
+            if read_data == test_data:
+                print("Data matches!")
+                
+        # data memory tests
+        print("\n--- Test 6: READ DATA MEMORY CHUNK ---")
+        read_data = debugger.read_data(0x0320, 110)
         if read_data:
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        
+        print("\n--- Test 7: READ DATA MEMORY WORD ---")
+        read_data = debugger.read_data(0x0020, 4)
+        if read_data:
+            print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        
+        print("\n--- Test 8: WRITE DATA MEMORY NON ALIGNED ---")
+        test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
+        if debugger.write_data(0x0320, test_data):
+            print(f"Written {len(test_data)} bytes to 0x0023")
+        
+        print("\n--- Test 9: READ DATA MEMORY NON ALIGNED ---")
+        read_data = debugger.read_data(0x0320, 6)
+        if read_data:
+            print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
             if read_data == test_data:
                 print("Data matches!")
         
-        # Тест 6: RESUME
-        print("\n--- Test 6: RESUME ---")
+        
+        print("\n--- Test 10: RESUME ---")
         if debugger.resume():
             print("Core resumed successfully")
         

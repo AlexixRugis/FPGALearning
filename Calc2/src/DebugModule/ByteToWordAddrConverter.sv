@@ -12,6 +12,6 @@ module ByteToWordAddrConverter(
 assign word_addr = {byte_addr[31:2], 2'b00};
 assign write_data_mask = 4'b0001 << byte_addr[1:0];
 assign write_data_extended = write_data << {byte_addr[1:0], 3'b000};
-assign read_data = read_data_extended >> {byte_addr[1:0], 3'b000};
+assign read_data = 8'(read_data_extended >> {byte_addr[1:0], 3'b000});
 
 endmodule

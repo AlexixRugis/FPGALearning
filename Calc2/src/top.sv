@@ -172,6 +172,36 @@ logic resume_req_debug_mod;
 assign halt_req = halt_req_debug_mod | ~btnn[1];
 assign resume_req = resume_req_debug_mod | ~btnn[2];
 
+logic [31:0] debug_mem_addr;
+logic [31:0] debug_mem_write_data;
+logic debug_mem_wr_enable;
+logic [3:0] debug_mem_wr_mask;
+logic debug_mem_req;
+logic [31:0] debug_mem_data;
+logic debug_mem_ack;
+
+DebugMemoryBridge debugMemoryBridge(
+    .clk(clk_50_mhz),
+    .arstn(arstn),
+
+    .debug_addr(debug_mem_addr),
+    .debug_write_data(debug_mem_write_data),
+    .debug_wr_en(debug_mem_wr_enable),
+    .debug_wr_mask(debug_mem_wr_mask),
+    .debug_req(debug_mem_req),
+    .debug_data(debug_mem_data),
+    .debug_ack(debug_mem_ack),
+
+    .mem_clk_en(clk_en),
+    .mem_addr(mem_debug_addr),
+    .mem_write_data(mem_debug_write_data),
+    .mem_wr_en(mem_debug_wr_enable),
+    .mem_wr_mask(mem_debug_wr_mask),
+    .mem_req(mem_debug_req),
+    .mem_data(mem_debug_data),
+    .mem_ack(mem_debug_ack)
+);
+
 DebugModule debugModule(
     .clk(clk_50_mhz),
     .arstn(arstn),
@@ -197,13 +227,13 @@ DebugModule debugModule(
     .prog_data(rom_wr_port_data),
     .prog_ack(rom_wr_port_ack),
 
-    .data_addr(mem_debug_addr),
-    .data_write_data(mem_debug_write_data),
-    .data_wr_en(mem_debug_wr_enable),
-    .data_wr_mask(mem_debug_wr_mask),
-    .data_req(mem_debug_req),
-    .data_data(mem_debug_data),
-    .data_ack(mem_debug_ack)
+    .data_addr(debug_mem_addr),
+    .data_write_data(debug_mem_write_data),
+    .data_wr_en(debug_mem_wr_enable),
+    .data_wr_mask(debug_mem_wr_mask),
+    .data_req(debug_mem_req),
+    .data_data(debug_mem_data),
+    .data_ack(debug_mem_ack)
 );
 
 // 00 - out_1

@@ -1,10 +1,10 @@
 module DebugModule(
-    input logic             clk,
-    input logic             arstn,
+    input  logic             clk,
+    input  logic             arstn,
 
-    input   logic       input_valid,
-    output  logic       input_ready,
-    input   logic       input_error,
+    input  logic       input_valid,
+    output logic       input_ready,
+    input  logic       input_error,
     input  logic [7:0]  input_byte,
 
     output logic [7:0]  send_byte,
