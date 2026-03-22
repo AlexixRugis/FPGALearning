@@ -5,10 +5,10 @@ preplace inst uart.clk_0 -pg 1 -lvl 1 -y 30
 preplace inst uart.rs232_0 -pg 1 -lvl 1 -y 130
 preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)uart.rs232_0_external_interface,(SLAVE)rs232_0.external_interface) 1 0 1 NJ
 preplace netloc EXPORT<net_container>uart</net_container>(MASTER)uart.rs232_0_avalon_data_receive_source,(MASTER)rs232_0.avalon_data_receive_source) 1 1 1 N
-preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)uart.reset) 1 0 1 NJ
-preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)rs232_0.avalon_data_transmit_sink,(SLAVE)uart.rs232_0_avalon_data_transmit_sink) 1 0 1 NJ
-preplace netloc POINT_TO_POINT<net_container>uart</net_container>(MASTER)clk_0.clk_reset,(SLAVE)rs232_0.reset) 1 0 2 230 100 500
-preplace netloc POINT_TO_POINT<net_container>uart</net_container>(SLAVE)rs232_0.clk,(MASTER)clk_0.clk) 1 0 2 250 120 520
+preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)uart.rs232_0_avalon_data_transmit_sink,(SLAVE)rs232_0.avalon_data_transmit_sink) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>uart</net_container>(MASTER)clk_0.clk,(SLAVE)rs232_0.clk) 1 0 2 230 100 520
+preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)uart.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>uart</net_container>(MASTER)clk_0.clk_reset,(SLAVE)rs232_0.reset) 1 0 2 250 120 500
 preplace netloc EXPORT<net_container>uart</net_container>(SLAVE)uart.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
 levelinfo -pg 1 0 200 760
 levelinfo -hier uart 210 280 540

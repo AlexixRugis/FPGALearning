@@ -92,6 +92,18 @@ uart uart(
 	.rs232_0_UART_TXD(uart_tx)
 );
 
+logic to_uart_ready_delay;
+logic to_uart_valid_delay;
+
+ValidReadyDelay #(.NUM_TICKS(6000)) valid_ready_delay_inst(
+    .clk(clk_50_mhz),
+    .arstn(arstn),
+    .slave_ready(to_uart_ready),
+    .slave_valid(to_uart_valid),
+    .master_ready(to_uart_ready_delay),
+    .master_valid(to_uart_valid_delay)
+);
+
 logic [31:0] ram_addr;
 logic [31:0] ram_val;
 logic [31:0] ram_write_data;
@@ -212,8 +224,8 @@ DebugModule debugModule(
     .input_byte(from_uart_data),
 
     .send_byte(to_uart_data),
-    .send_valid(to_uart_valid),
-    .send_ready(to_uart_ready),
+    .send_valid(to_uart_valid_delay),
+    .send_ready(to_uart_ready_delay),
 
     .halt_req(halt_req_debug_mod),
     .resume_req(resume_req_debug_mod),

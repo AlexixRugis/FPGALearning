@@ -59,7 +59,7 @@ parameter CW							= 9;		// Baud counter width
 parameter BAUD_TICK_COUNT			= 434;
 parameter HALF_BAUD_TICK_COUNT	= 217;
 
-parameter TDW							= 10;		// Total data width
+parameter TDW							= 11;		// Total data width
 parameter DW							= 8;		// Data width
 parameter ODD_PARITY					= 1'b0;
 
@@ -98,7 +98,7 @@ output					UART_TXD;
  *****************************************************************************/
 
 // Internal Wires
-wire		[(DW-1):0]	read_data;
+wire			[DW: 0]	read_data;
 
 wire						write_data_parity;
 wire			[ 7: 0]	write_space;
@@ -125,8 +125,8 @@ wire			[ 7: 0]	write_space;
  *****************************************************************************/
 
 // Output Assignments
-assign from_uart_data	= read_data;
-assign from_uart_error	= 1'b0;
+assign from_uart_data	= read_data[(DW - 1):0];
+assign from_uart_error	= ((^(read_data[DW:0])) ^ ODD_PARITY);
 
 assign to_uart_ready		= (|(write_space));
 
@@ -159,14 +159,14 @@ defparam
 	RS232_In_Deserializer.BAUD_TICK_COUNT			= BAUD_TICK_COUNT,
 	RS232_In_Deserializer.HALF_BAUD_TICK_COUNT	= HALF_BAUD_TICK_COUNT,
 	RS232_In_Deserializer.TDW							= TDW,
-	RS232_In_Deserializer.DW							= (DW - 1);
+	RS232_In_Deserializer.DW							= DW;
 
 altera_up_rs232_out_serializer RS232_Out_Serializer (
 	// Inputs
 	.clk						(clk),
 	.reset					(reset),
 	
-	.transmit_data			(to_uart_data),
+	.transmit_data			({write_data_parity, to_uart_data}),
 	.transmit_data_en		(to_uart_valid & to_uart_ready),
 
 	// Bidirectionals
@@ -181,7 +181,7 @@ defparam
 	RS232_Out_Serializer.BAUD_TICK_COUNT		= BAUD_TICK_COUNT,
 	RS232_Out_Serializer.HALF_BAUD_TICK_COUNT	= HALF_BAUD_TICK_COUNT,
 	RS232_Out_Serializer.TDW						= TDW,
-	RS232_Out_Serializer.DW							= (DW - 1);
+	RS232_Out_Serializer.DW							= DW;
 
 endmodule
 

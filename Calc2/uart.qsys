@@ -24,6 +24,11 @@
          value = "0";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
 }
 ]]></parameter>
@@ -95,7 +100,7 @@
   <parameter name="avalon_bus_type" value="Streaming" />
   <parameter name="baud" value="115200" />
   <parameter name="data_bits" value="8" />
-  <parameter name="parity" value="None" />
+  <parameter name="parity" value="Even" />
   <parameter name="stop_bits" value="1" />
  </module>
  <connection kind="clock" version="22.1" start="clk_0.clk" end="rs232_0.clk" />

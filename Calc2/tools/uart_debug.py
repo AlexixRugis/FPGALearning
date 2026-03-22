@@ -67,7 +67,7 @@ class UARTDebugger:
                 port=self.port,
                 baudrate=self.baudrate,
                 bytesize=serial.EIGHTBITS,
-                parity=serial.PARITY_NONE,
+                parity=serial.PARITY_EVEN,
                 stopbits=serial.STOPBITS_TWO,
                 timeout=self.timeout
             )
@@ -179,10 +179,9 @@ class UARTDebugger:
         if size < 1 or size > 255:
             raise ValueError(f"Invalid size: {size}")
         
-        addr_bytes = struct.pack('>I', address)
-        data = addr_bytes + bytes([size])
+        addr_bytes = struct.pack('>IB', address, size)
         
-        status, _, resp_data = self.execute_command(Command.CMD_READ_PROG, data)
+        status, _, resp_data = self.execute_command(Command.CMD_READ_PROG, addr_bytes)
         
         if status == Status.STATUS_OK:
             return resp_data
@@ -208,10 +207,9 @@ class UARTDebugger:
         if size < 1 or size > 255:
             raise ValueError(f"Invalid size: {size}")
         
-        addr_bytes = struct.pack('>I', address)
-        data = addr_bytes + bytes([size])
+        addr_bytes = struct.pack('>IB', address, size)
         
-        status, _, resp_data = self.execute_command(Command.CMD_READ_DATA, data)
+        status, _, resp_data = self.execute_command(Command.CMD_READ_DATA, addr_bytes)
         
         if status == Status.STATUS_OK:
             return resp_data
@@ -252,7 +250,7 @@ def main():
         
         # prog memory tests
         print("\n--- Test 2: READ MEMORY CHUNK ---")
-        read_data = debugger.read_prog(0x0000, 100)
+        read_data = debugger.read_prog(0x0000, 251)
         if read_data:
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
         
@@ -275,7 +273,7 @@ def main():
                 
         # data memory tests
         print("\n--- Test 6: READ DATA MEMORY CHUNK ---")
-        read_data = debugger.read_data(0x0320, 110)
+        read_data = debugger.read_data(0x0320, 126)
         if read_data:
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
         
@@ -285,12 +283,12 @@ def main():
             print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
         
         print("\n--- Test 8: WRITE DATA MEMORY NON ALIGNED ---")
-        test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
+        test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66] * 41)
         if debugger.write_data(0x0320, test_data):
             print(f"Written {len(test_data)} bytes to 0x0023")
         
         print("\n--- Test 9: READ DATA MEMORY NON ALIGNED ---")
-        read_data = debugger.read_data(0x0320, 6)
+        read_data = debugger.read_data(0x0320, 126)
         if read_data:
             print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
             if read_data == test_data:
