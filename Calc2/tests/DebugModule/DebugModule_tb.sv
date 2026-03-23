@@ -60,7 +60,7 @@ module DebugModule_tb;
     integer test_count = 0;
     integer i, j;
     
-    DebugModule dut (
+    DebugModule #(.TIMEOUT_TICKS(200)) dut (
         .clk(clk),
         .arstn(arstn),
         .input_valid(input_valid),

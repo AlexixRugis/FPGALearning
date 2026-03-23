@@ -123,6 +123,10 @@ logic [31:0] digit;
 logic halted;
 logic halt_req;
 logic resume_req;
+logic soft_reset_n;
+logic core_reset_n;
+
+assign core_reset_n = soft_reset_n & arstn;
 
 logic [31:0] mem_debug_addr;
 logic [31:0] mem_debug_write_data;
@@ -245,7 +249,9 @@ DebugModule debugModule(
     .data_wr_mask(debug_mem_wr_mask),
     .data_req(debug_mem_req),
     .data_data(debug_mem_data),
-    .data_ack(debug_mem_ack)
+    .data_ack(debug_mem_ack),
+
+    .soft_reset_n(soft_reset_n)
 );
 
 // 00 - out_1

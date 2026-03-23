@@ -17,7 +17,8 @@ generate
         assign master_ready = slave_ready;
     end
     else begin : gen_delay
-        logic [$clog2(NUM_TICKS + 1)-1:0]       counter;
+        localparam COUNTER_WIDTH = $clog2(NUM_TICKS + 1);
+        logic [COUNTER_WIDTH-1:0]               counter;
         logic                                   pass_en;
 
         assign pass_en = ~|counter;
@@ -29,7 +30,7 @@ generate
             else begin
                 if (pass_en) begin
                     if (master_ready & master_valid) begin
-                        counter <= NUM_TICKS;
+                        counter <= NUM_TICKS[COUNTER_WIDTH-1:0];
                     end
                 end
                 else begin

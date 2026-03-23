@@ -1,4 +1,6 @@
-module DebugModule(
+module DebugModule #(
+    parameter TIMEOUT_TICKS = 1000000
+) (
     input  logic             clk,
     input  logic             arstn,
 
@@ -33,6 +35,8 @@ module DebugModule(
 
     output logic           soft_reset_n
 );
+
+logic [$clog2(TIMEOUT_TICKS)-1:0] timeout_counter;
 
 logic           inp_packet_valid;
 logic           inp_packet_ready;
@@ -223,6 +227,7 @@ localparam [7:0] STATUS_ERROR_CMD = 8'hFD;
 
 enum logic [3:0] {
     S_WAIT_INPUT,
+    S_WAIT_TIMEOUT,
     S_CMD_HALT,
     S_CMD_RESUME,
     S_CMD_READ_PROG,
@@ -263,7 +268,7 @@ always_comb begin
     S_WAIT_INPUT: begin
         if (inp_packet_valid) begin
             if (inp_packet_error) begin
-                next_state = S_ERROR_PARITY;
+                next_state = S_WAIT_TIMEOUT;
             end
             else begin
                 case (inp_packet_cmd)
@@ -429,6 +434,11 @@ always_comb begin
             next_state = S_WAIT_INPUT;
         end
     end
+    S_WAIT_TIMEOUT: begin
+        if (timeout_counter == TIMEOUT_TICKS - 1) begin
+            next_state = S_ERROR_PARITY;
+        end
+    end
     endcase
 end
 
@@ -438,6 +448,20 @@ always_ff @(posedge clk or negedge arstn) begin
     end
     else begin
         cur_state <= next_state;
+    end
+end
+
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
+        timeout_counter <= '0;
+    end
+    else begin
+        if (input_valid) begin
+            timeout_counter <= '0;
+        end
+        else if (cur_state == S_WAIT_TIMEOUT) begin
+            timeout_counter <= timeout_counter + 1'b1;
+        end
     end
 end
 

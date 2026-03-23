@@ -10,7 +10,8 @@ module ResetController #(
     output  logic               reset_n
 );
 
-logic [$clog2(RESET_TICKS + 1)-1:0]       counter;
+localparam COUNTER_WIDTH = $clog2(RESET_TICKS + 1);
+logic [COUNTER_WIDTH-1:0]       counter;
 
 assign reset_n = ~|counter;
 assign ack = (counter == 1'b1);
@@ -22,7 +23,7 @@ always_ff @(posedge clk or negedge arstn) begin
     else begin
         if (reset_n) begin
             if (req) begin
-                counter <= RESET_TICKS;
+                counter <= RESET_TICKS[COUNTER_WIDTH-1:0];
             end
         end
         else begin

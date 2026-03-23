@@ -332,7 +332,7 @@ end
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        cur_state <= halt_req ? S_HALT : S_FETCH;
+        cur_state <= S_HALT;
     end
     else if (clk_en) begin
         cur_state <= next_state;

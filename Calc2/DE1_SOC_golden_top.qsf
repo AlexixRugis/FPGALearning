@@ -805,6 +805,7 @@ set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section
 set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
+set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/ResetController.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ValidReadyDelay.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/DebugMemoryBridge.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/PacketParser.sv

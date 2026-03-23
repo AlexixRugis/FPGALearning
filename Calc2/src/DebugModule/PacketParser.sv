@@ -5,7 +5,7 @@ module PacketParser(
     input   logic       input_valid,
     output  logic       input_ready,
     input   logic       input_error,
-    input  logic [7:0]  input_byte,
+    input   logic [7:0]  input_byte,
 
     output  logic       res_valid,
     input   logic       res_ready,
@@ -78,7 +78,7 @@ always_comb begin
     end
 end
 
-assign input_ready = cur_state != S_WAIT_READY;
+assign input_ready = 1'b1;
 assign res_valid = cur_state == S_WAIT_READY;
 
 always_ff @(posedge clk or negedge arstn) begin
