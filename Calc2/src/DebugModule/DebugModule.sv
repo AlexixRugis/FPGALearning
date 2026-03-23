@@ -29,7 +29,9 @@ module DebugModule(
     output logic [3:0]     data_wr_mask,
     output logic           data_req,
     input  logic [31:0]    data_data,
-    input  logic           data_ack
+    input  logic           data_ack,
+
+    output logic           soft_reset_n
 );
 
 logic           inp_packet_valid;
@@ -203,6 +205,17 @@ always_comb begin
     end
 end
 
+logic soft_reset_req;
+logic soft_reset_ack;
+
+ResetController #(.RESET_TICKS(10)) reset_controller(
+    .clk(clk),
+    .arstn(arstn),
+    .req(soft_reset_req),
+    .ack(soft_reset_ack),
+    .reset_n(soft_reset_n)
+);
+
 localparam [7:0] STATUS_OK = 8'h00;
 localparam [7:0] STATUS_ERROR_PARITY = 8'hFF;
 localparam [7:0] STATUS_ERROR_ARGS = 8'hFE;
@@ -216,6 +229,7 @@ enum logic [3:0] {
     S_CMD_WRITE_PROG,
     S_CMD_READ_DATA,
     S_CMD_WRITE_DATA,
+    S_CMD_RESET,
     S_ERROR_PARITY,
     S_ERROR_ARGS,
     S_ERROR_CMD,
@@ -242,6 +256,8 @@ always_comb begin
 
     data_mem_copy_req = 1'b0;
     data_mem_copy_write = 'x;
+
+    soft_reset_req = 1'b0;
 
     case(cur_state)
     S_WAIT_INPUT: begin
@@ -277,6 +293,7 @@ always_comb begin
                     else
                         next_state = S_ERROR_ARGS;
                 end
+                8'h06: next_state = S_CMD_RESET;
                 default: next_state = S_ERROR_CMD;
                 endcase
             end
@@ -305,6 +322,19 @@ always_comb begin
         out_len_we = 1'b1;
         
         if (~is_halted) begin
+            next_state = S_WAIT_SEND;
+        end
+    end
+    S_CMD_RESET: begin
+        soft_reset_req = 1'b1;
+        out_status = STATUS_OK;
+        out_status_we = 1'b1;
+        out_id = inp_packet_id;
+        out_id_we = 1'b1;
+        out_len = '0;
+        out_len_we = 1'b1;
+
+        if (soft_reset_ack) begin
             next_state = S_WAIT_SEND;
         end
     end

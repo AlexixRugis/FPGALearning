@@ -41,6 +41,10 @@ module DebugModule_tb;
     wire        data_req;
     reg  [31:0] data_data;
     reg         data_ack;
+
+    // soft reset
+
+    wire        soft_reset_n;
     
     // mems
     reg [31:0] prog_memory [0:1023];
@@ -82,7 +86,9 @@ module DebugModule_tb;
         .data_wr_mask(data_wr_mask),
         .data_req(data_req),
         .data_data(data_data),
-        .data_ack(data_ack)
+        .data_ack(data_ack),
+        
+        .soft_reset_n(soft_reset_n)
     );
     
     initial begin
@@ -203,6 +209,44 @@ module DebugModule_tb;
         @(posedge clk);
         #1;
         send_ready = 1'b0;
+    endtask
+
+    task test_soft_reset;
+        logic [7:0] data[];
+        data = new[0];
+
+        test_count = test_count + 1;
+        $display("\n[TEST %0d] SOFT RESET command", test_count);
+
+        send_packet(8'h06, 8'hAA, 8'h00, data);
+
+        repeat (3) @(posedge clk);
+        if (soft_reset_n) begin
+            $display("  ERROR: soft_reset_n not asserted");
+            error_count = error_count + 1;
+        end
+
+        repeat (10) @(posedge clk);
+        if (!soft_reset_n) begin
+            $display("  ERROR: soft_reset_n not deasserted");
+            error_count = error_count + 1;
+        end
+
+        receive_response();
+        if (out_status !== 8'h00) begin
+            $display("  ERROR: Expected STATUS_OK (0x00), got 0x%0h", out_status);
+            error_count = error_count + 1;
+        end
+        if (out_id !== 8'hAA) begin
+            $display("  ERROR: Expected ID 0xAA, got 0x%0h", out_id);
+            error_count = error_count + 1;
+        end
+        if (out_len !== 8'h00) begin
+            $display("  ERROR: Expected LEN 0, got %0d", out_len);
+            error_count = error_count + 1;
+        end
+        
+        $display("  [TEST %0d] %s", test_count, error_count ? "FAILED" : "PASSED");
     endtask
     
     task test_halt;
@@ -560,6 +604,9 @@ module DebugModule_tb;
         #200;
         
         test_parity_error();
+        #200;
+
+        test_soft_reset();
         #200;
 
         #1000;
