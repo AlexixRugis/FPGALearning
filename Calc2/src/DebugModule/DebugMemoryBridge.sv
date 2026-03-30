@@ -1,7 +1,4 @@
 module DebugMemoryBridge(
-    input   logic               clk,
-    input   logic               arstn,
-
     input   logic [31:0]        debug_addr,
     input   logic [31:0]        debug_write_data,
     input   logic               debug_wr_en,

@@ -11,6 +11,7 @@
 
 #include "MyVisitor.h"
 #include "MifExport.h"
+#include "HexExport.h"
 
 using namespace std;
 using namespace antlr4;
@@ -61,14 +62,10 @@ int main()
             addr++;
         }
 
-        for (auto instr : opcodes)
-        {
-            print_hex32(instr);
-            std::cout << ",\n";
-        }
-
         Compiler::saveMif("output.mif", opcodes, 8192);
-        std::cout << "Saved results to output.mif\n" << std::endl;
+        std::cout << "Saved results to output.mif" << std::endl;
+        Compiler::saveHex("output.hex", opcodes, 8192);
+        std::cout << "Saved results to output.hex" << std::endl;
     }
     catch (const std::runtime_error& e)
     {

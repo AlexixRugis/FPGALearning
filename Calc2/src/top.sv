@@ -157,7 +157,7 @@ RamPort ram_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
 Processor p(
     .clk(clk_50_mhz),
     .clk_en(clk_en),
-    .arstn(arstn),
+    .arstn(core_reset_n),
     .rom_addr(rom_port_addr), .rom_data(rom_port_data),
     .rom_req(rom_req), .rom_ack(rom_ack),
     .ram_addr(ram_port_addr), .ram_data(ram_port_data), .ram_req(ram_req),
@@ -197,9 +197,6 @@ logic [31:0] debug_mem_data;
 logic debug_mem_ack;
 
 DebugMemoryBridge debugMemoryBridge(
-    .clk(clk_50_mhz),
-    .arstn(arstn),
-
     .debug_addr(debug_mem_addr),
     .debug_write_data(debug_mem_write_data),
     .debug_wr_en(debug_mem_wr_enable),

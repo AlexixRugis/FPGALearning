@@ -8,7 +8,20 @@ func routine2 {
     print(data);
 }
 
+func Delay {
+    var timer = 10;
+    while (timer) timer = timer - 1;
+}
+
 func main {
+
+    print(1);
+    call Delay;
+    print(3);
+    call Delay;
+    print(5);
+    call Delay;
+    print(7);
 
     fibArg = 5;
     call FiBboNacci;
@@ -19,8 +32,7 @@ func main {
     call fastpow;
     print(fastPowRet);
 
-    var delay = 10;
-    while (delay) delay = delay - 1;
+    call Delay;
 
     call bibafun;
 

@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="AntlrTestProj.cpp" />
     <ClCompile Include="CodeGenerator.cpp" />
+    <ClCompile Include="HexExport.cpp" />
     <ClCompile Include="MifExport.cpp" />
     <ClCompile Include="MyLanguageBaseVisitor.cpp" />
     <ClCompile Include="MyLanguageLexer.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Assembler.h" />
     <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="HexExport.h" />
     <ClInclude Include="LabelGenerator.h" />
     <ClInclude Include="MifExport.h" />
     <ClInclude Include="MyLanguageBaseVisitor.h" />

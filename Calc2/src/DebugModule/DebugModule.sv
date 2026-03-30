@@ -220,6 +220,14 @@ ResetController #(.RESET_TICKS(10)) reset_controller(
     .reset_n(soft_reset_n)
 );
 
+localparam [7:0] CMD_HALT = 8'h00;
+localparam [7:0] CMD_RESUME = 8'h01;
+localparam [7:0] CMD_READ_PROG = 8'h02;
+localparam [7:0] CMD_WRITE_PROG = 8'h03;
+localparam [7:0] CMD_READ_DATA = 8'h04;
+localparam [7:0] CMD_WRITE_DATA = 8'h05;
+localparam [7:0] CMD_RESET = 8'h06;
+
 localparam [7:0] STATUS_OK = 8'h00;
 localparam [7:0] STATUS_ERROR_PARITY = 8'hFF;
 localparam [7:0] STATUS_ERROR_ARGS = 8'hFE;
@@ -272,33 +280,33 @@ always_comb begin
             end
             else begin
                 case (inp_packet_cmd)
-                8'h00: next_state = S_CMD_HALT;
-                8'h01: next_state = S_CMD_RESUME;
-                8'h02: begin
+                CMD_HALT: next_state = S_CMD_HALT;
+                CMD_RESUME: next_state = S_CMD_RESUME;
+                CMD_READ_PROG: begin
                     if (inp_packet_len >= 8'h05)
                         next_state = S_CMD_READ_PROG;
                     else
                         next_state = S_ERROR_ARGS;
                 end
-                8'h03: begin
+                CMD_WRITE_PROG: begin
                     if (inp_packet_len >= 8'h04)
                         next_state = S_CMD_WRITE_PROG;
                     else
                         next_state = S_ERROR_ARGS;
                 end
-                8'h04: begin
+                CMD_READ_DATA: begin
                     if (inp_packet_len >= 8'h05)
                         next_state = S_CMD_READ_DATA;
                     else
                         next_state = S_ERROR_ARGS;
                 end
-                8'h05: begin
+                CMD_WRITE_DATA: begin
                     if (inp_packet_len >= 8'h04)
                         next_state = S_CMD_WRITE_DATA;
                     else
                         next_state = S_ERROR_ARGS;
                 end
-                8'h06: next_state = S_CMD_RESET;
+                CMD_RESET: next_state = S_CMD_RESET;
                 default: next_state = S_ERROR_CMD;
                 endcase
             end

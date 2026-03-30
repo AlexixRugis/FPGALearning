@@ -6,6 +6,8 @@ Protocol: [CMD][ID][LEN][DATA] for requests
 """
 
 import serial
+import sys
+import argparse
 import time
 import struct
 from typing import Optional, List, Tuple
@@ -22,6 +24,7 @@ class Command(IntEnum):
     CMD_WRITE_PROG    = 0x03
     CMD_READ_DATA     = 0x04
     CMD_WRITE_DATA    = 0x05
+    CMD_SOFT_RST      = 0x06
 
 
 # ============================================================================
@@ -170,6 +173,11 @@ class UARTDebugger:
         status, _, _ = self.execute_command(Command.CMD_RESUME, b'')
         return status == Status.STATUS_OK
     
+    def soft_rst(self) -> bool:
+        """Сброс ядра"""
+        status, _, _, = self.execute_command(Command.CMD_SOFT_RST, b'')
+        return status == Status.STATUS_OK
+    
     # ========================================================================
     # Работа с программной памятью
     # ========================================================================
@@ -225,86 +233,351 @@ class UARTDebugger:
         
         status, _, _ = self.execute_command(Command.CMD_WRITE_DATA, data)
         return status == Status.STATUS_OK
-
-
-# ============================================================================
-# Пример использования
-# ============================================================================
-def main():
-    # Настройки (измените под свои)
-    PORT = 'COM13'  # Windows
-    # PORT = '/dev/ttyUSB0'  # Linux
-    BAUDRATE = 115200
     
-    debugger = UARTDebugger(PORT, BAUDRATE)
+def run_tests(debugger):        
+    print("\n--- Test 1: HALT ---")
+    if debugger.halt():
+        print("Core halted successfully")
+    else:
+        print("Failed to halt core")
+    
+    # prog memory tests
+    print("\n--- Test 2: READ MEMORY CHUNK ---")
+    read_data = debugger.read_prog(0x0000, 251)
+    if read_data:
+        print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+    
+    print("\n--- Test 3: READ MEMORY WORD ---")
+    read_data = debugger.read_prog(0x0020, 4)
+    if read_data:
+        print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+    
+    print("\n--- Test 4: WRITE MEMORY NON ALIGNED ---")
+    test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
+    if debugger.write_prog(0x0023, test_data):
+        print(f"Written {len(test_data)} bytes to 0x0023")
+    
+    print("\n--- Test 5: READ MEMORY NON ALIGNED ---")
+    read_data = debugger.read_prog(0x0023, 6)
+    if read_data:
+        print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if read_data == test_data:
+            print("Data matches!")
+            
+    # data memory tests
+    print("\n--- Test 6: READ DATA MEMORY CHUNK ---")
+    read_data = debugger.read_data(0x0320, 126)
+    if read_data:
+        print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+    
+    print("\n--- Test 7: READ DATA MEMORY WORD ---")
+    read_data = debugger.read_data(0x0020, 4)
+    if read_data:
+        print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+    
+    print("\n--- Test 8: WRITE DATA MEMORY NON ALIGNED ---")
+    test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66] * 41)
+    if debugger.write_data(0x0320, test_data):
+        print(f"Written {len(test_data)} bytes to 0x0023")
+    
+    print("\n--- Test 9: READ DATA MEMORY NON ALIGNED ---")
+    read_data = debugger.read_data(0x0320, 126)
+    if read_data:
+        print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if read_data == test_data:
+            print("Data matches!")
+    
+    
+    print("\n--- Test 10: RESUME ---")
+    if debugger.resume():
+        print("Core resumed successfully")
+        
+    print("\n--- Test 11: SOFT RST ---")
+    if debugger.soft_rst():
+        print("Core reset successfully")
+
+# ============================================================================
+# Функции для работы с HEX форматом
+# ============================================================================
+def parse_hex_file(filename: str) -> bytes:
+    """
+    Парсинг простого HEX файла с байтами через пробел
+    Формат: только байты в hex через пробел, игнорируем всё кроме hex чисел
+    
+    Пример:
+        00 11 22 33 44 55 66 77
+        88 99 AA BB CC DD EE FF
+    """
+    all_bytes = []
     
     try:
-        # Подключение
+        with open(filename, 'r') as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                
+                # Разбиваем строку на части
+                for token in line.split():
+                    # Пропускаем комментарии
+                    if token.startswith('#'):
+                        break
+                    
+                    # Парсим hex байт
+                    try:
+                        byte_val = int(token, 16)
+                        if 0 <= byte_val <= 255:
+                            all_bytes.append(byte_val)
+                        else:
+                            raise DebugProtocolError(f"Invalid byte value at line {line_num}: {token}")
+                    except ValueError:
+                        # Игнорируем не-hex токены (могут быть комментариями)
+                        pass
+            
+    except FileNotFoundError:
+        raise DebugProtocolError(f"File not found: {filename}")
+    except Exception as e:
+        raise DebugProtocolError(f"Failed to parse file: {e}")
+    
+    return bytes(all_bytes)
+
+def write_hex_file(filename: str, data: bytes, start_addr: int, bytes_per_line: int = 16) -> None:
+    """
+    Запись данных в простой HEX формат (байты через пробел)
+    """
+    with open(filename, 'w') as f:
+        f.write(f"# Dump from memory\n")
+        f.write(f"# Format: hex bytes separated by spaces\n")
+        f.write(f"# Start addr: {start_addr} Length : {len(data)}\n\n")
+        
+        # Записываем байты
+        for i in range(0, len(data), bytes_per_line):
+            chunk = data[i:min(len(data), i + bytes_per_line)]
+            line = ' '.join([f"{b:02X}" for b in chunk])
+            f.write(line + "\n")
+        
+        f.write("\n# End of dump\n")
+
+# ============================================================================
+# Функции для работы с файлами и памятью
+# ============================================================================
+def upload_firmware(debugger: UARTDebugger, filename: str, start_addr: int):
+    """Загрузка прошивки в память программ"""
+    print(f"Uploading firmware from {filename} to 0x{start_addr:08X}...")
+    
+    data = parse_hex_file(filename)
+    
+    if not data:
+        print("Error: No data found in file")
+        return False
+    
+    print(f"Total bytes to upload: {len(data)}")
+    
+    for i in range(0, len(data), 250):
+        chunk = data[i:min(len(data), i+250)]
+        addr = start_addr + i
+        
+        if not debugger.write_prog(addr, chunk):
+            print(f"Error writing at address 0x{addr:08X}")
+            return False
+        
+        print(f"  Progress: {i + len(chunk)}/{len(data)} bytes (0x{addr:08X})")
+    
+    print("Firmware uploaded successfully")
+    return True
+
+def dump_firmware(debugger: UARTDebugger, filename: str, start_addr: int, length: int):
+    """Дамп памяти программ в файл"""
+    print(f"Dumping firmware to {filename} (0x{start_addr:08X}, {length} bytes)...")
+    
+    all_data = bytearray()
+    remaining = length
+    current_addr = start_addr
+    
+    while remaining > 0:
+        chunk_size = min(remaining, 250)
+        data = debugger.read_prog(current_addr, chunk_size)
+        
+        if data is None:
+            print(f"Error reading at address 0x{current_addr:08X}")
+            return False
+        
+        if data:
+            all_data.extend(data)
+            print(f"  Read {len(data)} bytes from 0x{current_addr:08X}")
+        
+        remaining -= chunk_size
+        current_addr += chunk_size
+    
+    write_hex_file(filename, bytes(all_data), start_addr, 4)
+    print(f"Dump saved to {filename} ({len(all_data)} bytes)")
+    return True
+
+def upload_memory(debugger: UARTDebugger, filename: str, start_addr: int):
+    """Загрузка данных в память данных"""
+    print(f"Uploading data memory from {filename} to 0x{start_addr:08X}...")
+    
+    data = parse_hex_file(filename)
+    
+    if not data:
+        print("Error: No data found in file")
+        return False
+    
+    print(f"Total bytes to upload: {len(data)}")
+    
+    for i in range(0, len(data), 250):
+        chunk = data[i:min(len(data), i+250)]
+        addr = start_addr + i
+        
+        if not debugger.write_data(addr, chunk):
+            print(f"Error writing at address 0x{addr:08X}")
+            return False
+        
+        print(f"  Progress: {i + len(chunk)}/{len(data)} bytes (0x{addr:08X})")
+    
+    print("Data memory uploaded successfully")
+    return True
+
+def dump_memory(debugger: UARTDebugger, filename: str, start_addr: int, length: int):
+    """Дамп памяти данных в файл"""
+    print(f"Dumping data memory to {filename} (0x{start_addr:08X}, {length} bytes)...")
+    
+    all_data = bytearray()
+    remaining = length
+    current_addr = start_addr
+    
+    while remaining > 0:
+        chunk_size = min(remaining, 250)
+        data = debugger.read_data(current_addr, chunk_size)
+        
+        if data is None:
+            print(f"Error reading at address 0x{current_addr:08X}")
+            return False
+        
+        if data:
+            all_data.extend(data)
+            print(f"  Read {len(data)} bytes from 0x{current_addr:08X}")
+        
+        remaining -= chunk_size
+        current_addr += chunk_size
+    
+    write_hex_file(filename, bytes(all_data), start_addr, 4)
+    print(f"Dump saved to {filename} ({len(all_data)} bytes)")
+    return True
+
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="CLI for DebugModule.sv",
+        description="Helps you to upload firmware and debug it on custom soft processor.",
+        epilog="I hope there are no bugs"
+    )
+    
+    parser.add_argument('--port', type=str, default="COM13", help='UART port (e.g., COM3 or /dev/ttyUSB0, default: COM13)')
+    parser.add_argument('--baudrate', type=int, default=115200, help='UART baudrate (default: 115200)')
+    
+    parser.add_argument('--reset', action='store_true', help='Soft reset the core')
+    parser.add_argument('--halt', action='store_true', help='Halt the core')
+    parser.add_argument('--resume', action='store_true', help='Resume core execution')
+    parser.add_argument('--run-tests', action='store_true', help='Run protocol tests (WARNING: changes memory state)')
+    
+    parser.add_argument('--upload-firmware', metavar='filename.hex', 
+                       help='Upload firmware to program memory (HEX format)')
+    parser.add_argument('--dump-firmware', metavar='filename.hex',
+                       help='Dump program memory to file (HEX format)')
+    
+    parser.add_argument('--upload-memory', metavar='filename.hex',
+                       help='Upload data to data memory (HEX format)')
+    parser.add_argument('--dump-memory', metavar='filename.hex',
+                       help='Dump data memory to file (HEX format)')
+    
+    parser.add_argument('--start', type=lambda x: int(x, 0), default=0,
+                       help='Start address for dump/upload (hex or decimal, default: 0)')
+    parser.add_argument('--len', type=lambda x: int(x, 0), 
+                       help='Length in bytes for dump operation (required for dump commands)')
+    
+    args = parser.parse_args()
+    
+    commands = [args.reset, args.halt, args.resume, args.run_tests,
+                args.upload_firmware, args.dump_firmware,
+                args.upload_memory, args.dump_memory]
+    
+    if sum(map(bool, commands)) != 1:
+        parser.print_help()
+        sys.exit(1)
+    
+    if (args.dump_firmware or args.dump_memory) and args.len is None:
+        print("Error: --len parameter is required for dump operations")
+        sys.exit(1)
+    
+    debugger = UARTDebugger(args.port, args.baudrate)
+    
+    try:
         debugger.connect()
         
-        print("\n--- Test 1: HALT ---")
-        if debugger.halt():
-            print("Core halted successfully")
-        else:
-            print("Failed to halt core")
+        success = True
         
-        # prog memory tests
-        print("\n--- Test 2: READ MEMORY CHUNK ---")
-        read_data = debugger.read_prog(0x0000, 251)
-        if read_data:
-            print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if args.reset:
+            print("\n--- Soft Reset ---")
+            if debugger.soft_rst():
+                print("Core reset successfully")
+            else:
+                print("Failed to reset core")
+                success = False
         
-        print("\n--- Test 3: READ MEMORY WORD ---")
-        read_data = debugger.read_prog(0x0020, 4)
-        if read_data:
-            print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if args.halt:
+            print("\n--- Halt ---")
+            if debugger.halt():
+                print("Core halted successfully")
+            else:
+                print("Failed to halt core")
+                success = False
         
-        print("\n--- Test 4: WRITE MEMORY NON ALIGNED ---")
-        test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
-        if debugger.write_prog(0x0023, test_data):
-            print(f"Written {len(test_data)} bytes to 0x0023")
-        
-        print("\n--- Test 5: READ MEMORY NON ALIGNED ---")
-        read_data = debugger.read_prog(0x0023, 6)
-        if read_data:
-            print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
-            if read_data == test_data:
-                print("Data matches!")
+        if args.resume:
+            print("\n--- Resume ---")
+            if debugger.resume():
+                print("Core resumed successfully")
+            else:
+                print("Failed to resume core")
+                success = False
                 
-        # data memory tests
-        print("\n--- Test 6: READ DATA MEMORY CHUNK ---")
-        read_data = debugger.read_data(0x0320, 126)
-        if read_data:
-            print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if args.run_tests:
+            print("\n--- Running protocol tests ---")
+            run_tests(debugger)
         
-        print("\n--- Test 7: READ DATA MEMORY WORD ---")
-        read_data = debugger.read_data(0x0020, 4)
-        if read_data:
-            print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
+        if args.upload_firmware:
+            print("\n--- Upload Firmware ---")
+            if not upload_firmware(debugger, args.upload_firmware, args.start):
+                success = False
         
-        print("\n--- Test 8: WRITE DATA MEMORY NON ALIGNED ---")
-        test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66] * 41)
-        if debugger.write_data(0x0320, test_data):
-            print(f"Written {len(test_data)} bytes to 0x0023")
+        if args.dump_firmware:
+            print("\n--- Dump Firmware ---")
+            if not dump_firmware(debugger, args.dump_firmware, args.start, args.len):
+                success = False
         
-        print("\n--- Test 9: READ DATA MEMORY NON ALIGNED ---")
-        read_data = debugger.read_data(0x0320, 126)
-        if read_data:
-            print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
-            if read_data == test_data:
-                print("Data matches!")
+        if args.upload_memory:
+            print("\n--- Upload Data Memory ---")
+            if not upload_memory(debugger, args.upload_memory, args.start):
+                success = False
         
+        if args.dump_memory:
+            print("\n--- Dump Data Memory ---")
+            if not dump_memory(debugger, args.dump_memory, args.start, args.len):
+                success = False
         
-        print("\n--- Test 10: RESUME ---")
-        if debugger.resume():
-            print("Core resumed successfully")
+        if not success:
+            sys.exit(1)
         
     except DebugProtocolError as e:
         print(f"Protocol error: {e}")
+        sys.exit(1)
     except serial.SerialException as e:
         print(f"Serial error: {e}")
+        sys.exit(1)
     except KeyboardInterrupt:
         print("\nInterrupted by user")
+        sys.exit(1)
     finally:
         debugger.disconnect()
 
