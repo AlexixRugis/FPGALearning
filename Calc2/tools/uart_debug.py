@@ -25,6 +25,7 @@ class Command(IntEnum):
     CMD_READ_DATA     = 0x04
     CMD_WRITE_DATA    = 0x05
     CMD_SOFT_RST      = 0x06
+    CMD_GET_STATE     = 0x07
 
 
 # ============================================================================
@@ -178,6 +179,15 @@ class UARTDebugger:
         status, _, _, = self.execute_command(Command.CMD_SOFT_RST, b'')
         return status == Status.STATUS_OK
     
+    def get_state(self) -> Optional[dict]:
+        """Получение текущего состояния ядра"""
+        status, _, resp_data = self.execute_command(Command.CMD_GET_STATE, b'')
+        if status != Status.STATUS_OK:
+            return None
+        if len(resp_data) != 1:
+            return None
+        return { 'is_halted' : bool(resp_data[0]) }
+    
     # ========================================================================
     # Работа с программной памятью
     # ========================================================================
@@ -234,30 +244,37 @@ class UARTDebugger:
         status, _, _ = self.execute_command(Command.CMD_WRITE_DATA, data)
         return status == Status.STATUS_OK
     
-def run_tests(debugger):        
+def run_tests(debugger: UARTDebugger):        
     print("\n--- Test 1: HALT ---")
     if debugger.halt():
         print("Core halted successfully")
     else:
         print("Failed to halt core")
+        
+    print("\n--- Test 2: GET STATE ---")
+    state = debugger.get_state()
+    if state and state["is_halted"]:
+        print("State is halted")
+    else:
+        print("Failed to get core state")
     
     # prog memory tests
-    print("\n--- Test 2: READ MEMORY CHUNK ---")
+    print("\n--- Test 3: READ MEMORY CHUNK ---")
     read_data = debugger.read_prog(0x0000, 251)
     if read_data:
         print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
     
-    print("\n--- Test 3: READ MEMORY WORD ---")
+    print("\n--- Test 4: READ MEMORY WORD ---")
     read_data = debugger.read_prog(0x0020, 4)
     if read_data:
         print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
     
-    print("\n--- Test 4: WRITE MEMORY NON ALIGNED ---")
+    print("\n--- Test 5: WRITE MEMORY NON ALIGNED ---")
     test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66])
     if debugger.write_prog(0x0023, test_data):
         print(f"Written {len(test_data)} bytes to 0x0023")
     
-    print("\n--- Test 5: READ MEMORY NON ALIGNED ---")
+    print("\n--- Test 6: READ MEMORY NON ALIGNED ---")
     read_data = debugger.read_prog(0x0023, 6)
     if read_data:
         print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
@@ -265,34 +282,40 @@ def run_tests(debugger):
             print("Data matches!")
             
     # data memory tests
-    print("\n--- Test 6: READ DATA MEMORY CHUNK ---")
+    print("\n--- Test 7: READ DATA MEMORY CHUNK ---")
     read_data = debugger.read_data(0x0320, 126)
     if read_data:
         print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
     
-    print("\n--- Test 7: READ DATA MEMORY WORD ---")
+    print("\n--- Test 8: READ DATA MEMORY WORD ---")
     read_data = debugger.read_data(0x0020, 4)
     if read_data:
         print(f"Read from 0x0020: {' '.join([f'0x{b:02X}' for b in read_data])}")
     
-    print("\n--- Test 8: WRITE DATA MEMORY NON ALIGNED ---")
+    print("\n--- Test 9: WRITE DATA MEMORY NON ALIGNED ---")
     test_data = bytes([0x11, 0x22, 0x33, 0x44, 0x55, 0x66] * 41)
     if debugger.write_data(0x0320, test_data):
         print(f"Written {len(test_data)} bytes to 0x0023")
     
-    print("\n--- Test 9: READ DATA MEMORY NON ALIGNED ---")
+    print("\n--- Test 10: READ DATA MEMORY NON ALIGNED ---")
     read_data = debugger.read_data(0x0320, 126)
     if read_data:
         print(f"Read from 0x0023: {' '.join([f'0x{b:02X}' for b in read_data])}")
         if read_data == test_data:
             print("Data matches!")
     
-    
-    print("\n--- Test 10: RESUME ---")
+    print("\n--- Test 11: RESUME ---")
     if debugger.resume():
         print("Core resumed successfully")
         
-    print("\n--- Test 11: SOFT RST ---")
+    print("\n--- Test 12: GET STATE ---")
+    state = debugger.get_state()
+    if state and not state["is_halted"]:
+        print("State is running")
+    else:
+        print("Failed to get core state")
+        
+    print("\n--- Test 13: SOFT RST ---")
     if debugger.soft_rst():
         print("Core reset successfully")
 
@@ -373,6 +396,16 @@ def upload_firmware(debugger: UARTDebugger, filename: str, start_addr: int):
     
     print(f"Total bytes to upload: {len(data)}")
     
+    state = debugger.get_state()
+    if not state:
+        print("Error: can't get core state")
+        return False
+    
+    if not state["is_halted"]:
+        if not debugger.halt():
+            print("Error: can't halt core")
+            return False
+    
     for i in range(0, len(data), 250):
         chunk = data[i:min(len(data), i+250)]
         addr = start_addr + i
@@ -382,6 +415,9 @@ def upload_firmware(debugger: UARTDebugger, filename: str, start_addr: int):
             return False
         
         print(f"  Progress: {i + len(chunk)}/{len(data)} bytes (0x{addr:08X})")
+    
+    if not state["is_halted"]:
+        print("Note: core stay halted")
     
     print("Firmware uploaded successfully")
     return True
@@ -393,6 +429,16 @@ def dump_firmware(debugger: UARTDebugger, filename: str, start_addr: int, length
     all_data = bytearray()
     remaining = length
     current_addr = start_addr
+    
+    state = debugger.get_state()
+    if not state:
+        print("Error: can't get core state")
+        return False
+    
+    if not state["is_halted"]:
+        if not debugger.halt():
+            print("Error: can't halt core")
+            return False
     
     while remaining > 0:
         chunk_size = min(remaining, 250)
@@ -408,6 +454,11 @@ def dump_firmware(debugger: UARTDebugger, filename: str, start_addr: int, length
         
         remaining -= chunk_size
         current_addr += chunk_size
+        
+    if not state["is_halted"]:
+        if not debugger.resume():
+            print("Error: can't resume core")
+            return False
     
     write_hex_file(filename, bytes(all_data), start_addr, 4)
     print(f"Dump saved to {filename} ({len(all_data)} bytes)")
@@ -425,6 +476,16 @@ def upload_memory(debugger: UARTDebugger, filename: str, start_addr: int):
     
     print(f"Total bytes to upload: {len(data)}")
     
+    state = debugger.get_state()
+    if not state:
+        print("Error: can't get core state")
+        return False
+    
+    if not state["is_halted"]:
+        if not debugger.halt():
+            print("Error: can't halt core")
+            return False
+    
     for i in range(0, len(data), 250):
         chunk = data[i:min(len(data), i+250)]
         addr = start_addr + i
@@ -434,6 +495,9 @@ def upload_memory(debugger: UARTDebugger, filename: str, start_addr: int):
             return False
         
         print(f"  Progress: {i + len(chunk)}/{len(data)} bytes (0x{addr:08X})")
+        
+    if not state["is_halted"]:
+        print("Note: core stay halted")
     
     print("Data memory uploaded successfully")
     return True
@@ -445,6 +509,16 @@ def dump_memory(debugger: UARTDebugger, filename: str, start_addr: int, length: 
     all_data = bytearray()
     remaining = length
     current_addr = start_addr
+    
+    state = debugger.get_state()
+    if not state:
+        print("Error: can't get core state")
+        return False
+    
+    if not state["is_halted"]:
+        if not debugger.halt():
+            print("Error: can't halt core")
+            return False
     
     while remaining > 0:
         chunk_size = min(remaining, 250)
@@ -460,6 +534,11 @@ def dump_memory(debugger: UARTDebugger, filename: str, start_addr: int, length: 
         
         remaining -= chunk_size
         current_addr += chunk_size
+        
+    if not state["is_halted"]:
+        if not debugger.resume():
+            print("Error: can't resume core")
+            return False
     
     write_hex_file(filename, bytes(all_data), start_addr, 4)
     print(f"Dump saved to {filename} ({len(all_data)} bytes)")
