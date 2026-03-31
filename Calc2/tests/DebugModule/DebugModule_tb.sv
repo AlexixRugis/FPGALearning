@@ -314,6 +314,43 @@ module DebugModule_tb;
         
         $display("  [TEST %0d] %s", test_count, error_count ? "FAILED" : "PASSED");
     endtask
+
+    task test_get_state(
+        input bit halt_state
+    );
+    reg [7:0] data[];
+    bit old_halt_state;
+    data = new[0];
+
+    test_count = test_count + 1;
+    $display("\n[TEST %0d] GET_STATE command (halt_state=%d)", test_count, halt_state);
+
+    old_halt_state = is_halted;
+    #1
+    is_halted = halt_state;
+    send_packet(8'h07, 8'hAB, 8'h00, data);
+    receive_response();
+
+    if (out_status !== 8'h00) begin
+        $display("  ERROR: Expected STATUS_OK (0x00), got 0x%0h", out_status);
+        error_count = error_count + 1;
+    end
+    if (out_id !== 8'hAB) begin
+        $display("  ERROR: Expected ID 0xBB, got 0x%0h", out_id);
+        error_count = error_count + 1;
+    end
+    if (out_len != 8'h01) begin
+        $display("  ERROR: Expected LEN 0x01, got 0x%0h", out_len);
+        error_count = error_count + 1;
+    end
+    if (out_bytes[0] != { 7'b0, halt_state }) begin
+        $display("  ERROR: Expected STATE 0x%0h, got 0x%0h", { 7'b0, halt_state }, out_bytes[0]);
+        error_count = error_count + 1;
+    end
+
+    is_halted = old_halt_state;
+    $display("  [TEST %0d] %s", test_count, error_count ? "FAILED" : "PASSED");
+    endtask
     
     task test_prog_write;
         reg [31:0] check_data;
@@ -608,6 +645,12 @@ module DebugModule_tb;
 
         test_soft_reset();
         #200;
+
+        test_get_state(1'b0);
+        #200
+
+        test_get_state(1'b1);
+        #200
 
         #1000;
         

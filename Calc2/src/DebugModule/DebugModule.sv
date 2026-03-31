@@ -153,6 +153,10 @@ logic [7:0]     data_mem_out_payload;
 logic [7:0]     data_mem_out_payload_addr;
 logic           data_mem_out_payload_we;
 
+logic [7:0]     state_out_payload;
+logic [7:0]     state_out_payload_addr;
+logic           state_out_payload_we;
+
 DebugMemoryCopier data_mem_copier(
     .clk(clk),
     .arstn(arstn),
@@ -198,6 +202,11 @@ always_comb begin
         out_payload_addr = data_mem_out_payload_addr;
         out_payload_we = 1'b1;
     end
+    else if (state_out_payload_we) begin
+        out_payload = state_out_payload;
+        out_payload_addr = state_out_payload_addr;
+        out_payload_we = 1'b1;
+    end
 
     if (prog_mem_in_data_re) begin
         inp_packet_data_addr = prog_mem_in_data_addr;
@@ -227,6 +236,7 @@ localparam [7:0] CMD_WRITE_PROG = 8'h03;
 localparam [7:0] CMD_READ_DATA = 8'h04;
 localparam [7:0] CMD_WRITE_DATA = 8'h05;
 localparam [7:0] CMD_RESET = 8'h06;
+localparam [7:0] CMD_GET_STATE = 8'h07;
 
 localparam [7:0] STATUS_OK = 8'h00;
 localparam [7:0] STATUS_ERROR_PARITY = 8'hFF;
@@ -243,6 +253,7 @@ enum logic [3:0] {
     S_CMD_READ_DATA,
     S_CMD_WRITE_DATA,
     S_CMD_RESET,
+    S_CMD_STATE,
     S_ERROR_PARITY,
     S_ERROR_ARGS,
     S_ERROR_CMD,
@@ -271,6 +282,10 @@ always_comb begin
     data_mem_copy_write = 'x;
 
     soft_reset_req = 1'b0;
+
+    state_out_payload = 'x;
+    state_out_payload_addr = 'x;
+    state_out_payload_we = 1'b0;
 
     case(cur_state)
     S_WAIT_INPUT: begin
@@ -307,6 +322,7 @@ always_comb begin
                         next_state = S_ERROR_ARGS;
                 end
                 CMD_RESET: next_state = S_CMD_RESET;
+                CMD_GET_STATE: next_state = S_CMD_STATE;
                 default: next_state = S_ERROR_CMD;
                 endcase
             end
@@ -350,6 +366,20 @@ always_comb begin
         if (soft_reset_ack) begin
             next_state = S_WAIT_SEND;
         end
+    end
+    S_CMD_STATE: begin
+        out_status = STATUS_OK;
+        out_status_we = 1'b1;
+        out_id = inp_packet_id;
+        out_id_we = 1'b1;
+        out_len = 8'h01;
+        out_len_we = 1'b1;
+
+        state_out_payload_addr = 8'b0;
+        state_out_payload = { 7'b0, is_halted };
+        state_out_payload_we = 1'b1;
+
+        next_state = S_WAIT_SEND;
     end
     S_CMD_READ_PROG: begin
         prog_mem_copy_req = 1'b1;
