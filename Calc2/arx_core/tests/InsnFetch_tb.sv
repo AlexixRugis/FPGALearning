@@ -31,23 +31,38 @@ logic [INSN_WIDTH-1:0]          memory [0:255];
 
 logic [ADDR_WIDTH-1:0]          mem_addr;
 logic                           mem_req;
-logic [ADDR_WIDTH-1:0]          mem_insn_in;
+logic [7:0]                     mem_latency;
 logic                           mem_ack;
 logic [INSN_WIDTH-1:0]          mem_data;
 
 always_ff @(posedge clk or negedge arstn) begin
-    if (mem_req) begin
-        mem_data <= memory[mem_addr[9:2]];
-        mem_ack <= 1'b1;
+    if (~arstn) begin
+        mem_ack <= 1'b0;
+        mem_latency <= 8'($urandom_range(0,20));
     end
     else begin
-        mem_ack <= 1'b0;
+        if (mem_req) begin
+            if (mem_latency === 8'b0) begin
+                mem_data <= memory[mem_addr[9:2]];
+                mem_ack <= 1'b1;
+                mem_latency <= 8'($urandom_range(0,10));
+            end
+            else begin
+                mem_latency <= mem_latency - 1'b1;
+                mem_ack <= 1'b0;
+            end
+        end
+        else begin
+            mem_ack <= 1'b0;
+        end
     end
 end
 
 // -----------
 
 // PC setting
+logic [ADDR_WIDTH-1:0]          expected_pc;
+
 logic [ADDR_WIDTH-1:0]          pc_in;
 logic                           pc_we;
 
@@ -76,12 +91,26 @@ InsnFetch #(
     .insn_out   (insn_out)
 );
 
+parameter PACKET_COUNT = 1000;
+parameter JUMP_COUNT = 300;
+
 typedef struct packed {
     logic [INSN_WIDTH-1:0] insn;
     logic [ADDR_WIDTH-1:0] pc;
+    logic [ADDR_WIDTH-1:0] expected_pc;
 } out_data_t;
 
 mailbox #(out_data_t) mb_out = new();
+
+task set_pc(
+    input logic [ADDR_WIDTH-1:0] target_pc
+);
+    pc_we <= 1'b1;
+    pc_in <= target_pc;
+    @(posedge clk);
+    pc_we <= 1'b0;
+
+endtask
 
 task read_out();
     out_data_t out_data;
@@ -89,7 +118,10 @@ task read_out();
     ready_out <= 1'b0;
     wait(arstn);
 
-    for (int i = 0; i < 100; i = i + 1) begin
+    for (int i = 0; i < PACKET_COUNT; i = i + 1) begin
+
+        repeat($urandom_range(0, 4)) @(posedge clk);
+
         ready_out <= 1'b1;
 
         do begin
@@ -101,40 +133,76 @@ task read_out();
 
         out_data.pc = pc_out;
         out_data.insn = insn_out;
+        out_data.expected_pc = expected_pc;
         mb_out.put(out_data);
     end
+endtask
 
-    $stop();
+task check_out();
+    out_data_t out_data;
+
+    for (int i = 0; i < PACKET_COUNT; i = i + 1) begin
+        mb_out.get(out_data);
+
+        if (out_data.pc[1:0] !== 2'b00) begin
+            $error("Unexpected unaligned PC!");
+        end
+
+        if (out_data.expected_pc !== out_data.pc) begin
+            $error("Unexpected PC value! Expected %h, Actual: %h", out_data.expected_pc, out_data.pc);
+        end
+
+        if (memory[out_data.pc[9:2]] !== out_data.insn) begin
+            $error("Insn doesn't match! Expected: %h, Actual: %h", memory[out_data.pc[9:2]], out_data.insn);
+        end
+    end
+endtask
+
+task make_jumps();
+    wait(arstn);
+    repeat(10) @(posedge clk);
+    for (int i = 0; i < JUMP_COUNT; i = i + 1) begin
+        repeat($urandom_range(0, 50)) @(posedge clk);
+        set_pc({ 30'($urandom_range(0, 200)), 2'b00 });
+    end
 endtask
 
 task init_memory();
     for (int i = 0; i < 256; i++) begin
-        memory[i] = i * 32'h01010101;
+        memory[i] = $urandom();
     end
 endtask
+
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
+        expected_pc <= '0;
+    end
+    else begin
+        if (pc_we) begin
+            expected_pc <= pc_in;
+        end
+        else if (valid_out & ready_out) begin
+            expected_pc <= expected_pc + 3'd4;
+        end
+    end
+end
 
 initial begin
     pc_in <= '0;
     pc_we <= 1'b0;
     
     init_memory();
-    read_out();
+
+    set_pc(32'h00000010);
+
+    fork
+        read_out();
+        check_out();
+        make_jumps();
+    join    
     
     #100;
     $finish;
-end
-
-// Monitor for errors
-always @(posedge clk) begin
-    if (valid_out && ready_out) begin
-        if (pc_out % 4 != 0) begin
-            $error("[%0t] Unaligned PC! 0x%08X", $time, pc_out);
-        end
-    end
-    
-    if (mem_req && (mem_addr % 4 != 0)) begin
-        $error("[%0t] Unaligned memory request! 0x%08X", $time, mem_addr);
-    end
 end
 
 parameter TIMEOUT = 100000;
