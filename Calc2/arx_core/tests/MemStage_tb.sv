@@ -36,7 +36,18 @@ logic [XLEN-1:0]                mem_read_data;
 
 logic [7:0]                     mem_latency;
 
+typedef struct packed {
+    logic [ADDR_WIDTH-1:0] addr;
+    logic [XLEN-1:0] value;
+    logic write_en;
+} mem_transaction;
+
+mailbox #(mem_transaction) mem_ops = new();
+mem_transaction mem_op;
+
 always_ff @(posedge clk or negedge arstn) begin
+    
+
     if (~arstn) begin
         mem_ack <= 1'b0;
         mem_latency <= 8'($urandom_range(0, 10));
@@ -53,6 +64,11 @@ always_ff @(posedge clk or negedge arstn) begin
                 mem_read_data <= memory[mem_addr[9:2]];
                 mem_ack <= 1'b1;
                 mem_latency <= 8'($urandom_range(0, 10));
+
+                mem_op.addr = mem_addr;
+                mem_op.value = memory[mem_addr[9:2]];
+                mem_op.write_en = mem_write_en;
+                mem_ops.put(mem_op);
             end
             else begin
                 mem_latency <= mem_latency - 1'b1;
@@ -148,6 +164,8 @@ typedef struct packed {
 
     logic reg_write;
     logic mem_to_reg;
+
+    logic [XLEN-1:0] expected_mem_value;
 } in_data_t;
 
 typedef struct packed {
@@ -184,6 +202,13 @@ task send_transaction();
         in_data.mem_read = ~write_op;
         in_data.mem_write = write_op;
         in_data.mem_to_reg = 1'b1;
+
+        if (write_op) begin
+            in_data.expected_mem_value = in_data.rs2_value;
+        end
+        else begin
+            in_data.expected_mem_value = memory[in_data.alu_result[7:0]];
+        end
     end
     else begin
         in_data.mem_read = 1'b0;
@@ -216,7 +241,7 @@ endtask
 task read_output();
     out_data_t out_data;
     
-    ready_out <= 1'b1;
+    ready_out <= 1'b0;
     wait(arstn);
     
     for (int i = 0; i < TRANSACTION_COUNT; i++) begin
@@ -225,8 +250,10 @@ task read_output();
 
         ready_out <= 1'b1;
 
-        while(~(valid_out & ready_out))
+        do begin
             @(posedge clk);
+        end
+        while(~(valid_out & ready_out));
 
         ready_out <= 1'b0;
         
@@ -237,7 +264,6 @@ task read_output();
         out_data.mem_to_reg = mem_to_reg_out;
         out_data.pc_branch = pc_branch_out;
         out_data.pc_we = pc_we_out;
-        
         mb_out.put(out_data);
     end
 
@@ -247,6 +273,7 @@ endtask
 task check_output();
     in_data_t in_data;
     out_data_t out_data;
+    mem_transaction mem_op;
 
     logic [XLEN-1:0] expected_mem_value;
     
@@ -257,11 +284,55 @@ task check_output();
         if (in_data.alu_result !== out_data.alu_result) begin
             $error("Alu result error! Expected: %h, Actual: %h", in_data.alu_result, out_data.alu_result);
         end
-        
-        // Check PC branch logic
-        if (out_data.pc_we) begin
-            if (out_data.pc_branch[1:0] != 2'b00) begin
-                $error("Unaligned branch PC: %h", out_data.pc_branch);
+
+        if ((in_data.alu_branch_en & in_data.branch_en) !== out_data.pc_we) begin
+            $error("Branch en mismatch! Expected: %h, Actual: %h", (in_data.alu_branch_en & in_data.branch_en), out_data.pc_we);
+        end
+
+        if (out_data.pc_we & (in_data.pc_branch !== out_data.pc_branch)) begin
+            $error("PC branch value mismatch! Expected: %h, Actual: %h", in_data.pc_branch, out_data.pc_branch);
+        end
+
+        if (in_data.rd !== out_data.rd) begin
+            $error("rd mismatch! Expected: %h, Actual: %h", in_data.rd, out_data.rd);
+        end
+
+        if (in_data.reg_write !== out_data.reg_write) begin
+            $error("reg_write mismatch! Expected: %h, Actual: %h", in_data.reg_write, out_data.reg_write);
+        end
+
+        if (in_data.mem_to_reg !== out_data.mem_to_reg) begin
+            $error("mem_to_reg mismatch! Expected: %h, Actual: %h", in_data.mem_to_reg, out_data.mem_to_reg);
+        end
+
+        if (in_data.mem_read) begin
+            mem_ops.get(mem_op);
+
+            if (mem_op.write_en !== 1'b0) begin
+                $error("Expected write mem op!");
+            end
+
+            if (mem_op.addr !== in_data.alu_result) begin
+                $error("Memory read addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
+            end
+            
+            if (mem_op.value !== out_data.mem_value) begin
+                $error("Mem read value mismatch! Expected: %h, Actual: %h", mem_op.value, out_data.mem_value);
+            end
+        end
+        if (in_data.mem_write) begin
+            mem_ops.get(mem_op);
+
+            if (mem_op.write_en !== 1'b1) begin
+                $error("Expected write mem op!");
+            end
+
+            if (mem_op.addr !== in_data.alu_result) begin
+                $error("Memory write addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
+            end
+            
+            if (mem_op.value !== in_data.rs2_value) begin
+                $error("Mem write value mismatch! Expected: %h, Actual: %h", in_data.rs2_value, mem_op.addr);
             end
         end
         
