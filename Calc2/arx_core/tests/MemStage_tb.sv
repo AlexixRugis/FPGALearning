@@ -2,6 +2,8 @@
 
 module MemStage_tb;
 
+import LoadStoreTypes::*;
+
 // Parameters
 parameter XLEN = 32;
 parameter ADDR_WIDTH = 32;
@@ -85,15 +87,17 @@ end
 logic                           valid_in;
 logic                           ready_in;
 logic                           alu_branch_en_in;
+logic                           branch_en_in;
+logic [ADDR_WIDTH-1:0]          pc_branch_in;
+
 logic [XLEN-1:0]                alu_in;
 logic [XLEN-1:0]                rs2_in;
 logic [4:0]                     rd_in;
-logic [ADDR_WIDTH-1:0]          pc_branch_in;
 logic                           reg_write_in;
 logic                           mem_to_reg_in;
-logic                           mem_read_in;
-logic                           mem_write_in;
-logic                           branch_en_in;
+
+logic                           mem_op_in;
+ls_type_t                       mem_op_type_in;
 
 logic                           valid_out;
 logic                           ready_out;
@@ -116,15 +120,17 @@ MemStage #(
     .valid_in(valid_in),
     .ready_in(ready_in),
     .alu_branch_en_in(alu_branch_en_in),
+    .branch_en_in(branch_en_in),
+    .pc_branch_in(pc_branch_in),
+
     .alu_in(alu_in),
     .rs2_in(rs2_in),
     .rd_in(rd_in),
-    .pc_branch_in(pc_branch_in),
     .reg_write_in(reg_write_in),
     .mem_to_reg_in(mem_to_reg_in),
-    .mem_read_in(mem_read_in),
-    .mem_write_in(mem_write_in),
-    .branch_en_in(branch_en_in),
+
+    .mem_op_in(mem_op_in),
+    .mem_op_type_in(mem_op_type_in),
     
     // TO WRITE BACK STAGE
     .valid_out(valid_out),
@@ -159,13 +165,12 @@ typedef struct packed {
 
     logic alu_branch_en;
     logic branch_en;
-    logic mem_read;
-    logic mem_write;
+
+    logic mem_op;
+    ls_type_t mem_op_type;
 
     logic reg_write;
     logic mem_to_reg;
-
-    logic [XLEN-1:0] expected_mem_value;
 } in_data_t;
 
 typedef struct packed {
@@ -195,24 +200,15 @@ task send_transaction();
     in_data.alu_branch_en = $urandom_range(0, 1);
     in_data.branch_en = $urandom_range(0, 1);
     in_data.reg_write = $urandom_range(0, 1);
-    use_mem = $urandom_range(0, 1);
-    if (use_mem) begin
+    in_data.mem_op = $urandom_range(0, 1);
+    if (in_data.mem_op) begin
         write_op = $urandom_range(0, 1);
 
-        in_data.mem_read = ~write_op;
-        in_data.mem_write = write_op;
-        in_data.mem_to_reg = 1'b1;
-
-        if (write_op) begin
-            in_data.expected_mem_value = in_data.rs2_value;
-        end
-        else begin
-            in_data.expected_mem_value = memory[in_data.alu_result[7:0]];
-        end
+        in_data.mem_op_type = write_op ? STORE_WORD : LOAD_WORD;
+        in_data.mem_to_reg = write_op;
     end
     else begin
-        in_data.mem_read = 1'b0;
-        in_data.mem_write = 1'b0;
+        in_data.mem_op_type = LOAD_WORD;
         in_data.mem_to_reg = 1'b0;
     end
 
@@ -226,8 +222,8 @@ task send_transaction();
     alu_branch_en_in <= in_data.alu_branch_en;
     branch_en_in <= in_data.branch_en;
 
-    mem_read_in <= in_data.mem_read;
-    mem_write_in <= in_data.mem_write;
+    mem_op_in <= in_data.mem_op;
+    mem_op_type_in <= in_data.mem_op_type;
     mem_to_reg_in <= in_data.mem_to_reg;
 
     while (!(valid_in & ready_in)) begin
@@ -274,8 +270,6 @@ task check_output();
     in_data_t in_data;
     out_data_t out_data;
     mem_transaction mem_op;
-
-    logic [XLEN-1:0] expected_mem_value;
     
     for (int i = 0; i < TRANSACTION_COUNT; i++) begin
         mb_in.get(in_data);
@@ -305,34 +299,36 @@ task check_output();
             $error("mem_to_reg mismatch! Expected: %h, Actual: %h", in_data.mem_to_reg, out_data.mem_to_reg);
         end
 
-        if (in_data.mem_read) begin
-            mem_ops.get(mem_op);
+        if (in_data.mem_op) begin
+            if (in_data.mem_op_type == LOAD_WORD) begin
+                mem_ops.get(mem_op);
 
-            if (mem_op.write_en !== 1'b0) begin
-                $error("Expected write mem op!");
-            end
+                if (mem_op.write_en !== 1'b0) begin
+                    $error("Expected read mem op!");
+                end
 
-            if (mem_op.addr !== in_data.alu_result) begin
-                $error("Memory read addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
+                if (mem_op.addr !== in_data.alu_result) begin
+                    $error("Memory read addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
+                end
+                
+                if (mem_op.value !== out_data.mem_value) begin
+                    $error("Mem read value mismatch! Expected: %h, Actual: %h", mem_op.value, out_data.mem_value);
+                end
             end
-            
-            if (mem_op.value !== out_data.mem_value) begin
-                $error("Mem read value mismatch! Expected: %h, Actual: %h", mem_op.value, out_data.mem_value);
-            end
-        end
-        if (in_data.mem_write) begin
-            mem_ops.get(mem_op);
+            else if (in_data.mem_op_type == STORE_WORD) begin
+                mem_ops.get(mem_op);
 
-            if (mem_op.write_en !== 1'b1) begin
-                $error("Expected write mem op!");
-            end
+                if (mem_op.write_en !== 1'b1) begin
+                    $error("Expected write mem op!");
+                end
 
-            if (mem_op.addr !== in_data.alu_result) begin
-                $error("Memory write addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
-            end
-            
-            if (mem_op.value !== in_data.rs2_value) begin
-                $error("Mem write value mismatch! Expected: %h, Actual: %h", in_data.rs2_value, mem_op.addr);
+                if (mem_op.addr !== in_data.alu_result) begin
+                    $error("Memory write addr mismatch! Expected: %h, Actual: %h", in_data.alu_result, mem_op.addr);
+                end
+                
+                if (mem_op.value !== in_data.rs2_value) begin
+                    $error("Mem write value mismatch! Expected: %h, Actual: %h", in_data.rs2_value, mem_op.addr);
+                end
             end
         end
         
@@ -360,8 +356,6 @@ initial begin
     pc_branch_in <= '0;
     reg_write_in <= 1'b0;
     mem_to_reg_in <= 1'b0;
-    mem_read_in <= 1'b0;
-    mem_write_in <= 1'b0;
     branch_en_in <= 1'b0;
     
     init_memory();

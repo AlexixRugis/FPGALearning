@@ -1,5 +1,5 @@
 vlib work
-vlog -sv -work work ../src/MemStage.sv ./MemStage_tb.sv
+vlog -sv -work work ../src/include/LoadStoreTypes.sv ../src/MemStage.sv ./MemStage_tb.sv
 vsim -L work MemStage_tb
 add wave *               
 

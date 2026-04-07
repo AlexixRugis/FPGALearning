@@ -1,4 +1,6 @@
-module MemStage #(
+module MemStage 
+    import LoadStoreTypes::*;
+#(
     parameter XLEN = 32,
     parameter ADDR_WIDTH = 32
 ) (
@@ -9,17 +11,18 @@ module MemStage #(
     input  logic                       valid_in,
     output logic                       ready_in,
 
+    input   logic                       branch_en_in,
     input   logic                       alu_branch_en_in,
+    input   logic [ADDR_WIDTH-1:0]      pc_branch_in,
+
     input   logic [XLEN-1:0]            alu_in,
     input   logic [XLEN-1:0]            rs2_in,
     input   logic [4:0]                 rd_in,
-    input   logic [ADDR_WIDTH-1:0]      pc_branch_in,
 
     input   logic                       reg_write_in,
     input   logic                       mem_to_reg_in,
-    input   logic                       mem_read_in,
-    input   logic                       mem_write_in,
-    input   logic                       branch_en_in,
+    input   logic                       mem_op_in,
+    input   ls_type_t                   mem_op_type_in,
 
 // -----------
 
@@ -57,17 +60,17 @@ module MemStage #(
 // STAGE REGISTERS
 
 logic                                   valid_in_internal;
+
 logic                                   alu_branch_en_in_internal;
+logic                                   branch_en_in_internal;
+logic [ADDR_WIDTH-1:0]                  pc_branch_in_internal;
+
 logic [XLEN-1:0]                        alu_in_internal;
 logic [XLEN-1:0]                        rs2_in_internal;
 logic [4:0]                             rd_in_internal;
-logic [ADDR_WIDTH-1:0]                  pc_branch_in_internal;
 
 logic                                   reg_write_in_internal;
 logic                                   mem_to_reg_in_internal;
-logic                                   mem_read_in_internal;
-logic                                   mem_write_in_internal;
-logic                                   branch_en_in_internal;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
@@ -77,16 +80,15 @@ always_ff @(posedge clk or negedge arstn) begin
         if (valid_in & ready_in) begin
             valid_in_internal <= 1'b1;
             alu_branch_en_in_internal <= alu_branch_en_in;
+            branch_en_in_internal <= branch_en_in;
+            pc_branch_in_internal <= pc_branch_in;
+
             alu_in_internal <= alu_in;
             rs2_in_internal <= rs2_in;
             rd_in_internal <= rd_in;
-            pc_branch_in_internal <= pc_branch_in;
 
             reg_write_in_internal <= reg_write_in;
             mem_to_reg_in_internal <= mem_to_reg_in;
-            mem_read_in_internal <= mem_read_in;
-            mem_write_in_internal <= mem_write_in;
-            branch_en_in_internal <= branch_en_in;
         end
         else if (valid_out & ready_out) begin
             valid_in_internal <= 1'b0;
@@ -101,9 +103,7 @@ end
 logic                                   mem_data_valid;
 logic [XLEN-1:0]                        mem_data_internal;
 logic                                   mem_request;
-
-logic                                   need_mem_op;
-assign need_mem_op = mem_read_in | mem_write_in;
+ls_type_t                               mem_op_type_in_internal;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
@@ -113,8 +113,9 @@ always_ff @(posedge clk or negedge arstn) begin
     end
     else begin
         if (valid_in & ready_in) begin
-            mem_data_valid <= ~need_mem_op;
-            mem_request <= need_mem_op;
+            mem_data_valid <= ~mem_op_in;
+            mem_request <= mem_op_in;
+            mem_op_type_in_internal <= mem_op_type_in;
         end
 
         if (mem_request & mem_ack_in) begin
@@ -129,7 +130,7 @@ always_comb begin
     mem_req_out = mem_request & ~mem_ack_in;
     mem_addr_out = alu_in_internal;
     mem_write_data_out = rs2_in_internal;
-    mem_write_en_out = mem_write_in_internal;
+    mem_write_en_out = mem_op_type_in_internal == STORE_WORD;
     mem_write_mask_out = 4'b1111;
 end
 
