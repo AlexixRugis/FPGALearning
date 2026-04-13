@@ -10,6 +10,11 @@ module InsnDecodeStage
     input   logic                       clk,
     input   logic                       arstn,
 
+// HALT REQ
+    input   logic                       halt_req_in,
+    output  logic                       halt_ack_out,
+// -----------
+
     input   logic                       flush_in,
 
 // FROM FETCH STAGE
@@ -182,10 +187,12 @@ always_comb begin
     alu_op_out = m_alu_op;
     alu_src_1_out = m_alu_src_1;
     alu_src_2_out = m_alu_src_2;
+
+    halt_ack_out = halt_req_in;
 end
 
 always_comb begin
-    if (~flush_in) begin
+    if (~flush_in & ~halt_req_in) begin
         valid_out = m_valid & (~m_used_reg[m_rs_1] & ~m_used_reg[m_rs_2]);
         ready_in = ~m_valid | (valid_out & ready_out);
     end

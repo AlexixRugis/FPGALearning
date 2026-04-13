@@ -7,6 +7,11 @@ module MemStage
     input   logic                       clk,
     input   logic                       arstn,
 
+// HALT REQ
+    input   logic                       halt_req_in,
+    output  logic                       halt_ack_out,
+// -----------
+
 // FROM EXEC STAGE
     input  logic                       valid_in,
     output logic                       ready_in,
@@ -160,7 +165,7 @@ end
 // OUT ASSIGNMENTS
 
 always_comb begin
-    valid_out = valid_in_internal & mem_data_valid;
+    halt_ack_out = halt_req_in & (mem_data_valid | ~valid_in_internal);
 
     reg_write_out = reg_write_in_internal;
     mem_to_reg_out = mem_to_reg_in_internal;
@@ -169,7 +174,16 @@ always_comb begin
     rd_out = rd_in_internal;
 end
 
-assign ready_in = ~valid_in_internal | (valid_out & ready_out);
+always_comb begin
+    if (~halt_req_in) begin
+        valid_out = valid_in_internal & mem_data_valid;
+        ready_in = ~valid_in_internal | (valid_out & ready_out);
+    end
+    else begin
+        valid_out = 1'b0;
+        ready_in = 1'b0;
+    end
+end
 
 // -----------
 

@@ -41,6 +41,9 @@ end
 
 // DUT
 
+logic                                   halt_req_in;
+logic                                   halt_ack_out;
+
 logic                                   flush_in;                                 
 
 logic                                   valid_in;
@@ -316,6 +319,7 @@ initial begin
     pc_in <= '0;
     insn_in <= '0;
     flush_in <= 1'b0;
+    halt_req_in <= 1'b0;
     
     wait(arstn);
     repeat(5) @(posedge clk);

@@ -72,6 +72,9 @@ logic                           ready_out;
 logic [ADDR_WIDTH-1:0]          pc_out;
 logic [INSN_WIDTH-1:0]          insn_out;
 
+logic                           halt_req_in;
+logic                           halt_ack_out;
+
 // DUT instance
 InsnFetch #(
     .ADDR_WIDTH(ADDR_WIDTH),
@@ -79,6 +82,8 @@ InsnFetch #(
 ) dut (
     .clk        (clk),
     .arstn      (arstn),
+    .halt_req_in(halt_req_in),
+    .halt_ack_out(halt_ack_out),
     .mem_addr   (mem_addr),
     .mem_req    (mem_req),
     .mem_insn_in(mem_data),
@@ -190,6 +195,7 @@ end
 initial begin
     pc_in <= '0;
     pc_we <= 1'b0;
+    halt_req_in <= 1'b0;
     
     init_memory();
 

@@ -84,6 +84,10 @@ always_ff @(posedge clk or negedge arstn) begin
 end
 
 // DUT Instance
+
+logic                           halt_req_in;
+logic                           halt_ack_out;
+
 logic                           valid_in;
 logic                           ready_in;
 
@@ -110,6 +114,9 @@ MemStage #(
 ) dut (
     .clk(clk),
     .arstn(arstn),
+
+    .halt_req_in(halt_req_in),
+    .halt_ack_out(halt_ack_out),
     
     // FROM EXEC STAGE
     .valid_in(valid_in),
@@ -437,6 +444,7 @@ task init_memory();
 endtask
 
 initial begin
+    halt_req_in <= 1'b0;
     valid_in <= 1'b0;
     ready_out <= 1'b0;
     alu_in <= '0;

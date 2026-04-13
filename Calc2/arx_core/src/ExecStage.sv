@@ -8,6 +8,11 @@ module ExecStage
     input   logic                       clk,
     input   logic                       arstn,
 
+// HALT REQ
+    input   logic                       halt_req_in,
+    output  logic                       halt_ack_out,
+// -----------
+
 // FROM ID STAGE
     input   logic                       valid_in,
     output  logic                       ready_in,
@@ -157,11 +162,19 @@ always_comb begin
     mem_to_reg_out = mem_to_reg_in_internal;
     mem_op_out = mem_op_internal;
     mem_op_type_out = mem_op_type_internal;
+
+    halt_ack_out = halt_req_in;
 end
 
 always_comb begin
-    valid_out = valid_in_internal;
-    ready_in = ready_out | ~valid_in_internal;
+    if (~halt_req_in) begin
+        valid_out = valid_in_internal;
+        ready_in = ready_out | ~valid_in_internal;
+    end
+    else begin
+        valid_out = 1'b0;
+        ready_in = 1'b0;
+    end
 end
 
 // -----------

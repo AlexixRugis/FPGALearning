@@ -5,6 +5,11 @@ module InsnFetch #(
     input                           clk,
     input                           arstn,
 
+    // HALT REQ
+    input   logic                   halt_req_in,
+    output  logic                   halt_ack_out,
+    // -----------------
+
     // MEMORY INTERFACE
     output  logic [ADDR_WIDTH-1:0]  mem_addr,
     output  logic                   mem_req,
@@ -66,7 +71,8 @@ mem_req_t                       mem_req_type;
 typedef enum logic [1:0] {
     S_IDLE,
     S_FETCH,
-    S_WAIT_HANDSHAKE
+    S_WAIT_HANDSHAKE,
+    S_HALT
 } if_state_t;
 
 if_state_t                      next_state, 
@@ -81,6 +87,8 @@ always_comb begin
     pc_upd = 1'b0;
     pc_we_ack = 1'b0;
     insn_buf_we = 1'b0;
+
+    halt_ack_out = 1'b0;
 
     case (cur_state)
     S_IDLE: begin
@@ -111,6 +119,7 @@ always_comb begin
     end
     S_WAIT_HANDSHAKE: begin
         out_source = SOURCE_BUF;
+        halt_ack_out = halt_req_in;
 
         if (ready_out | pc_we) begin
 
@@ -157,6 +166,10 @@ always_comb begin
         pc_out = pc;
     end
     endcase
+
+    if (halt_req_in) begin
+        valid_out = 1'b0;
+    end
 end
 
 // -----------------
