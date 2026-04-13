@@ -44,8 +44,9 @@ module InsnDecodeStage
 // FROM WRITE BACK
     input   logic [4:0]                 rd_in,
     input   logic [XLEN-1:0]            rd_val_in,
-    input   logic                       rd_we_in
+    input   logic                       rd_we_in,
 // -----------
+    output  logic [31:0]                dbg_used_regs_out
 );
 
 // STAGE REGISTERS
@@ -235,8 +236,14 @@ always_comb begin
         3'h4: m_alu_op = IALU_XOR;
         3'h6: m_alu_op = IALU_OR;
         3'h7: m_alu_op = IALU_AND;
-        3'h1: m_alu_op = IALU_SLL;
-        3'h5: m_alu_op = m_funct_7 === 7'h00 ? IALU_SRL : IALU_SRA;
+        3'h1: begin
+            m_imm = { 27'b0, m_imm_i[4:0] };
+            m_alu_op = IALU_SLL;
+        end
+        3'h5: begin
+            m_imm = { 27'b0, m_imm_i[4:0] };
+            m_alu_op = m_funct_7 === 7'h00 ? IALU_SRL : IALU_SRA;
+        end
         3'h2: m_alu_op = IALU_SLT;
         3'h3: m_alu_op = IALU_SLTU;
         endcase
@@ -273,7 +280,7 @@ always_comb begin
         endcase
     end
     7'b1100011: begin
-        m_pc_add_type = BRANCH_PC_IMM;
+        m_pc_addr_type = BRANCH_PC_IMM;
 
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_RS2;
@@ -326,6 +333,12 @@ always_comb begin
     end
     endcase
 end
+
+// -----------
+
+// DEBUG
+
+assign dbg_used_regs_out = m_used_reg;
 
 // -----------
 

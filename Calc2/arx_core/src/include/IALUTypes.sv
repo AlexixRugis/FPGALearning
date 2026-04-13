@@ -29,7 +29,7 @@ typedef enum logic [IALU_OP_WIDTH-1:0] {
 typedef enum logic [1:0] {
     OP_SRC_RS1 = 2'b00,
     OP_SRC_ZERO = 2'b01,
-    OP_SRC_PC = 2'b10,    
+    OP_SRC_PC = 2'b10    
 } ALU_src1_t;
 
 typedef enum logic [1:0] {
