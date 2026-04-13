@@ -248,7 +248,6 @@ always_comb begin
         endcase
     end
     7'b1100011: begin
-        branch_en_internal = 1'b1;
         pc_branch_type_internal = BRANCH_PC_IMM;
 
         alu_src_1_internal = OP_SRC_RS1

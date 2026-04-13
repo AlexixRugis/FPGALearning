@@ -177,7 +177,7 @@ end
 // OUT ASSIGNMENTS
 
 logic                           branch_en;
-assign branch_en = alu_branch_en_in_internal & branch_en_in_internal;
+assign branch_en = alu_branch_en_in_internal | branch_en_in_internal;
 
 always_comb begin
     valid_out = valid_in_internal & mem_data_valid;

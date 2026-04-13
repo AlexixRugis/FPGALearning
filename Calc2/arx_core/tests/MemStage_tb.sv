@@ -341,7 +341,7 @@ task check_output();
             $error("Alu result error! Expected: %h, Actual: %h", in_data.alu_result, out_data.alu_result);
         end
 
-        if ((in_data.alu_branch_en & in_data.branch_en) !== out_data.pc_we) begin
+        if ((in_data.alu_branch_en | in_data.branch_en) !== out_data.pc_we) begin
             $error("Branch en mismatch! Expected: %h, Actual: %h", (in_data.alu_branch_en & in_data.branch_en), out_data.pc_we);
         end
 

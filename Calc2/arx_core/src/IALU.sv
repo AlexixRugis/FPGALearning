@@ -3,12 +3,12 @@ module IALU
 #(
     parameter XLEN = 32
 ) (
-    input   logic [XLEN-1:0]        arg_1,
-    input   logic [XLEN-1:0]        arg_2,
-    input   logic [IALU_OP_WIDTH-1:0] opcode,
-    output  logic [XLEN-1:0]        res,
+    input   logic [XLEN-1:0]            arg_1,
+    input   logic [XLEN-1:0]            arg_2,
+    input   logic [IALU_OP_WIDTH-1:0]   opcode,
+    output  logic [XLEN-1:0]            res,
 
-    output  logic                   branch_en
+    output  logic                       branch_en
 );
 
 logic is_op_signed;
