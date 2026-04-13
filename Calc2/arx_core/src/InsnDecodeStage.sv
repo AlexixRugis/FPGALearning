@@ -10,6 +10,8 @@ module InsnDecodeStage
     input   logic                       clk,
     input   logic                       arstn,
 
+    input   logic                       flush_in,
+
 // FROM FETCH STAGE
     input  logic                        valid_in,
     output logic                        ready_in,
@@ -65,7 +67,7 @@ always_ff @(posedge clk or negedge arstn) begin
             m_pc <= pc_in;
             m_insn <= insn_in;
         end
-        else if (valid_out & ready_out) begin
+        else if (flush_in | valid_out & ready_out) begin
             m_valid <= 1'b0;
         end
     end
@@ -183,8 +185,14 @@ always_comb begin
 end
 
 always_comb begin
-    valid_out = m_valid & (~m_used_reg[m_rs_1] & ~m_used_reg[m_rs_2]);
-    ready_in = ~m_valid | (valid_out & ready_out);
+    if (~flush_in) begin
+        valid_out = m_valid & (~m_used_reg[m_rs_1] & ~m_used_reg[m_rs_2]);
+        ready_in = ~m_valid | (valid_out & ready_out);
+    end
+    else begin
+        valid_out = 1'b0;
+        ready_in = 1'b0;
+    end
 end
 
 // -----------

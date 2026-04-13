@@ -41,6 +41,8 @@ end
 
 // DUT
 
+logic                                   flush_in;                                 
+
 logic                                   valid_in;
 logic                                   ready_in;
 
@@ -301,14 +303,6 @@ task check_output();
             $error("mem_op mismatch! Expected: %h, Actual: %h", in_data.exp_mem_op, out_data.mem_op);
         end
 
-        // if (in_data.exp_rs1 !== out_data.rs1) begin
-        //     $error("rs1 mismatch! Expected: %h, Actual: %h", in_data.exp_rs1, out_data.rs1);
-        // end
-
-        // if (in_data.exp_rs2 !== out_data.rs2) begin
-        //     $error("rs2 mismatch! Expected: %h, Actual: %h", in_data.exp_rs2, out_data.rs2);
-        // end
-
         if (in_data.exp_imm !== out_data.imm) begin
             $error("Imm mismatch! Expected: %b, Actual: %b", in_data.exp_imm, out_data.imm);
         end
@@ -321,6 +315,7 @@ initial begin
     ready_out <= 1'b0;
     pc_in <= '0;
     insn_in <= '0;
+    flush_in <= 1'b0;
     
     wait(arstn);
     repeat(5) @(posedge clk);
