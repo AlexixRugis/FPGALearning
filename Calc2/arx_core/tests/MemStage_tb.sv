@@ -86,9 +86,6 @@ end
 // DUT Instance
 logic                           valid_in;
 logic                           ready_in;
-logic                           alu_branch_en_in;
-logic                           branch_en_in;
-logic [ADDR_WIDTH-1:0]          pc_branch_in;
 
 logic [XLEN-1:0]                alu_in;
 logic [XLEN-1:0]                rs2_in;
@@ -106,8 +103,6 @@ logic                           mem_to_reg_out;
 logic [XLEN-1:0]                alu_res_out;
 logic [XLEN-1:0]                mem_val_out;
 logic [4:0]                     rd_out;
-logic                           pc_we_out;
-logic [ADDR_WIDTH-1:0]          pc_branch_out;
 
 MemStage #(
     .XLEN(XLEN),
@@ -119,9 +114,6 @@ MemStage #(
     // FROM EXEC STAGE
     .valid_in(valid_in),
     .ready_in(ready_in),
-    .alu_branch_en_in(alu_branch_en_in),
-    .branch_en_in(branch_en_in),
-    .pc_branch_in(pc_branch_in),
 
     .alu_in(alu_in),
     .rs2_in(rs2_in),
@@ -141,10 +133,6 @@ MemStage #(
     .mem_val_out(mem_val_out),
     .rd_out(rd_out),
     
-    // TO PC
-    .pc_we_out(pc_we_out),
-    .pc_branch_out(pc_branch_out),
-    
     // TO DATA MEM
     .mem_req_out(mem_req),
     .mem_ack_in(mem_ack),
@@ -161,10 +149,6 @@ typedef struct packed {
     logic [XLEN-1:0] alu_result;
     logic [XLEN-1:0] rs2_value;
     logic [4:0] rd;
-    logic [ADDR_WIDTH-1:0] pc_branch;
-
-    logic alu_branch_en;
-    logic branch_en;
 
     logic mem_op;
     ls_type_t mem_op_type;
@@ -179,8 +163,6 @@ typedef struct packed {
     logic [4:0] rd;
     logic reg_write;
     logic mem_to_reg;
-    logic [ADDR_WIDTH-1:0] pc_branch;
-    logic pc_we;
 } out_data_t;
 
 mailbox #(in_data_t) mb_in = new();
@@ -267,21 +249,14 @@ task send_transaction();
 
     in_data.rs2_value = $urandom();
     in_data.rd = $urandom_range(0, 31);
-    in_data.pc_branch = {30'($urandom()), 2'b00};
-
-    in_data.alu_branch_en = $urandom_range(0, 1);
-    in_data.branch_en = $urandom_range(0, 1);
     in_data.reg_write = $urandom_range(0, 1);
 
     @(posedge clk);
     valid_in <= 1'b1;
     alu_in <= in_data.alu_result;
     rs2_in <= in_data.rs2_value;
-    pc_branch_in <= in_data.pc_branch;
     rd_in <= in_data.rd;
     reg_write_in <= in_data.reg_write;
-    alu_branch_en_in <= in_data.alu_branch_en;
-    branch_en_in <= in_data.branch_en;
 
     mem_op_in <= in_data.mem_op;
     mem_op_type_in <= in_data.mem_op_type;
@@ -319,8 +294,6 @@ task read_output();
         out_data.rd = rd_out;
         out_data.reg_write = reg_write_out;
         out_data.mem_to_reg = mem_to_reg_out;
-        out_data.pc_branch = pc_branch_out;
-        out_data.pc_we = pc_we_out;
         mb_out.put(out_data);
     end
 
@@ -339,14 +312,6 @@ task check_output();
 
         if (in_data.alu_result !== out_data.alu_result) begin
             $error("Alu result error! Expected: %h, Actual: %h", in_data.alu_result, out_data.alu_result);
-        end
-
-        if ((in_data.alu_branch_en | in_data.branch_en) !== out_data.pc_we) begin
-            $error("Branch en mismatch! Expected: %h, Actual: %h", (in_data.alu_branch_en & in_data.branch_en), out_data.pc_we);
-        end
-
-        if (out_data.pc_we & (in_data.pc_branch !== out_data.pc_branch)) begin
-            $error("PC branch value mismatch! Expected: %h, Actual: %h", in_data.pc_branch, out_data.pc_branch);
         end
 
         if (in_data.rd !== out_data.rd) begin
@@ -459,9 +424,8 @@ task check_output();
             end
         end
         
-        $display("[CHECK] Transaction %0d: ALU=%h, MEM=%h, RD=%0d, PC_WE=%0d, PC_BR=%h",
-                 i, out_data.alu_result, out_data.mem_value, out_data.rd,
-                 out_data.pc_we, out_data.pc_branch);
+        $display("[CHECK] Transaction %0d: ALU=%h, MEM=%h, RD=%0d",
+                 i, out_data.alu_result, out_data.mem_value, out_data.rd);
     end
 endtask
 
@@ -475,14 +439,11 @@ endtask
 initial begin
     valid_in <= 1'b0;
     ready_out <= 1'b0;
-    alu_branch_en_in <= 1'b0;
     alu_in <= '0;
     rs2_in <= '0;
     rd_in <= '0;
-    pc_branch_in <= '0;
     reg_write_in <= 1'b0;
     mem_to_reg_in <= 1'b0;
-    branch_en_in <= 1'b0;
     
     init_memory();
     

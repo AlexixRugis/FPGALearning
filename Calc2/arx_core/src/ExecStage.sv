@@ -19,7 +19,7 @@ module ExecStage
     input   logic [4:0]                 rd_in,
     input   logic [ADDR_WIDTH-1:0]      pc_in,
     input   branch_type_t               pc_branch_type_in,
-    input   logic                       pc_branch_en_in,
+    input   logic                       pc_jump_en_in,
 
     input   logic                       reg_write_in,
     input   logic                       mem_to_reg_in,
@@ -39,9 +39,9 @@ module ExecStage
     output  logic [XLEN-1:0]            alu_out,
     output  logic [XLEN-1:0]            rs2_out,
     output  logic [4:0]                 rd_out,
-    output  logic                       alu_branch_en_out,
+
     output  logic [XLEN-1:0]            pc_branch_out,
-    output  logic                       pc_branch_en_out,
+    output  logic                       pc_we_out,
 
     output  logic                       reg_write_out,
     output  logic                       mem_to_reg_out,
@@ -67,7 +67,7 @@ logic                                   mem_to_reg_in_internal;
 logic                                   mem_op_internal;
 ls_type_t                               mem_op_type_internal;
 
-logic                                   branch_en_in_internal;
+logic                                   pc_jump_en_in_internal;
 logic [IALU_OP_WIDTH-1:0]               alu_op_in_internal;
 ALU_src1_t                              alu_src_1_in_internal;
 ALU_src2_t                              alu_src_2_in_internal;
@@ -92,7 +92,7 @@ always_ff @(posedge clk or negedge arstn) begin
             mem_op_internal <= mem_op_in;
             mem_op_type_internal <= mem_op_type;
 
-            branch_en_in_internal <= branch_en_in;
+            pc_jump_en_in_internal <= pc_jump_en_in;
             alu_op_in_internal <= alu_op_in;
             alu_src_1_in_internal <= alu_src_1_in;
             alu_src_2_in_internal <= alu_src_2_in;
@@ -145,19 +145,18 @@ end
 // OUT ASSIGNMENTS
 
 always_comb begin
-    alu_branch_en_out = ialu_branch_en;
     alu_out = ialu_res;
     rs2_out = rs2_in_internal;
     rd_out = rd_in_internal;
 
     pc_branch_out = (pc_branch_type_internal === BRANCH_REG_IMM ? rs1_in_internal : pc_in_internal)
                 + imm_in_internal;
+    pc_we_out = (ialu_branch_en | pc_jump_en_in_internal) & valid_out & ready_out;
 
     reg_write_out = reg_write_in_internal;
     mem_to_reg_out = mem_to_reg_in_internal;
     mem_op_out = mem_op_internal;
     mem_op_type_out = mem_op_type_internal;
-    branch_en_out = branch_en_in_internal;
 end
 
 always_comb begin
