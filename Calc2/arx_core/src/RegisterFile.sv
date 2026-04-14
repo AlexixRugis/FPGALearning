@@ -11,7 +11,16 @@ module RegisterFile #(
 
     input   logic [4:0]       rd,
     input   logic             write_en,
-    input   logic [XLEN-1:0]  write_data
+    input   logic [XLEN-1:0]  write_data,
+
+    output  logic [XLEN-1:0]  dbg_x0,
+    output  logic [XLEN-1:0]  dbg_x1,
+    output  logic [XLEN-1:0]  dbg_x2,
+    output  logic [XLEN-1:0]  dbg_x3,
+    output  logic [XLEN-1:0]  dbg_x4,
+    output  logic [XLEN-1:0]  dbg_x5,
+    output  logic [XLEN-1:0]  dbg_x6,
+    output  logic [XLEN-1:0]  dbg_x7
 );
 
 logic [XLEN-1:0] regs [0:31];
@@ -25,9 +34,18 @@ always @(posedge clk or negedge arstn) begin
             regs[i] <= '0;
         end
     end
-    else if (write_en & ~|rd) begin
+    else if (write_en & |rd) begin
         regs[rd] <= write_data;
     end
 end
+
+assign dbg_x0 = regs[0];
+assign dbg_x1 = regs[1];
+assign dbg_x2 = regs[2];
+assign dbg_x3 = regs[3];
+assign dbg_x4 = regs[4];
+assign dbg_x5 = regs[5];
+assign dbg_x6 = regs[6];
+assign dbg_x7 = regs[7];
 
 endmodule

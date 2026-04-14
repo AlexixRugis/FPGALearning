@@ -53,7 +53,16 @@ module InsnDecodeStage
     input   logic [XLEN-1:0]            rd_val_in,
     input   logic                       rd_we_in,
 // -----------
-    output  logic [31:0]                dbg_used_regs_out
+    output  logic [31:0]                dbg_used_regs_out,
+
+    output  logic [XLEN-1:0]            dbg_x0,
+    output  logic [XLEN-1:0]            dbg_x1,
+    output  logic [XLEN-1:0]            dbg_x2,
+    output  logic [XLEN-1:0]            dbg_x3,
+    output  logic [XLEN-1:0]            dbg_x4,
+    output  logic [XLEN-1:0]            dbg_x5,
+    output  logic [XLEN-1:0]            dbg_x6,
+    output  logic [XLEN-1:0]            dbg_x7
 );
 
 // STAGE REGISTERS
@@ -133,7 +142,16 @@ RegisterFile #(
 
     .rd(rd_in),
     .write_en(rd_we_in),
-    .write_data(rd_val_in)
+    .write_data(rd_val_in),
+
+    .dbg_x0(dbg_x0),
+    .dbg_x1(dbg_x1),
+    .dbg_x2(dbg_x2),
+    .dbg_x3(dbg_x3),
+    .dbg_x4(dbg_x4),
+    .dbg_x5(dbg_x5),
+    .dbg_x6(dbg_x6),
+    .dbg_x7(dbg_x7)
 );
 
 logic [31:0]                            m_used_reg;

@@ -1,5 +1,6 @@
 module WriteBackStage #(
-    parameter XLEN = 32
+    parameter XLEN = 32,
+    parameter ADDR_WIDTH = 32
 ) (
     input   logic                       clk,
     input   logic                       arstn,
@@ -15,15 +16,17 @@ module WriteBackStage #(
     input   logic [XLEN-1:0]            mem_val_in,
 
     input   logic [4:0]                 rd_in,
+    input   logic [ADDR_WIDTH-1:0]      pc_in,
 
 // -----------
 
 // TO REG FILE
     output  logic                       reg_write_out,
     output  logic [4:0]                 rd_out,
-    output  logic [XLEN-1:0]            res_out
+    output  logic [XLEN-1:0]            res_out,
 
 // -----------
+    output  logic [ADDR_WIDTH-1:0]      pc_out
 );
 
 // STAGE REGISTERS
@@ -34,6 +37,7 @@ logic                                   mem_to_reg_in_internal;
 logic [XLEN-1:0]                        alu_res_in_internal;
 logic [XLEN-1:0]                        mem_val_in_internal;
 logic [4:0]                             rd_in_internal;
+logic [ADDR_WIDTH-1:0]                  pc_in_internal;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
@@ -47,6 +51,7 @@ always_ff @(posedge clk or negedge arstn) begin
             alu_res_in_internal <= alu_res_in;
             mem_val_in_internal <= mem_val_in;
             rd_in_internal <= rd_in;
+            pc_in_internal <= pc_in;
         end
         else begin
             valid_in_internal <= 1'b0;
@@ -59,6 +64,8 @@ end
 // OUT ASSIGNMENTS
 
 always_comb begin
+    pc_out = pc_in_internal;
+
     if (valid_in_internal) begin
         reg_write_out = reg_write_in_internal;
         rd_out = rd_in_internal;

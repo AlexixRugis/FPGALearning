@@ -20,6 +20,8 @@ module MemStage
     input   logic [XLEN-1:0]            rs2_in,
     input   logic [4:0]                 rd_in,
 
+    input   logic [ADDR_WIDTH-1:0]      pc_in,
+
     input   logic                       reg_write_in,
     input   logic                       mem_to_reg_in,
     input   logic                       mem_op_in,
@@ -38,6 +40,7 @@ module MemStage
     output  logic [XLEN-1:0]            mem_val_out,
 
     output  logic [4:0]                 rd_out,
+    output  logic [ADDR_WIDTH-1:0]      pc_out,
 // -----------
 
 // TO DATA MEM
@@ -95,6 +98,8 @@ LoadStoreUnit #(
 
 logic                                   valid_in_internal;
 
+logic [ADDR_WIDTH-1:0]                  pc_in_internal;
+
 logic [XLEN-1:0]                        alu_in_internal;
 logic [XLEN-1:0]                        rs2_in_internal;
 logic [4:0]                             rd_in_internal;
@@ -110,6 +115,8 @@ always_ff @(posedge clk or negedge arstn) begin
         if (valid_in & ready_in) begin
             valid_in_internal <= 1'b1;
             
+            pc_in_internal <= pc_in;
+
             alu_in_internal <= alu_in;
             rs2_in_internal <= rs2_in;
             rd_in_internal <= rd_in;
@@ -172,6 +179,7 @@ always_comb begin
     alu_res_out = alu_in_internal;
     mem_val_out = mem_data_internal;
     rd_out = rd_in_internal;
+    pc_out = pc_in_internal;
 end
 
 always_comb begin

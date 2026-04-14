@@ -1,5 +1,6 @@
 module ExecStage
     import IALUTypes::*;
+    import LoadStoreTypes::*;
     import BranchTypes::*;
 #(
     parameter XLEN = 32,
@@ -45,8 +46,7 @@ module ExecStage
     output  logic [XLEN-1:0]            rs2_out,
     output  logic [4:0]                 rd_out,
 
-    output  logic [XLEN-1:0]            pc_branch_out,
-    output  logic                       pc_we_out,
+    output  logic [ADDR_WIDTH-1:0]      pc_out,
 
     output  logic                       reg_write_out,
     output  logic                       mem_to_reg_out,
@@ -54,6 +54,8 @@ module ExecStage
     output  ls_type_t                   mem_op_type_out,
 
 // -----------
+    output  logic [XLEN-1:0]            pc_branch_out,
+    output  logic                       pc_we_out
 );
 
 // STAGE REGISTERS
@@ -95,7 +97,7 @@ always_ff @(posedge clk or negedge arstn) begin
             reg_write_in_internal <= reg_write_in;
             mem_to_reg_in_internal <= mem_to_reg_in;
             mem_op_internal <= mem_op_in;
-            mem_op_type_internal <= mem_op_type;
+            mem_op_type_internal <= mem_op_type_in;
 
             pc_jump_en_in_internal <= pc_jump_en_in;
             alu_op_in_internal <= alu_op_in;
@@ -133,11 +135,11 @@ always_comb begin
     case(alu_src_1_in_internal)
     OP_SRC_RS1: ialu_arg_1 = rs1_in_internal;
     OP_SRC_ZERO: ialu_arg_1 = '0;
-    OP_SRC_PC: pc_in_internal;
+    OP_SRC_PC: ialu_arg_1 = pc_in_internal;
     endcase
 
-    case(alu_src_2_internal)
-    OP_SRC_R2: ialu_arg_2 = rs2_in_internal;
+    case(alu_src_2_in_internal)
+    OP_SRC_RS2: ialu_arg_2 = rs2_in_internal;
     OP_SRC_FOUR: ialu_arg_2 = XLEN'(4);
     OP_SRC_IMM: ialu_arg_2 = imm_in_internal;
     endcase
@@ -153,6 +155,7 @@ always_comb begin
     alu_out = ialu_res;
     rs2_out = rs2_in_internal;
     rd_out = rd_in_internal;
+    pc_out = pc_in_internal;
 
     pc_branch_out = (pc_branch_type_internal === BRANCH_REG_IMM ? rs1_in_internal : pc_in_internal)
                 + imm_in_internal;
