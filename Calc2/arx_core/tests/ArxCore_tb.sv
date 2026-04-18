@@ -4,9 +4,10 @@ module ArxCore_tb;
 
 // Parameters
 parameter ADDR_WIDTH = 32;
+parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 10000;
+parameter TIMEOUT = 20000;
 
 // CLOCK AND RESET
 logic                           clk;
@@ -76,10 +77,6 @@ logic [31:0]        dbg_pc_wb;
 ArxCore dut(.*);
 
 initial begin
-    rom_data <= '0;
-    rom_ack <= '0;
-    ram_data <= '0;
-    ram_ack <= '0;
     halt_req <= 1'b0;
     resume_req <= 1'b0;
     
@@ -94,17 +91,64 @@ initial begin
     $readmemh("firmware.hex", prog_memory);
 end
 
-always @(posedge clk) begin
-    if (rom_req) begin
-        rom_data <= prog_memory[rom_addr[17:2]];
-        $display("  PROG MEM READ[0x%0h] => 0x%0h", 
-                    rom_addr, prog_memory[rom_addr[11:2]]);
-        rom_ack <= 1'b1;
-    end else begin
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
         rom_ack <= 1'b0;
-        rom_data <= 32'b0;
+    end
+    else begin
+        if (rom_req) begin
+            rom_data <= prog_memory[rom_addr[17:2]];
+            $display("  PROG MEM READ[0x%0h] => 0x%0h", 
+                        rom_addr, prog_memory[rom_addr[17:2]]);
+            rom_ack <= 1'b1;
+        end else begin
+            rom_ack <= 1'b0;
+            rom_data <= 32'b0;
+        end
     end
 end
+// -----------
+
+// RAM EMUL
+
+logic [XLEN-1:0]                memory [0:65535];
+logic [7:0]                     mem_latency;
+
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
+        ram_ack <= 1'b0;
+        mem_latency <= 8'($urandom_range(0, 10));
+    end
+    else begin
+        if (ram_req) begin
+            if (mem_latency == 8'b0) begin
+                if (ram_we) begin
+                    if (ram_we_mask[0]) memory[ram_addr[17:2]][7:0] = ram_write_data[7:0];
+                    if (ram_we_mask[1]) memory[ram_addr[17:2]][15:8] = ram_write_data[15:8];
+                    if (ram_we_mask[2]) memory[ram_addr[17:2]][23:16] = ram_write_data[23:16];
+                    if (ram_we_mask[3]) memory[ram_addr[17:2]][31:24] = ram_write_data[31:24];
+                end
+                ram_data <= memory[ram_addr[17:2]];
+                ram_ack <= 1'b1;
+                mem_latency <= 8'($urandom_range(0, 10));
+
+                $display("  DATA MEM USE[0x%0h] => 0x%0h, WE = %0b, MASK = %0b", 
+                        ram_addr, memory[ram_addr[17:2]], ram_we, ram_we_mask);
+            end
+            else begin
+                mem_latency <= mem_latency - 1'b1;
+                ram_ack <= 1'b0;
+            end
+        end
+        else begin
+            ram_ack <= 1'b0;
+        end
+    end
+end
+
+logic [31:0] data_out;
+assign data_out = memory[0];
+
 // -----------
 
 endmodule
