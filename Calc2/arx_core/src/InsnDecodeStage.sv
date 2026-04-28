@@ -1,7 +1,8 @@
+import IALUTypes::*;
+import LoadStoreTypes::*;
+import BranchTypes::*;
+
 module InsnDecodeStage
-    import IALUTypes::*;
-    import LoadStoreTypes::*;
-    import BranchTypes::*;
 #(
     parameter INSN_WIDTH = 32,
     parameter XLEN = 32,
@@ -99,7 +100,6 @@ logic [4:0]                             m_rd;
 logic [2:0]                             m_funct_3;
 logic [6:0]                             m_funct_7;
 
-logic [XLEN-1:0]                        m_imm_r;
 logic [XLEN-1:0]                        m_imm_i;
 logic [XLEN-1:0]                        m_imm_s;
 logic [XLEN-1:0]                        m_imm_b;
@@ -117,7 +117,6 @@ InsnDecoder insnDecoder(
     .funct_3(m_funct_3),
     .funct_7(m_funct_7),
     
-    .imm_r(m_imm_r),
     .imm_i(m_imm_i),
     .imm_s(m_imm_s),
     .imm_b(m_imm_b),

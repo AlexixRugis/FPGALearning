@@ -34,18 +34,105 @@ end
 
 // -----------
 
+logic                   clk_en;
+logic [31:0]            p_periph_address;
+logic [31:0]            p_periph_write_data;
+logic                   p_periph_write_en;
+logic [3:0]             p_periph_write_mask;
+logic [31:0]            p_periph_q;
+logic [31:0]            p_periph_out_1;
+assign clk_en = 1'b1;
+
+Peripherals periph(
+	.clk(clk),
+    .clk_en(1'b1),
+    .arstn(arstn),
+
+    .address(p_periph_address),
+    .data(p_periph_write_data),
+    .write_en(p_periph_write_en),
+    .write_mask(p_periph_write_mask),
+    .q(p_periph_q),
+    .out_1(p_periph_out_1)
+);
+
+// -----------
+
+logic [31:0]    master1_addr;
+logic [31:0]    master1_write_data;
+assign master1_write_data = '0;
+logic           master1_wr_en;
+assign master1_wr_en = '0;
+logic [3:0]     master1_wr_mask;
+assign master1_wr_mask = '0;
+logic           master1_req;
+logic [31:0]    master1_data;
+logic           master1_ack;
+
+logic [31:0]    master2_addr;
+logic [31:0]    master2_write_data;
+logic           master2_wr_en;
+logic [3:0]     master2_wr_mask;
+logic           master2_req;
+logic [31:0]    master2_data;
+logic           master2_ack;
+
+logic [31:0]    ic_rom_addr;
+logic [31:0]    ic_rom_data;
+
+logic [31:0]    ic_ram_addr;
+logic [31:0]    ic_ram_write_data;
+logic           ic_ram_wr_en;
+logic [3:0]     ic_ram_wr_mask;
+logic [31:0]    ic_ram_data;
+
+logic [31:0]    periph_addr;
+assign p_periph_address = periph_addr;
+logic [31:0]    periph_write_data;
+assign p_periph_write_data = periph_write_data;
+logic           periph_wr_en;
+assign p_periph_write_en = periph_wr_en;
+logic [3:0]     periph_wr_mask;
+assign p_periph_write_mask = periph_wr_mask;
+logic [31:0]    periph_data;
+assign periph_data = p_periph_q;
+
+MemoryInterconnect interconnect(
+    .*,
+    .rom_addr(ic_rom_addr),
+    .rom_data(ic_rom_data),
+    .ram_addr(ic_ram_addr),
+    .ram_write_data(ic_ram_write_data),
+    .ram_wr_en(ic_ram_wr_en),
+    .ram_wr_mask(ic_ram_wr_mask),
+    .ram_data(ic_ram_data)
+);
+
+// -----------
+
 logic [31:0]        rom_addr;
+assign master1_addr = rom_addr;
 logic               rom_req;
+assign master1_req = rom_req;
 logic [31:0]        rom_data;
+assign master1_data = rom_data;
 logic               rom_ack;
+assign master1_ack = rom_ack;
     
 logic [31:0]        ram_addr;
+assign master2_addr = ram_addr;
 logic [31:0]        ram_write_data;
+assign master2_write_data = ram_write_data;
 logic               ram_we;
+assign master2_wr_en = ram_we;
 logic [3:0]         ram_we_mask;
+assign master2_wr_mask = ram_we_mask;
 logic               ram_req;
+assign master2_req = ram_req;
 logic [31:0]        ram_data;
+assign master2_data = ram_data;
 logic               ram_ack;
+assign master2_ack = ram_ack;
 
 logic               halt_req;
 logic               resume_req;
@@ -85,7 +172,7 @@ end
 
 // ROM emul
 
-logic [31:0]        prog_memory[0:65535];
+logic [31:0]        prog_memory[0:262143];
 
 initial begin
     $readmemh("firmware.hex", prog_memory);
@@ -93,61 +180,30 @@ end
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        rom_ack <= 1'b0;
     end
     else begin
-        if (rom_req) begin
-            rom_data <= prog_memory[rom_addr[17:2]];
-            $display("  PROG MEM READ[0x%0h] => 0x%0h", 
-                        rom_addr, prog_memory[rom_addr[17:2]]);
-            rom_ack <= 1'b1;
-        end else begin
-            rom_ack <= 1'b0;
-            rom_data <= 32'b0;
-        end
+        ic_rom_data <= prog_memory[ic_rom_addr[19:2]];
     end
 end
 // -----------
 
 // RAM EMUL
 
-logic [XLEN-1:0]                memory [0:65535];
-logic [7:0]                     mem_latency;
+logic [XLEN-1:0]                memory [0:262143];
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        ram_ack <= 1'b0;
-        mem_latency <= 8'($urandom_range(0, 10));
     end
     else begin
-        if (ram_req) begin
-            if (mem_latency == 8'b0) begin
-                if (ram_we) begin
-                    if (ram_we_mask[0]) memory[ram_addr[17:2]][7:0] = ram_write_data[7:0];
-                    if (ram_we_mask[1]) memory[ram_addr[17:2]][15:8] = ram_write_data[15:8];
-                    if (ram_we_mask[2]) memory[ram_addr[17:2]][23:16] = ram_write_data[23:16];
-                    if (ram_we_mask[3]) memory[ram_addr[17:2]][31:24] = ram_write_data[31:24];
-                end
-                ram_data <= memory[ram_addr[17:2]];
-                ram_ack <= 1'b1;
-                mem_latency <= 8'($urandom_range(0, 10));
-
-                $display("  DATA MEM USE[0x%0h] => 0x%0h, WE = %0b, MASK = %0b", 
-                        ram_addr, memory[ram_addr[17:2]], ram_we, ram_we_mask);
-            end
-            else begin
-                mem_latency <= mem_latency - 1'b1;
-                ram_ack <= 1'b0;
-            end
-        end
-        else begin
-            ram_ack <= 1'b0;
+        ic_ram_data <= memory[ic_ram_addr[19:2]];
+        if (ic_ram_wr_en) begin
+            if (ic_ram_wr_mask[0]) memory[ic_ram_addr[19:2]][7:0] = ic_ram_write_data[7:0];
+            if (ic_ram_wr_mask[1]) memory[ic_ram_addr[19:2]][15:8] = ic_ram_write_data[15:8];
+            if (ic_ram_wr_mask[2]) memory[ic_ram_addr[19:2]][23:16] = ic_ram_write_data[23:16];
+            if (ic_ram_wr_mask[3]) memory[ic_ram_addr[19:2]][31:24] = ic_ram_write_data[31:24];
         end
     end
 end
-
-logic [31:0] data_out;
-assign data_out = memory[0];
 
 // -----------
 

@@ -19,14 +19,16 @@ module top(
     output  logic           led_state_3
 );
 
-logic [16:0] cnt;
-
-always @(posedge clk_50_mhz) begin
-	cnt <= cnt + 1'd1;
-end
-
 logic clk_en;
-always_comb clk_en = sw[3] & (cnt == '0);
+always_comb clk_en = sw[3];
+
+logic               halted;
+logic               halt_req;
+logic               resume_req;
+logic               soft_reset_n;
+logic               core_reset_n;
+
+assign core_reset_n = soft_reset_n & arstn;
 
 logic [31:0]            rom_addr;
 logic [31:0]            rom_val;
@@ -37,32 +39,20 @@ logic [31:0]            port_b_read_data;
 logic                   port_b_we;
 logic [3:0]             port_b_mask;
 
-logic [7:0]             from_uart_data;
-logic                   from_uart_valid;
-logic                   from_uart_ready;
-logic                   from_uart_error;
-logic [7:0]             to_uart_data;
-logic                   to_uart_ready;
-logic                   to_uart_valid;
-
 rom rom(.clock_a(clk_50_mhz), .clock_b(clk_50_mhz),
-    .address_a(rom_addr[12:0]), .q_a(rom_val),
+    .address_a(rom_addr), .q_a(rom_val),
     .enable_a(clk_en),
     .wren_a(1'b0),
-    .address_b(port_b_addr[12:0]),
+    .address_b(port_b_addr),
     .data_b(port_b_write_data),
     .q_b(port_b_read_data),
     .enable_b(1'b1),
     .wren_b(port_b_we), .byteena_b(port_b_mask));
 
-logic               rom_req;
-logic               rom_ack;
+logic               rom_port_req;
+logic               rom_port_ack;
 logic [31:0]        rom_port_addr;
 logic [31:0]        rom_port_data;
-
-RomPort rom_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
-    .addr(rom_port_addr), .req(rom_req), .data(rom_port_data), .ack(rom_ack), 
-    .rom_addr(rom_addr), .rom_data(rom_val));
 
 logic [31:0]        rom_wr_port_addr;
 logic [31:0]        rom_wr_port_write_data;
@@ -73,128 +63,139 @@ logic [31:0]        rom_wr_port_data;
 logic               rom_wr_port_ack;
 
 RamPort rom_port_b_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(1'b1),
-    .addr({ 2'b00, rom_wr_port_addr[31:2] }), .write_data(rom_wr_port_write_data), .wr_en(rom_wr_port_we), .wr_mask(rom_wr_port_mask),
+    .addr(rom_wr_port_addr), .write_data(rom_wr_port_write_data), .wr_en(rom_wr_port_we), .wr_mask(rom_wr_port_mask),
     .req(rom_wr_port_req), .data(rom_wr_port_data), .ack(rom_wr_port_ack),
     .ram_addr(port_b_addr), .ram_write_data(port_b_write_data), .ram_wr_en(port_b_we), .ram_byte_en(port_b_mask), .ram_data(port_b_read_data));
 
-uart uart(
-	.clk_clk(clk_50_mhz),
-	.reset_reset_n(arstn),
-	.rs232_0_from_uart_ready(from_uart_ready),
-	.rs232_0_from_uart_data(from_uart_data),
-	.rs232_0_from_uart_valid(from_uart_valid),
-    .rs232_0_from_uart_error(from_uart_error),
-	.rs232_0_to_uart_data(to_uart_data),
-	.rs232_0_to_uart_error(1'b0), 
-	.rs232_0_to_uart_valid(to_uart_valid),
-	.rs232_0_to_uart_ready(to_uart_ready),
-	.rs232_0_UART_RXD(uart_rx),
-	.rs232_0_UART_TXD(uart_tx)
-);
-
-logic to_uart_ready_delay;
-logic to_uart_valid_delay;
-
-ValidReadyDelay #(.NUM_TICKS(6000)) valid_ready_delay_inst(
-    .clk(clk_50_mhz),
-    .arstn(arstn),
-    .slave_ready(to_uart_ready),
-    .slave_valid(to_uart_valid),
-    .master_ready(to_uart_ready_delay),
-    .master_valid(to_uart_valid_delay)
-);
-
-logic [31:0] ram_addr;
-logic [31:0] ram_val;
-logic [31:0] ram_write_data;
-logic ram_we;
-logic [3:0] ram_mask;
-logic [31:0] out_1;
-logic fs_start;
-logic lsb_start;
-logic lsa_start;
-logic ss_start;
-logic [31:0] reg_a;
-logic [31:0] reg_b;
-logic [31:0] sp_dbg;
-
-logic [31:0] digit;
-
-logic halted;
-logic halt_req;
-logic resume_req;
-logic soft_reset_n;
-logic core_reset_n;
-
-assign core_reset_n = soft_reset_n & arstn;
-
-logic [31:0] mem_debug_addr;
-logic [31:0] mem_debug_write_data;
-logic mem_debug_wr_enable;
-logic [3:0]  mem_debug_wr_mask;
-logic mem_debug_req;
-logic [31:0] mem_debug_data;
-logic mem_debug_ack;
+logic [31:0]        ram_addr;
+logic [31:0]        ram_val;
+logic [31:0]        ram_write_data;
+logic               ram_we;
+logic [3:0]         ram_mask;
 
 mmio ram(
     .clk(clk_50_mhz), .clk_en(clk_en), .arstn(arstn),
     .address(ram_addr), .data(ram_write_data), 
-    .write_en(ram_we), .write_mask(ram_mask), .q(ram_val), .out_1(out_1));
+    .write_en(ram_we), .write_mask(ram_mask), .q(ram_val));
 
 logic [31:0]        ram_port_addr;
 logic [31:0]        ram_port_data;
 logic [31:0]        ram_port_write_data;
 logic               ram_port_we;
 logic [3:0]         ram_port_mask;
-logic               ram_req;
-logic               ram_ack;
+logic               ram_port_req;
+logic               ram_port_ack;
 
-RamPort ram_port_inst(.clk(clk_50_mhz), .arstn(arstn), .clk_en(clk_en),
-    .addr(ram_port_addr), .write_data(ram_port_write_data), .wr_en(ram_port_we), .wr_mask(ram_port_mask),
-    .req(ram_req), .data(ram_port_data), .ack(ram_ack),
-    .ram_addr(ram_addr), .ram_write_data(ram_write_data), .ram_wr_en(ram_we), .ram_byte_en(ram_mask), .ram_data(ram_val));
+logic [31:0]        periph_addr;
+logic [31:0]        periph_val;
+logic [31:0]        periph_write_data;
+logic               periph_we;
+logic [3:0]         periph_mask;
+logic [31:0]        out_1;
 
-Processor p(
+Peripherals periph(
+    .clk(clk_50_mhz), .clk_en(clk_en), .arstn(arstn),
+    .address(periph_addr), .data(periph_write_data), 
+    .write_en(periph_we), .write_mask(periph_mask), .q(periph_val), .out_1(out_1));
+
+MemoryInterconnect interconnect(
     .clk(clk_50_mhz),
+    .arstn(arstn),
     .clk_en(clk_en),
-    .arstn(core_reset_n),
-    .rom_addr(rom_port_addr), .rom_data(rom_port_data),
-    .rom_req(rom_req), .rom_ack(rom_ack),
-    .ram_addr(ram_port_addr), .ram_data(ram_port_data), .ram_req(ram_req),
-    .ram_write_data(ram_port_write_data), .ram_we(ram_port_we), .ram_we_mask(ram_port_mask), .ram_ack(ram_ack),
-    .start_fs_dbg(fs_start),
-    .start_lsb_dbg(lsb_start),
-    .start_lsa_dbg(lsa_start),
-    .start_ss_dbg(ss_start),
-    .reg_a(reg_a), .reg_b(reg_b),
-    .sp_dbg(sp_dbg),
 
-    .halted(halted),
+    .master1_addr(ram_port_addr),
+    .master1_write_data(ram_port_write_data),
+    .master1_wr_en(ram_port_we),
+    .master1_wr_mask(ram_port_mask),
+    .master1_req(ram_port_req),
+    .master1_data(ram_port_data),
+    .master1_ack(ram_port_ack),
+
+    .master2_addr(rom_port_addr),
+    .master2_write_data('0),
+    .master2_wr_en('0),
+    .master2_wr_mask('0),
+    .master2_req(rom_port_req),
+    .master2_data(rom_port_data),
+    .master2_ack(rom_port_ack),
+
+    .rom_addr(rom_addr),
+    .rom_data(rom_val),
+
+    .ram_addr(ram_addr),
+    .ram_write_data(ram_write_data),
+    .ram_wr_en(ram_we),
+    .ram_wr_mask(ram_mask),
+    .ram_data(ram_val),
+
+    .periph_addr(periph_addr),
+    .periph_write_data(periph_write_data),
+    .periph_wr_en(periph_we),
+    .periph_wr_mask(periph_mask),
+    .periph_data(periph_val)
+);
+
+logic [31:0]        dbg_x1;
+logic [31:0]        dbg_x2;
+logic [31:0]        dbg_x3;
+logic [31:0]        dbg_pc_fs;
+
+logic [31:0]        mem_debug_addr;
+logic [31:0]        mem_debug_write_data;
+logic               mem_debug_wr_enable;
+logic [3:0]         mem_debug_wr_mask;
+logic               mem_debug_req;
+logic [31:0]        mem_debug_data;
+logic               mem_debug_ack;
+
+ArxCore p(
+    .clk(clk_50_mhz),
+    .arstn(core_reset_n),
+    
+    .rom_addr(rom_port_addr),
+    .rom_req(rom_port_req),
+    .rom_data(rom_port_data),
+    .rom_ack(rom_port_ack),
+    
+    .ram_addr(ram_port_addr),
+    .ram_write_data(ram_port_write_data),
+    .ram_we(ram_port_we),
+    .ram_we_mask(ram_port_mask),
+    .ram_req(ram_port_req),
+    .ram_data(ram_port_data),
+    .ram_ack(ram_port_ack),
+
     .halt_req(halt_req),
     .resume_req(resume_req),
+    .halted(halted),
 
-    .mem_debug_addr({ 2'b00, mem_debug_addr[31:2] }),
+    .mem_debug_addr(mem_debug_addr),
     .mem_debug_write_data(mem_debug_write_data),
     .mem_debug_wr_enable(mem_debug_wr_enable),
     .mem_debug_wr_mask(mem_debug_wr_mask),
     .mem_debug_req(mem_debug_req),
     .mem_debug_data(mem_debug_data),
-    .mem_debug_ack(mem_debug_ack)
+    .mem_debug_ack(mem_debug_ack),
+
+    .dbg_x1(dbg_x1),
+    .dbg_x2(dbg_x2),
+    .dbg_x3(dbg_x3),
+    .dbg_pc_fs(dbg_pc_fs)
 );
 
-logic halt_req_debug_mod;
-logic resume_req_debug_mod;
+logic               halt_req_debug_mod;
+logic               resume_req_debug_mod;
 
 assign halt_req = halt_req_debug_mod | ~btnn[1];
 assign resume_req = resume_req_debug_mod | ~btnn[2];
 
-logic [31:0] debug_mem_addr;
-logic [31:0] debug_mem_write_data;
-logic debug_mem_wr_enable;
-logic [3:0] debug_mem_wr_mask;
-logic debug_mem_req;
-logic [31:0] debug_mem_data;
-logic debug_mem_ack;
+logic [31:0]        debug_mem_addr;
+logic [31:0]        debug_mem_write_data;
+logic               debug_mem_wr_enable;
+logic [3:0]         debug_mem_wr_mask;
+logic               debug_mem_req;
+logic [31:0]        debug_mem_data;
+logic               debug_mem_ack;
 
 DebugMemoryBridge debugMemoryBridge(
     .debug_addr(debug_mem_addr),
@@ -213,6 +214,41 @@ DebugMemoryBridge debugMemoryBridge(
     .mem_req(mem_debug_req),
     .mem_data(mem_debug_data),
     .mem_ack(mem_debug_ack)
+);
+
+logic [7:0]             from_uart_data;
+logic                   from_uart_valid;
+logic                   from_uart_ready;
+logic                   from_uart_error;
+logic [7:0]             to_uart_data;
+logic                   to_uart_ready;
+logic                   to_uart_valid;
+
+uart uart(
+	.clk_clk(clk_50_mhz),
+	.reset_reset_n(arstn),
+	.rs232_0_from_uart_ready(from_uart_ready),
+	.rs232_0_from_uart_data(from_uart_data),
+	.rs232_0_from_uart_valid(from_uart_valid),
+    .rs232_0_from_uart_error(from_uart_error),
+	.rs232_0_to_uart_data(to_uart_data),
+	.rs232_0_to_uart_error(1'b0), 
+	.rs232_0_to_uart_valid(to_uart_valid),
+	.rs232_0_to_uart_ready(to_uart_ready),
+	.rs232_0_UART_RXD(uart_rx),
+	.rs232_0_UART_TXD(uart_tx)
+);
+
+logic                   to_uart_ready_delay;
+logic                   to_uart_valid_delay;
+
+ValidReadyDelay #(.NUM_TICKS(6000)) valid_ready_delay_inst(
+    .clk(clk_50_mhz),
+    .arstn(arstn),
+    .slave_ready(to_uart_ready),
+    .slave_valid(to_uart_valid),
+    .master_ready(to_uart_ready_delay),
+    .master_valid(to_uart_valid_delay)
 );
 
 DebugModule debugModule(
@@ -256,15 +292,17 @@ DebugModule debugModule(
 // 10 - reg_b
 // 11 - cmd_dbg
 
+logic [31:0] digit;
+
 always_comb begin
 
     case (sw[2:0])
 
     3'b000: digit = out_1;
-    3'b001: digit = reg_a;
-    3'b010: digit = reg_b;
-    3'b011: digit = rom_addr;
-    3'b100: digit = sp_dbg;
+    3'b001: digit = dbg_x1;
+    3'b010: digit = dbg_x2;
+    3'b011: digit = dbg_x3;
+    3'b100: digit = dbg_pc_fs;
     3'b101: digit = rom_val;
     default: digit = 32'hffffffff;
 

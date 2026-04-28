@@ -9,7 +9,6 @@ module InsnDecoder(
     output  logic [2:0]             funct_3,
     output  logic [6:0]             funct_7,
 
-    output  logic [31:0]            imm_r,
     output  logic [31:0]            imm_i,
     output  logic [31:0]            imm_s,
     output  logic [31:0]            imm_b,

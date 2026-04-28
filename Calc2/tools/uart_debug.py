@@ -109,9 +109,9 @@ class UARTDebugger:
         packet = bytes([cmd, packet_id, length]) + data
         
         self.ser.write(packet)
-        print(f"Sent: CMD=0x{cmd:02X}, ID=0x{packet_id:02X}, LEN={length}")
-        if length > 0:
-            print(f"      Data: {' '.join([f'0x{b:02X}' for b in data])}")
+        #print(f"Sent: CMD=0x{cmd:02X}, ID=0x{packet_id:02X}, LEN={length}")
+        #if length > 0:
+        #    print(f"      Data: {' '.join([f'0x{b:02X}' for b in data])}")
         
         return packet_id
     
@@ -136,9 +136,9 @@ class UARTDebugger:
             if len(data) < length:
                 raise DebugProtocolError(f"Timeout waiting for response data: expected {length}, got {len(data)}")
         
-        print(f"Received: STATUS=0x{status:02X}, ID=0x{resp_id:02X}, LEN={length}")
-        if length > 0:
-            print(f"         Data: {' '.join([f'0x{b:02X}' for b in data])}")
+        #print(f"Received: STATUS=0x{status:02X}, ID=0x{resp_id:02X}, LEN={length}")
+        #if length > 0:
+        #    print(f"         Data: {' '.join([f'0x{b:02X}' for b in data])}")
         
         # Проверка ID, если ожидается конкретный
         if expected_id is not None and resp_id != expected_id:

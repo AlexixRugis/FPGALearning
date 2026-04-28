@@ -6,9 +6,9 @@
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEMA5F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY "DE1_SOC_golden_top"
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 13
 set_global_assignment -name LAST_QUARTUS_VERSION "22.1std.2 Lite Edition"
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "Thu Jul 11 11:26:45 2013"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "THU JUL 11 11:26:45 2013"
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 
 
@@ -250,78 +250,78 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HEX5[6]
 # HPS
 #============================================================
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HPS_CONV_USB_N
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[0]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[4]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[5]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[6]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[7]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[8]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[9]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[10]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[11]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[12]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[13]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ADDR[14]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_BA[0]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_BA[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_BA[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_CAS_N
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_CKE
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_CK_N
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_CK_P
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_CS_N
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DM[0]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DM[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DM[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DM[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[0]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[1]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[2]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[4]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[5]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[6]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[7]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[8]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[9]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[10]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[11]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[12]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[13]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[14]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[15]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[16]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[17]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[18]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[19]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[20]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[21]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[22]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[23]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[24]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[25]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[26]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[27]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[28]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[29]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[30]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_DQ[31]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_N[0]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_N[1]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_N[2]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_N[3]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_P[0]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_P[1]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_P[2]
-set_instance_assignment -name IO_STANDARD "Differential 1.5-V SSTL Class I" -to HPS_DDR3_DQS_P[3]
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_ODT
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_RAS_N
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_RESET_N
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_RZQ
-set_instance_assignment -name IO_STANDARD "SSTL-15 Class I" -to HPS_DDR3_WE_N
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[0]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[1]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[2]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[3]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[4]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[5]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[6]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[7]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[8]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[9]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[10]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[11]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[12]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[13]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ADDR[14]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_BA[0]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_BA[1]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_BA[2]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_CAS_N
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_CKE
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_CK_N
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_CK_P
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_CS_N
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DM[0]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DM[1]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DM[2]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DM[3]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[0]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[1]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[2]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[3]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[4]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[5]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[6]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[7]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[8]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[9]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[10]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[11]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[12]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[13]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[14]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[15]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[16]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[17]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[18]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[19]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[20]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[21]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[22]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[23]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[24]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[25]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[26]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[27]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[28]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[29]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[30]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_DQ[31]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_N[0]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_N[1]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_N[2]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_N[3]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_P[0]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_P[1]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_P[2]
+set_instance_assignment -name IO_STANDARD "DIFFERENTIAL 1.5-V SSTL CLASS I" -to HPS_DDR3_DQS_P[3]
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_ODT
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_RAS_N
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_RESET_N
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_RZQ
+set_instance_assignment -name IO_STANDARD "SSTL-15 CLASS I" -to HPS_DDR3_WE_N
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HPS_ENET_GTX_CLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HPS_ENET_INT_N
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to HPS_ENET_MDC
@@ -802,6 +802,31 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ProgramCount
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ProgramCounterTb -section_id ProgramCounterTb
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
+set_global_assignment -name EDA_TEST_BENCH_NAME InsnFetch_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME InsnFetch_tb -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/FetchStageTb.sv -section_id FetchStageTb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section_id ProgramCounterTb
+set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/InsnFetch_tb.sv -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/src/InsnFetch.sv -section_id InsnFetch_tb
+set_global_assignment -name SYSTEMVERILOG_FILE src/Timer.sv
+set_global_assignment -name SYSTEMVERILOG_FILE src/Peripherals.sv
+set_global_assignment -name SYSTEMVERILOG_FILE src/MemoryInterconnect.sv
+set_global_assignment -name SYSTEMVERILOG_FILE src/RamArbiter2to1.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/include/LoadStoreTypes.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/include/IALUTypes.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/include/BranchTypes.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/WriteBackStage.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/RegisterFile.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/MemStage.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/LoadStoreUnit.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/InsnFetch.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/InsnDecodeStage.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/InsnDecoder.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/IALU.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/ExecStage.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/ArxCore.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/ResetController.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ValidReadyDelay.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/DebugModule/DebugMemoryBridge.sv
@@ -845,12 +870,4 @@ set_global_assignment -name SYSTEMVERILOG_FILE src/ProcessorTypes.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/RomPort.sv
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name EDA_TEST_BENCH_NAME InsnFetch_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id InsnFetch_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME InsnFetch_tb -section_id InsnFetch_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/FetchStageTb.sv -section_id FetchStageTb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section_id ProgramCounterTb
-set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/InsnFetch_tb.sv -section_id InsnFetch_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/src/InsnFetch.sv -section_id InsnFetch_tb
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

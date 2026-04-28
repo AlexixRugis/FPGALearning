@@ -1,5 +1,7 @@
 vlib work
 vlog -hazards -lint -sv -work work \
+../../src/Peripherals.sv \
+../../src/MemoryInterconnect.sv \
 ../src/include/LoadStoreTypes.sv \
 ../src/include/BranchTypes.sv \
 ../src/include/IALUTypes.sv \

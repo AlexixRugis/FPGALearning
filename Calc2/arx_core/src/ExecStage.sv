@@ -1,7 +1,8 @@
+import IALUTypes::*;
+import LoadStoreTypes::*;
+import BranchTypes::*;
+
 module ExecStage
-    import IALUTypes::*;
-    import LoadStoreTypes::*;
-    import BranchTypes::*;
 #(
     parameter XLEN = 32,
     parameter ADDR_WIDTH = 32

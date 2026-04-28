@@ -1,7 +1,8 @@
+import IALUTypes::*;
+import LoadStoreTypes::*;
+import BranchTypes::*;
+
 module ArxCore
-    import IALUTypes::*;
-    import LoadStoreTypes::*;
-    import BranchTypes::*;
 (
     input                       clk,
     input                       arstn,
