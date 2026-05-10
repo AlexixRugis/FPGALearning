@@ -40,10 +40,10 @@ logic                   port_b_we;
 logic [3:0]             port_b_mask;
 
 rom rom(.clock_a(clk_50_mhz), .clock_b(clk_50_mhz),
-    .address_a(rom_addr), .q_a(rom_val),
+    .address_a(rom_addr[31:2]), .q_a(rom_val),
     .enable_a(clk_en),
     .wren_a(1'b0),
-    .address_b(port_b_addr),
+    .address_b(port_b_addr[31:2]),
     .data_b(port_b_write_data),
     .q_b(port_b_read_data),
     .enable_b(1'b1),
@@ -75,7 +75,7 @@ logic [3:0]         ram_mask;
 
 mmio ram(
     .clk(clk_50_mhz), .clk_en(clk_en), .arstn(arstn),
-    .address(ram_addr), .data(ram_write_data), 
+    .address(ram_addr[31:2]), .data(ram_write_data), 
     .write_en(ram_we), .write_mask(ram_mask), .q(ram_val));
 
 logic [31:0]        ram_port_addr;

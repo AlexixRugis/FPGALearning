@@ -16,7 +16,7 @@ logic [31:0] ramQ;
 ram ram(
     .clock(clk),
     .clken(clk_en),
-    .address(address[12:0]),
+    .address(address),
     .data(data),
     .wren(clk_en & write_en & ~address[30]),
     .byteena(write_mask),

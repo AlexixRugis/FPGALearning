@@ -2,16 +2,21 @@
 
 module ArxCore_tb;
 
+logic [31:0]        out_1;
+
 // Parameters
 parameter ADDR_WIDTH = 32;
 parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 20000;
+parameter TIMEOUT = 65000;
 
 // CLOCK AND RESET
 logic                           clk;
 logic                           arstn;
+
+logic [31:0]                    prog_memory[0:262143];
+logic [XLEN-1:0]                memory [0:262143];
 
 initial begin
     clk <= 1'b0;
@@ -20,10 +25,29 @@ initial begin
     end
 end
 
+string output_str;
 initial begin
+
     arstn <= 1'b0;
     repeat(10) @(posedge clk);
     arstn <= 1'b1;
+
+    $monitor(out_1);
+    wait (out_1 == 32'd16);
+
+    output_str = "";
+
+    for (int i = 0; i < 5; i = i + 1) begin
+        output_str = {output_str, 
+                    string'(memory[(32'h6F4 >> 2) + i][7:0]),
+                    string'(memory[(32'h6F4 >> 2) + i][15:8]),
+                    string'(memory[(32'h6F4 >> 2) + i][23:16]),
+                    string'(memory[(32'h6F4 >> 2) + i][31:24])};
+    end
+
+    $display("%s", output_str);
+
+    $finish();
 end
 
 initial begin
@@ -34,117 +58,82 @@ end
 
 // -----------
 
-logic                   clk_en;
-logic [31:0]            p_periph_address;
-logic [31:0]            p_periph_write_data;
-logic                   p_periph_write_en;
-logic [3:0]             p_periph_write_mask;
-logic [31:0]            p_periph_q;
-logic [31:0]            p_periph_out_1;
-assign clk_en = 1'b1;
+logic clk_en;
+always_comb clk_en = 1'b1;
 
-Peripherals periph(
-	.clk(clk),
-    .clk_en(1'b1),
-    .arstn(arstn),
-
-    .address(p_periph_address),
-    .data(p_periph_write_data),
-    .write_en(p_periph_write_en),
-    .write_mask(p_periph_write_mask),
-    .q(p_periph_q),
-    .out_1(p_periph_out_1)
-);
-
-// -----------
-
-logic [31:0]    master1_addr;
-logic [31:0]    master1_write_data;
-assign master1_write_data = '0;
-logic           master1_wr_en;
-assign master1_wr_en = '0;
-logic [3:0]     master1_wr_mask;
-assign master1_wr_mask = '0;
-logic           master1_req;
-logic [31:0]    master1_data;
-logic           master1_ack;
-
-logic [31:0]    master2_addr;
-logic [31:0]    master2_write_data;
-logic           master2_wr_en;
-logic [3:0]     master2_wr_mask;
-logic           master2_req;
-logic [31:0]    master2_data;
-logic           master2_ack;
-
-logic [31:0]    ic_rom_addr;
-logic [31:0]    ic_rom_data;
-
-logic [31:0]    ic_ram_addr;
-logic [31:0]    ic_ram_write_data;
-logic           ic_ram_wr_en;
-logic [3:0]     ic_ram_wr_mask;
-logic [31:0]    ic_ram_data;
-
-logic [31:0]    periph_addr;
-assign p_periph_address = periph_addr;
-logic [31:0]    periph_write_data;
-assign p_periph_write_data = periph_write_data;
-logic           periph_wr_en;
-assign p_periph_write_en = periph_wr_en;
-logic [3:0]     periph_wr_mask;
-assign p_periph_write_mask = periph_wr_mask;
-logic [31:0]    periph_data;
-assign periph_data = p_periph_q;
-
-MemoryInterconnect interconnect(
-    .*,
-    .rom_addr(ic_rom_addr),
-    .rom_data(ic_rom_data),
-    .ram_addr(ic_ram_addr),
-    .ram_write_data(ic_ram_write_data),
-    .ram_wr_en(ic_ram_wr_en),
-    .ram_wr_mask(ic_ram_wr_mask),
-    .ram_data(ic_ram_data)
-);
-
-// -----------
-
-logic [31:0]        rom_addr;
-assign master1_addr = rom_addr;
-logic               rom_req;
-assign master1_req = rom_req;
-logic [31:0]        rom_data;
-assign master1_data = rom_data;
-logic               rom_ack;
-assign master1_ack = rom_ack;
-    
-logic [31:0]        ram_addr;
-assign master2_addr = ram_addr;
-logic [31:0]        ram_write_data;
-assign master2_write_data = ram_write_data;
-logic               ram_we;
-assign master2_wr_en = ram_we;
-logic [3:0]         ram_we_mask;
-assign master2_wr_mask = ram_we_mask;
-logic               ram_req;
-assign master2_req = ram_req;
-logic [31:0]        ram_data;
-assign master2_data = ram_data;
-logic               ram_ack;
-assign master2_ack = ram_ack;
-
+logic               halted;
 logic               halt_req;
 logic               resume_req;
-logic               halted;
 
-logic [31:0]        mem_debug_addr;
-logic [31:0]        mem_debug_write_data;
-logic               mem_debug_wr_enable;
-logic [3:0]         mem_debug_wr_mask;
-logic               mem_debug_req;
-logic [31:0]        mem_debug_data;
-logic               mem_debug_ack;
+logic [31:0]            rom_addr;
+logic [31:0]            rom_val;
+
+logic               rom_port_req;
+logic               rom_port_ack;
+logic [31:0]        rom_port_addr;
+logic [31:0]        rom_port_data;
+
+logic [31:0]        ram_addr;
+logic [31:0]        ram_val;
+logic [31:0]        ram_write_data;
+logic               ram_we;
+logic [3:0]         ram_mask;
+
+logic [31:0]        ram_port_addr;
+logic [31:0]        ram_port_data;
+logic [31:0]        ram_port_write_data;
+logic               ram_port_we;
+logic [3:0]         ram_port_mask;
+logic               ram_port_req;
+logic               ram_port_ack;
+
+logic [31:0]        periph_addr;
+logic [31:0]        periph_val;
+logic [31:0]        periph_write_data;
+logic               periph_we;
+logic [3:0]         periph_mask;
+
+Peripherals periph(
+    .clk(clk), .clk_en(clk_en), .arstn(arstn),
+    .address(periph_addr), .data(periph_write_data), 
+    .write_en(periph_we), .write_mask(periph_mask), .q(periph_val), .out_1(out_1));
+
+MemoryInterconnect intrc(
+    .clk(clk),
+    .arstn(arstn),
+    .clk_en(clk_en),
+
+    .master1_addr(ram_port_addr),
+    .master1_write_data(ram_port_write_data),
+    .master1_wr_en(ram_port_we),
+    .master1_wr_mask(ram_port_mask),
+    .master1_req(ram_port_req),
+    .master1_data(ram_port_data),
+    .master1_ack(ram_port_ack),
+
+    .master2_addr(rom_port_addr),
+    .master2_write_data('0),
+    .master2_wr_en('0),
+    .master2_wr_mask('0),
+    .master2_req(rom_port_req),
+    .master2_data(rom_port_data),
+    .master2_ack(rom_port_ack),
+
+    .rom_addr(rom_addr),
+    .rom_data(rom_val),
+
+    .ram_addr(ram_addr),
+    .ram_write_data(ram_write_data),
+    .ram_wr_en(ram_we),
+    .ram_wr_mask(ram_mask),
+    .ram_data(ram_val),
+
+    .periph_addr(periph_addr),
+    .periph_write_data(periph_write_data),
+    .periph_wr_en(periph_we),
+    .periph_wr_mask(periph_mask),
+    .periph_data(periph_val)
+);
 
 logic [31:0]        dbg_x0;
 logic [31:0]        dbg_x1;
@@ -154,14 +143,66 @@ logic [31:0]        dbg_x4;
 logic [31:0]        dbg_x5;
 logic [31:0]        dbg_x6;
 logic [31:0]        dbg_x7;
-
 logic [31:0]        dbg_pc_fs;
 logic [31:0]        dbg_pc_id;
 logic [31:0]        dbg_pc_ex;
 logic [31:0]        dbg_pc_mem;
 logic [31:0]        dbg_pc_wb;
 
-ArxCore dut(.*);
+
+logic [31:0]        mem_debug_addr;
+logic [31:0]        mem_debug_write_data;
+logic               mem_debug_wr_enable;
+logic [3:0]         mem_debug_wr_mask;
+logic               mem_debug_req;
+logic [31:0]        mem_debug_data;
+logic               mem_debug_ack;
+
+ArxCore p(
+    .clk(clk),
+    .arstn(arstn),
+    
+    .rom_addr(rom_port_addr),
+    .rom_req(rom_port_req),
+    .rom_data(rom_port_data),
+    .rom_ack(rom_port_ack),
+    
+    .ram_addr(ram_port_addr),
+    .ram_write_data(ram_port_write_data),
+    .ram_we(ram_port_we),
+    .ram_we_mask(ram_port_mask),
+    .ram_req(ram_port_req),
+    .ram_data(ram_port_data),
+    .ram_ack(ram_port_ack),
+
+    .halt_req(halt_req),
+    .resume_req(resume_req),
+    .halted(halted),
+
+    .mem_debug_addr(mem_debug_addr),
+    .mem_debug_write_data(mem_debug_write_data),
+    .mem_debug_wr_enable(mem_debug_wr_enable),
+    .mem_debug_wr_mask(mem_debug_wr_mask),
+    .mem_debug_req(mem_debug_req),
+    .mem_debug_data(mem_debug_data),
+    .mem_debug_ack(mem_debug_ack),
+
+    .dbg_x0(dbg_x0),
+    .dbg_x1(dbg_x1),
+    .dbg_x2(dbg_x2),
+    .dbg_x3(dbg_x3),
+    .dbg_x4(dbg_x4),
+    .dbg_x5(dbg_x5),
+    .dbg_x6(dbg_x6),
+    .dbg_x7(dbg_x7),
+    .dbg_pc_fs(dbg_pc_fs),
+    .dbg_pc_id(dbg_pc_id),
+    .dbg_pc_ex(dbg_pc_ex),
+    .dbg_pc_mem(dbg_pc_mem),
+    .dbg_pc_wb(dbg_pc_wb)
+);
+
+// -----------
 
 initial begin
     halt_req <= 1'b0;
@@ -172,8 +213,6 @@ end
 
 // ROM emul
 
-logic [31:0]        prog_memory[0:262143];
-
 initial begin
     $readmemh("firmware.hex", prog_memory);
 end
@@ -182,25 +221,25 @@ always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
     end
     else begin
-        ic_rom_data <= prog_memory[ic_rom_addr[19:2]];
+        rom_val <= prog_memory[rom_addr[19:2]];
     end
 end
 // -----------
 
 // RAM EMUL
 
-logic [XLEN-1:0]                memory [0:262143];
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
     end
     else begin
-        ic_ram_data <= memory[ic_ram_addr[19:2]];
-        if (ic_ram_wr_en) begin
-            if (ic_ram_wr_mask[0]) memory[ic_ram_addr[19:2]][7:0] = ic_ram_write_data[7:0];
-            if (ic_ram_wr_mask[1]) memory[ic_ram_addr[19:2]][15:8] = ic_ram_write_data[15:8];
-            if (ic_ram_wr_mask[2]) memory[ic_ram_addr[19:2]][23:16] = ic_ram_write_data[23:16];
-            if (ic_ram_wr_mask[3]) memory[ic_ram_addr[19:2]][31:24] = ic_ram_write_data[31:24];
+        ram_val <= memory[ram_addr[19:2]];
+        if (ram_we) begin
+            $display("RAM WRITE: *%h = %h, mask = %b", ram_addr[19:2], ram_write_data, ram_mask);
+            if (ram_mask[0]) memory[ram_addr[19:2]][7:0] = ram_write_data[7:0];
+            if (ram_mask[1]) memory[ram_addr[19:2]][15:8] = ram_write_data[15:8];
+            if (ram_mask[2]) memory[ram_addr[19:2]][23:16] = ram_write_data[23:16];
+            if (ram_mask[3]) memory[ram_addr[19:2]][31:24] = ram_write_data[31:24];
         end
     end
 end
