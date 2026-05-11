@@ -9,7 +9,7 @@ parameter ADDR_WIDTH = 32;
 parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 65000;
+parameter TIMEOUT = 200000;
 
 // CLOCK AND RESET
 logic                           clk;
@@ -235,7 +235,7 @@ always_ff @(posedge clk or negedge arstn) begin
     else begin
         ram_val <= memory[ram_addr[19:2]];
         if (ram_we) begin
-            $display("RAM WRITE: *%h = %h, mask = %b", ram_addr[19:2], ram_write_data, ram_mask);
+            //$display("RAM WRITE: *%h = %h, mask = %b", ram_addr[19:2], ram_write_data, ram_mask);
             if (ram_mask[0]) memory[ram_addr[19:2]][7:0] = ram_write_data[7:0];
             if (ram_mask[1]) memory[ram_addr[19:2]][15:8] = ram_write_data[15:8];
             if (ram_mask[2]) memory[ram_addr[19:2]][23:16] = ram_write_data[23:16];

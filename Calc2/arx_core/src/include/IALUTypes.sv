@@ -1,6 +1,7 @@
 package IALUTypes;
 
 parameter IALU_OP_WIDTH = 5;
+parameter IMDU_OP_WIDTH = 3;
 
 typedef enum logic [IALU_OP_WIDTH-1:0] {
     IALU_ADD,
@@ -25,6 +26,17 @@ typedef enum logic [IALU_OP_WIDTH-1:0] {
 
     IALU_ARG2
 } ALU_op_t;
+
+typedef enum logic [IMDU_OP_WIDTH-1:0] {
+    IMDU_MUL,
+    IMDU_MULH,
+    IMDU_MULHSU,
+    IMDU_MULHU,
+    IMDU_DIV,
+    IMDU_DIVU,
+    IMDU_REM,
+    IMDU_REMU
+} MDU_op_t;
 
 typedef enum logic [1:0] {
     OP_SRC_RS1 = 2'b00,

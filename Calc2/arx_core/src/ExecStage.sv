@@ -59,54 +59,62 @@ module ExecStage
     output  logic                       pc_we_out
 );
 
+wire                                    m_in_handshake;
+wire                                    m_out_handshake;
+
+assign m_in_handshake                   = ready_in & valid_in;
+assign m_out_handshake                  = ready_out & valid_out;
+
+
 // STAGE REGISTERS
 
-logic                                   valid_in_internal;
-logic [XLEN-1:0]                        rs1_in_internal;
-logic [XLEN-1:0]                        rs2_in_internal;
-logic [XLEN-1:0]                        imm_in_internal;
+logic                                   m_valid_out;
 
-logic [4:0]                             rd_in_internal;
-logic [ADDR_WIDTH-1:0]                  pc_in_internal;
-branch_type_t                           pc_branch_type_internal;
+logic [XLEN-1:0]                        m_rs1_in;
+logic [XLEN-1:0]                        m_rs2_in;
+logic [XLEN-1:0]                        m_imm_in;
 
-logic                                   reg_write_in_internal;
-logic                                   mem_to_reg_in_internal;
-logic                                   mem_op_internal;
-ls_type_t                               mem_op_type_internal;
+logic [4:0]                             m_rd_in;
+logic [ADDR_WIDTH-1:0]                  m_pc_in;
+branch_type_t                           m_pc_branch_type;
 
-logic                                   pc_jump_en_in_internal;
-logic [IALU_OP_WIDTH-1:0]               alu_op_in_internal;
-ALU_src1_t                              alu_src_1_in_internal;
-ALU_src2_t                              alu_src_2_in_internal;
+logic                                   m_reg_write_in;
+logic                                   m_mem_to_reg_in;
+logic                                   m_mem_op;
+ls_type_t                               m_mem_op_type;
+
+logic                                   m_pc_jump_en_in;
+logic [IALU_OP_WIDTH-1:0]               m_alu_op_in;
+ALU_src1_t                              m_alu_src_1_in;
+ALU_src2_t                              m_alu_src_2_in;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        valid_in_internal <= 1'b0;
+        m_valid_out <= 1'b0;
     end
     else begin
-        if (valid_in & ready_in) begin
-            valid_in_internal <= 1'b1;
-            rs1_in_internal <= rs1_in;
-            rs2_in_internal <= rs2_in;
-            imm_in_internal <= imm_in;
+        if (m_in_handshake) begin
+            m_valid_out <= 1'b1;
+            m_rs1_in <= rs1_in;
+            m_rs2_in <= rs2_in;
+            m_imm_in <= imm_in;
 
-            rd_in_internal <= rd_in;
-            pc_in_internal <= pc_in;
-            pc_branch_type_internal <= pc_branch_type_in;
+            m_rd_in <= rd_in;
+            m_pc_in <= pc_in;
+            m_pc_branch_type <= pc_branch_type_in;
 
-            reg_write_in_internal <= reg_write_in;
-            mem_to_reg_in_internal <= mem_to_reg_in;
-            mem_op_internal <= mem_op_in;
-            mem_op_type_internal <= mem_op_type_in;
+            m_reg_write_in <= reg_write_in;
+            m_mem_to_reg_in <= mem_to_reg_in;
+            m_mem_op <= mem_op_in;
+            m_mem_op_type <= mem_op_type_in;
 
-            pc_jump_en_in_internal <= pc_jump_en_in;
-            alu_op_in_internal <= alu_op_in;
-            alu_src_1_in_internal <= alu_src_1_in;
-            alu_src_2_in_internal <= alu_src_2_in;
+            m_pc_jump_en_in <= pc_jump_en_in;
+            m_alu_op_in <= alu_op_in;
+            m_alu_src_1_in <= alu_src_1_in;
+            m_alu_src_2_in <= alu_src_2_in;
         end
-        else if (valid_out & ready_out) begin
-            valid_in_internal <= 1'b0;
+        else if (m_out_handshake) begin
+            m_valid_out <= 1'b0;
         end
     end
 end
@@ -133,20 +141,26 @@ IALU #(
 
 always_comb begin
 
-    case(alu_src_1_in_internal)
-    OP_SRC_RS1: ialu_arg_1 = rs1_in_internal;
+    case(m_alu_src_1_in)
+    OP_SRC_RS1: ialu_arg_1 = m_rs1_in;
     OP_SRC_ZERO: ialu_arg_1 = '0;
-    OP_SRC_PC: ialu_arg_1 = pc_in_internal;
+    OP_SRC_PC: ialu_arg_1 = m_pc_in;
     endcase
 
-    case(alu_src_2_in_internal)
-    OP_SRC_RS2: ialu_arg_2 = rs2_in_internal;
+    case(m_alu_src_2_in)
+    OP_SRC_RS2: ialu_arg_2 = m_rs2_in;
     OP_SRC_FOUR: ialu_arg_2 = XLEN'(4);
-    OP_SRC_IMM: ialu_arg_2 = imm_in_internal;
+    OP_SRC_IMM: ialu_arg_2 = m_imm_in;
     endcase
 
-    ialu_opcode = alu_op_in_internal;
+    ialu_opcode = m_alu_op_in;
 end
+
+// -----------
+
+// MULDIV UNIT
+
+
 
 // -----------
 
@@ -154,26 +168,26 @@ end
 
 always_comb begin
     alu_out = ialu_res;
-    rs2_out = rs2_in_internal;
-    rd_out = rd_in_internal;
-    pc_out = pc_in_internal;
+    rs2_out = m_rs2_in;
+    rd_out = m_rd_in;
+    pc_out = m_pc_in;
 
-    pc_branch_out = (pc_branch_type_internal === BRANCH_REG_IMM ? rs1_in_internal : pc_in_internal)
-                + imm_in_internal;
-    pc_we_out = (ialu_branch_en | pc_jump_en_in_internal) & valid_out & ready_out;
+    pc_branch_out = (m_pc_branch_type === BRANCH_REG_IMM ? m_rs1_in : m_pc_in)
+                + m_imm_in;
+    pc_we_out = (ialu_branch_en | m_pc_jump_en_in) & valid_out & ready_out;
 
-    reg_write_out = reg_write_in_internal;
-    mem_to_reg_out = mem_to_reg_in_internal;
-    mem_op_out = mem_op_internal;
-    mem_op_type_out = mem_op_type_internal;
+    reg_write_out = m_reg_write_in;
+    mem_to_reg_out = m_mem_to_reg_in;
+    mem_op_out = m_mem_op;
+    mem_op_type_out = m_mem_op_type;
 
     halt_ack_out = halt_req_in;
 end
 
 always_comb begin
     if (~halt_req_in) begin
-        valid_out = valid_in_internal;
-        ready_in = ready_out | ~valid_in_internal;
+        valid_out = m_valid_out;
+        ready_in = ~m_valid_out | ready_out;
     end
     else begin
         valid_out = 1'b0;
