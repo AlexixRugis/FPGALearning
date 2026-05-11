@@ -47,6 +47,11 @@ module InsnDecodeStage
     output  ALU_op_t                    alu_op_out,
     output  ALU_src1_t                  alu_src_1_out,
     output  ALU_src2_t                  alu_src_2_out,
+
+    output  MDU_op_t                    mdu_op_out,
+    
+    output  logic                       alu_en_out,
+    output  logic                       mdu_en_out,
 // -----------
 
 // FROM WRITE BACK
@@ -187,6 +192,11 @@ ALU_op_t                                m_alu_op;
 ALU_src1_t                              m_alu_src_1;
 ALU_src2_t                              m_alu_src_2;
 
+MDU_op_t                                m_mdu_op;
+
+logic                                   m_alu_en;
+logic                                   m_mdu_en;
+
 always_comb begin
     imm_out = m_imm;
     rd_out = m_rd;
@@ -204,6 +214,11 @@ always_comb begin
     alu_op_out = m_alu_op;
     alu_src_1_out = m_alu_src_1;
     alu_src_2_out = m_alu_src_2;
+
+    mdu_op_out = m_mdu_op;
+    
+    alu_en_out = m_alu_en;
+    mdu_en_out = m_mdu_en;
 
     halt_ack_out = halt_req_in;
 end
@@ -238,11 +253,25 @@ always_comb begin
     m_alu_src_1 = OP_SRC_RS1;
     m_alu_src_2 = OP_SRC_RS2;
 
+    m_mdu_op = IMDU_MUL;
+
+    m_alu_en = 1'b0;
+    m_mdu_en = 1'b0;
+
     case (m_opcode)
     7'b0110011: begin
         m_reg_write = 1'b1;
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_RS2;
+
+        if (m_funct_7 == 7'h01) begin
+            m_alu_en = 1'b0;
+            m_mdu_en = 1'b1;
+        end
+        else begin
+            m_alu_en = 1'b1;
+            m_mdu_en = 1'b0;
+        end
 
         case ({m_funct_3, m_funct_7})
         {3'h0, 7'h00}: m_alu_op = IALU_ADD;
@@ -255,10 +284,20 @@ always_comb begin
         {3'h5, 7'h20}: m_alu_op = IALU_SRA;
         {3'h2, 7'h00}: m_alu_op = IALU_SLT;
         {3'h3, 7'h00}: m_alu_op = IALU_SLTU;
+
+        {3'h0, 7'h01}: m_mdu_op = IMDU_MUL;
+        {3'h1, 7'h01}: m_mdu_op = IMDU_MULH;
+        {3'h2, 7'h01}: m_mdu_op = IMDU_MULHSU;
+        {3'h3, 7'h01}: m_mdu_op = IMDU_MULHU;
+        {3'h4, 7'h01}: m_mdu_op = IMDU_DIV;
+        {3'h5, 7'h01}: m_mdu_op = IMDU_DIVU;
+        {3'h6, 7'h01}: m_mdu_op = IMDU_REM;
+        {3'h7, 7'h01}: m_mdu_op = IMDU_REMU;
         endcase
     end
     7'b0010011: begin
         m_reg_write = 1'b1;
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_IMM;
         m_imm = m_imm_i;
@@ -284,6 +323,7 @@ always_comb begin
         m_reg_write = 1'b1;
         m_mem_to_reg = 1'b1;
 
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_IMM;
         m_alu_op = IALU_ADD;
@@ -299,6 +339,7 @@ always_comb begin
         endcase
     end
     7'b0100011: begin
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_IMM;
         m_alu_op = IALU_ADD;
@@ -314,6 +355,7 @@ always_comb begin
     7'b1100011: begin
         m_pc_addr_type = BRANCH_PC_IMM;
 
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_RS1;
         m_alu_src_2 = OP_SRC_RS2;
         m_imm = m_imm_b;
@@ -328,6 +370,7 @@ always_comb begin
         endcase
     end
     7'b1101111: begin
+        m_alu_en = 1'b1;
         m_pc_jump_en = 1'b1;
         m_pc_addr_type = BRANCH_PC_IMM;
         m_imm = m_imm_j;
@@ -343,12 +386,14 @@ always_comb begin
         m_imm = m_imm_i;
 
         m_reg_write = 1'b1;
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_PC;
         m_alu_src_2 = OP_SRC_FOUR;
         m_alu_op = IALU_ADD;
     end
     7'b0110111: begin
         m_reg_write = 1'b1;
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_ZERO;
         m_alu_src_2 = OP_SRC_IMM;
         m_alu_op = IALU_ADD;
@@ -356,12 +401,14 @@ always_comb begin
     end
     7'b0010111: begin
         m_reg_write = 1'b1;
+        m_alu_en = 1'b1;
         m_alu_src_1 = OP_SRC_PC;
         m_alu_src_2 = OP_SRC_IMM;
         m_alu_op = IALU_ADD;
         m_imm = m_imm_u;
     end
     default: begin
+        m_alu_en = 1'b1;
     end
     endcase
 end

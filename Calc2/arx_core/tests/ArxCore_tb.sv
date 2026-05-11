@@ -9,7 +9,7 @@ parameter ADDR_WIDTH = 32;
 parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 200000;
+parameter TIMEOUT = 2000000;
 
 // CLOCK AND RESET
 logic                           clk;

@@ -143,6 +143,11 @@ ALU_op_t                        id_alu_op_out;
 ALU_src1_t                      id_alu_src_1_out;
 ALU_src2_t                      id_alu_src_2_out;
 
+MDU_op_t                        id_mdu_op_out;
+
+logic                           id_alu_en_out;
+logic                           id_mdu_en_out;
+
 logic [4:0]                     id_rd_in;
 logic [XLEN-1:0]                id_rd_val_in;
 logic                           id_rd_we_in;
@@ -188,6 +193,11 @@ InsnDecodeStage #(
     .alu_op_out(id_alu_op_out),
     .alu_src_1_out(id_alu_src_1_out),
     .alu_src_2_out(id_alu_src_2_out),
+
+    .mdu_op_out(id_mdu_op_out),
+    
+    .alu_en_out(id_alu_en_out),
+    .mdu_en_out(id_mdu_en_out),
 
     .rd_in(id_rd_in),
     .rd_val_in(id_rd_val_in),
@@ -243,6 +253,14 @@ assign ex_alu_src_1_in = id_alu_src_1_out;
 ALU_src2_t                  ex_alu_src_2_in;
 assign ex_alu_src_2_in = id_alu_src_2_out;
 
+MDU_op_t                    ex_mdu_op_in;
+assign ex_mdu_op_in = id_mdu_op_out;
+
+logic                       ex_alu_en_in;
+assign ex_alu_en_in = id_alu_en_out;
+logic                       ex_mdu_en_in;
+assign ex_mdu_en_in = id_mdu_en_out;
+
 logic                       ex_valid_out;
 logic                       ex_ready_out;
 
@@ -294,6 +312,11 @@ ExecStage #(
     .alu_op_in(ex_alu_op_in),
     .alu_src_1_in(ex_alu_src_1_in),
     .alu_src_2_in(ex_alu_src_2_in),
+
+    .mdu_op_in(ex_mdu_op_in),
+
+    .alu_en_in(ex_alu_en_in),
+    .mdu_en_in(ex_mdu_en_in),
 
     .valid_out(ex_valid_out),
     .ready_out(ex_ready_out),

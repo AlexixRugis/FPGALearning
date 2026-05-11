@@ -3,13 +3,27 @@ module IALU
 #(
     parameter XLEN = 32
 ) (
+    input   logic                       clk,
+    input   logic                       arstn,
+
+    input   logic                       valid_in,
+    output  logic                       ready_in,
+
     input   logic [XLEN-1:0]            arg_1,
     input   logic [XLEN-1:0]            arg_2,
     input   logic [IALU_OP_WIDTH-1:0]   opcode,
     output  logic [XLEN-1:0]            res,
 
-    output  logic                       branch_en
+    output  logic                       branch_en,
+
+    output  logic                       valid_out,
+    input   logic                       ready_out
 );
+
+logic                                   handshake_in;
+logic                                   handshake_out;
+assign handshake_in = valid_in & ready_in;
+assign handshake_out = valid_out & ready_out;
 
 logic is_op_signed;
 
@@ -59,36 +73,59 @@ logic lt_res;
 assign lt_res = sign_eq ? carry_out : (arg_1[XLEN-1] == is_op_signed);
 
 
+logic [XLEN-1:0] m_res;
+logic m_branch_en;
+
 always_comb begin
     case (opcode)
     IALU_ADD,
-    IALU_SUB: res = sumsub_res;
+    IALU_SUB: m_res = sumsub_res;
 
     IALU_AND,
     IALU_XOR,
-    IALU_OR: res = bitop_res;
+    IALU_OR: m_res = bitop_res;
 
     IALU_SLL,
     IALU_SRL,
-    IALU_SRA: res = shift_res;
+    IALU_SRA: m_res = shift_res;
     
     IALU_SLTU,
-    IALU_SLT: res = {{(XLEN-1){1'b0}}, lt_res};
+    IALU_SLT: m_res = {{(XLEN-1){1'b0}}, lt_res};
 
-    default: res = arg_2;
+    default: m_res = arg_2;
     endcase
 end
 
 always_comb begin
     case(opcode)
-    IALU_EQ: branch_en = ~neq_res;
-    IALU_NEQ: branch_en = neq_res;
+    IALU_EQ: m_branch_en = ~neq_res;
+    IALU_NEQ: m_branch_en = neq_res;
     IALU_LTU,
-    IALU_LT: branch_en = lt_res;
+    IALU_LT: m_branch_en = lt_res;
     IALU_GEU,
-    IALU_GE: branch_en = ~lt_res;
-    default: branch_en = 1'b0;
+    IALU_GE: m_branch_en = ~lt_res;
+    default: m_branch_en = 1'b0;
     endcase
 end
+
+always_ff @(posedge clk or negedge arstn) begin
+    if (~arstn) begin
+        valid_out <= 1'b0;
+        res <= '0;
+        branch_en <= '0;
+    end
+    else begin
+        if (handshake_in) begin
+            valid_out <= 1'b1;
+            res <= m_res;
+            branch_en <= m_branch_en;
+        end
+        else if (handshake_out) begin
+            valid_out <= 1'b0;
+        end
+    end
+end
+
+assign ready_in = ~valid_out | ready_out;
 
 endmodule

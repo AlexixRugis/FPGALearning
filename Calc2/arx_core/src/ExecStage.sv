@@ -37,6 +37,11 @@ module ExecStage
     input   ALU_src1_t                  alu_src_1_in,
     input   ALU_src2_t                  alu_src_2_in,
 
+    input   MDU_op_t                    mdu_op_in,
+    
+    input   logic                       alu_en_in,
+    input   logic                       mdu_en_in,
+
 // -----------
 
 // TO MEM STAGE
@@ -60,15 +65,19 @@ module ExecStage
 );
 
 wire                                    m_in_handshake;
-wire                                    m_out_handshake;
-
 assign m_in_handshake                   = ready_in & valid_in;
-assign m_out_handshake                  = ready_out & valid_out;
 
+logic                                   m_alu_valid_in;
+logic                                   m_alu_ready_in;
+logic                                   m_alu_valid_out;
+logic                                   m_alu_ready_out;
+
+logic                                   m_mdu_valid_in;
+logic                                   m_mdu_ready_in;
+logic                                   m_mdu_valid_out;
+logic                                   m_mdu_ready_out;
 
 // STAGE REGISTERS
-
-logic                                   m_valid_out;
 
 logic [XLEN-1:0]                        m_rs1_in;
 logic [XLEN-1:0]                        m_rs2_in;
@@ -84,17 +93,12 @@ logic                                   m_mem_op;
 ls_type_t                               m_mem_op_type;
 
 logic                                   m_pc_jump_en_in;
-logic [IALU_OP_WIDTH-1:0]               m_alu_op_in;
-ALU_src1_t                              m_alu_src_1_in;
-ALU_src2_t                              m_alu_src_2_in;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        m_valid_out <= 1'b0;
     end
     else begin
         if (m_in_handshake) begin
-            m_valid_out <= 1'b1;
             m_rs1_in <= rs1_in;
             m_rs2_in <= rs2_in;
             m_imm_in <= imm_in;
@@ -109,12 +113,6 @@ always_ff @(posedge clk or negedge arstn) begin
             m_mem_op_type <= mem_op_type_in;
 
             m_pc_jump_en_in <= pc_jump_en_in;
-            m_alu_op_in <= alu_op_in;
-            m_alu_src_1_in <= alu_src_1_in;
-            m_alu_src_2_in <= alu_src_2_in;
-        end
-        else if (m_out_handshake) begin
-            m_valid_out <= 1'b0;
         end
     end
 end
@@ -132,42 +130,71 @@ logic                                   ialu_branch_en;
 IALU #(
     .XLEN(XLEN)
 ) ialu (
+    .clk(clk),
+    .arstn(arstn),
+
+    .valid_in(m_alu_valid_in),
+    .ready_in(m_alu_ready_in),
+
     .arg_1(ialu_arg_1),
     .arg_2(ialu_arg_2),
     .opcode(ialu_opcode),
     .res(ialu_res),
-    .branch_en(ialu_branch_en)
+    .branch_en(ialu_branch_en),
+
+    .valid_out(m_alu_valid_out),
+    .ready_out(m_alu_ready_out)
 );
-
-always_comb begin
-
-    case(m_alu_src_1_in)
-    OP_SRC_RS1: ialu_arg_1 = m_rs1_in;
-    OP_SRC_ZERO: ialu_arg_1 = '0;
-    OP_SRC_PC: ialu_arg_1 = m_pc_in;
-    endcase
-
-    case(m_alu_src_2_in)
-    OP_SRC_RS2: ialu_arg_2 = m_rs2_in;
-    OP_SRC_FOUR: ialu_arg_2 = XLEN'(4);
-    OP_SRC_IMM: ialu_arg_2 = m_imm_in;
-    endcase
-
-    ialu_opcode = m_alu_op_in;
-end
 
 // -----------
 
 // MULDIV UNIT
 
+logic [XLEN-1:0]                        imdu_res;
 
+IMDU #(
+    .XLEN(XLEN)
+) imdu (
+    .clk(clk),
+    .arstn(arstn),
+
+    .valid_in(m_mdu_valid_in),
+    .ready_in(m_mdu_ready_in),
+
+    .arg_1_in(ialu_arg_1),
+    .arg_2_in(ialu_arg_2),
+    .opcode_in(mdu_op_in),
+
+    .res_out(imdu_res),
+    .valid_out(m_mdu_valid_out),
+    .ready_out(m_mdu_ready_out)
+);
 
 // -----------
+
+always_comb begin
+
+    case(alu_src_1_in)
+    OP_SRC_RS1: ialu_arg_1 = rs1_in;
+    OP_SRC_ZERO: ialu_arg_1 = '0;
+    OP_SRC_PC: ialu_arg_1 = pc_in;
+    endcase
+
+    case(alu_src_2_in)
+    OP_SRC_RS2: ialu_arg_2 = rs2_in;
+    OP_SRC_FOUR: ialu_arg_2 = XLEN'(4);
+    OP_SRC_IMM: ialu_arg_2 = imm_in;
+    endcase
+
+    ialu_opcode = alu_op_in;
+end
 
 // OUT ASSIGNMENTS
 
 always_comb begin
-    alu_out = ialu_res;
+    alu_out = m_alu_valid_out ? ialu_res :
+        (m_mdu_valid_out ? imdu_res : '0);
+
     rs2_out = m_rs2_in;
     rd_out = m_rd_in;
     pc_out = m_pc_in;
@@ -186,12 +213,23 @@ end
 
 always_comb begin
     if (~halt_req_in) begin
-        valid_out = m_valid_out;
-        ready_in = ~m_valid_out | ready_out;
+        ready_in = m_alu_ready_in & m_mdu_ready_in;
+        valid_out = m_alu_valid_out | m_mdu_valid_out;
+
+        m_alu_valid_in = valid_in & ready_in & alu_en_in;
+        m_alu_ready_out = ready_out;
+
+        m_mdu_valid_in = valid_in & ready_in & mdu_en_in;
+        m_mdu_ready_out = ready_out;
     end
     else begin
-        valid_out = 1'b0;
         ready_in = 1'b0;
+        valid_out = 1'b0;
+
+        m_alu_valid_in = 1'b0;
+        m_alu_ready_out = 1'b0;
+        m_mdu_valid_in = 1'b0;
+        m_mdu_ready_out = 1'b0;
     end
 end
 

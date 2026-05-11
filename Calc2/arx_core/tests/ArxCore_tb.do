@@ -11,6 +11,9 @@ vlog -hazards -lint -sv -work work \
 ../src/include/IALUTypes.sv \
 ../src/ExecStage.sv \
 ../src/IALU.sv \
+../src/IMUL.sv \
+../src/IDIV.sv \
+../src/IMDU.sv \
 ../src/InsnDecoder.sv \
 ../src/InsnDecodeStage.sv \
 ../src/InsnFetch.sv \
