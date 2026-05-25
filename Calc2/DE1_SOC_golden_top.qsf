@@ -805,6 +805,18 @@ set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
 set_global_assignment -name EDA_TEST_BENCH_NAME InsnFetch_tb -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id InsnFetch_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME InsnFetch_tb -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/FetchStageTb.sv -section_id FetchStageTb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section_id ProgramCounterTb
+set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/InsnFetch_tb.sv -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/src/InsnFetch.sv -section_id InsnFetch_tb
+set_global_assignment -name EDA_TEST_BENCH_NAME ArxCore_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ArxCore_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ArxCore_tb -section_id ArxCore_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/ArxCore_tb.sv -section_id ArxCore_tb
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/IMUL.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/IMDU.sv
+set_global_assignment -name SYSTEMVERILOG_FILE arx_core/src/IDIV.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/Timer.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/Peripherals.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/MemoryInterconnect.sv
@@ -864,14 +876,5 @@ set_global_assignment -name SYSTEMVERILOG_FILE src/BranchConditioner.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/ProcessorTypes.sv
 set_global_assignment -name SYSTEMVERILOG_FILE src/RomPort.sv
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name EDA_TEST_BENCH_FILE src/ProcessorTb.sv -section_id ProcessorTb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/FetchStageTb.sv -section_id FetchStageTb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/ProgramCounterTb.sv -section_id ProgramCounterTb
-set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/InsnFetch_tb.sv -section_id InsnFetch_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/src/InsnFetch.sv -section_id InsnFetch_tb
-set_global_assignment -name EDA_TEST_BENCH_NAME ArxCore_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id ArxCore_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME ArxCore_tb -section_id ArxCore_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE arx_core/tests/ArxCore_tb.sv -section_id ArxCore_tb
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

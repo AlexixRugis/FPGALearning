@@ -9,7 +9,7 @@ parameter ADDR_WIDTH = 32;
 parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 2000000;
+parameter TIMEOUT = 568000;
 
 // CLOCK AND RESET
 logic                           clk;
@@ -22,6 +22,7 @@ initial begin
     clk <= 1'b0;
     forever begin
         #(CLK_PERIOD/2) clk <= ~clk;
+                $display("%h", rom_addr);
     end
 end
 

@@ -26,8 +26,8 @@ vlog -hazards -lint -sv -work work \
 vsim -L work ArxCore_tb
 add wave *               
 
-#vcd file ArxCore_tb.vcd
-#vcd add -r /ArxCore_tb/*
+vcd file ArxCore_tb.vcd
+vcd add -r /ArxCore_tb/*
 
 run -all
 quit

@@ -94,6 +94,9 @@ ls_type_t                               m_mem_op_type;
 
 logic                                   m_pc_jump_en_in;
 
+logic                                   m_alu_en_in;
+logic                                   m_mdu_en_in;
+
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
     end
@@ -113,6 +116,9 @@ always_ff @(posedge clk or negedge arstn) begin
             m_mem_op_type <= mem_op_type_in;
 
             m_pc_jump_en_in <= pc_jump_en_in;
+
+            m_alu_en_in <= alu_en_in;
+            m_mdu_en_in <= mdu_en_in;
         end
     end
 end
@@ -192,8 +198,8 @@ end
 // OUT ASSIGNMENTS
 
 always_comb begin
-    alu_out = m_alu_valid_out ? ialu_res :
-        (m_mdu_valid_out ? imdu_res : '0);
+    alu_out = m_alu_en_in ? ialu_res :
+        (m_mdu_en_in ? imdu_res : '0);
 
     rs2_out = m_rs2_in;
     rd_out = m_rd_in;
@@ -201,7 +207,7 @@ always_comb begin
 
     pc_branch_out = (m_pc_branch_type === BRANCH_REG_IMM ? m_rs1_in : m_pc_in)
                 + m_imm_in;
-    pc_we_out = (ialu_branch_en | m_pc_jump_en_in) & valid_out & ready_out;
+    pc_we_out = (m_alu_en_in & ialu_branch_en | m_pc_jump_en_in) & valid_out & ready_out;
 
     reg_write_out = m_reg_write_in;
     mem_to_reg_out = m_mem_to_reg_in;
@@ -214,7 +220,7 @@ end
 always_comb begin
     if (~halt_req_in) begin
         ready_in = m_alu_ready_in & m_mdu_ready_in;
-        valid_out = m_alu_valid_out | m_mdu_valid_out;
+        valid_out = m_alu_en_in & m_alu_valid_out | m_mdu_en_in & m_mdu_valid_out;
 
         m_alu_valid_in = valid_in & ready_in & alu_en_in;
         m_alu_ready_out = ready_out;

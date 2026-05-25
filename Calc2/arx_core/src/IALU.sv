@@ -122,6 +122,7 @@ always_ff @(posedge clk or negedge arstn) begin
         end
         else if (handshake_out) begin
             valid_out <= 1'b0;
+            branch_en <= 1'b0;
         end
     end
 end
