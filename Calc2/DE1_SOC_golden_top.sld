@@ -3,7 +3,7 @@
     <sld_info hpath="top:top|uart:uart" name="uart">
       <assignment_values>
         <assignment_value text="QSYS_NAME uart HAS_SOPCINFO 1 GENERATION_ID 1774206139"/>
-        <assignment_value text="QSYS_NAME uart HAS_SOPCINFO 1 GENERATION_ID 1778571043"/>
+        <assignment_value text="QSYS_NAME uart HAS_SOPCINFO 1 GENERATION_ID 1779791040"/>
       </assignment_values>
     </sld_info>
   </sld_infos>

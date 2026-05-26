@@ -41,6 +41,14 @@ module ArxCore
     output  logic [31:0]        dbg_x5,
     output  logic [31:0]        dbg_x6,
     output  logic [31:0]        dbg_x7,
+    output  logic [31:0]        dbg_x10,
+    output  logic [31:0]        dbg_x11,
+    output  logic [31:0]        dbg_x12,
+    output  logic [31:0]        dbg_x13,
+    output  logic [31:0]        dbg_x14,
+    output  logic [31:0]        dbg_x15,
+    output  logic [31:0]        dbg_x16,
+    output  logic [31:0]        dbg_x17,
 
     output  logic [31:0]        dbg_pc_fs,
     output  logic [31:0]        dbg_pc_id,
@@ -152,7 +160,7 @@ logic [4:0]                     id_rd_in;
 logic [XLEN-1:0]                id_rd_val_in;
 logic                           id_rd_we_in;
 
-logic [31:0]                    id_dbg_used_regs_out;
+logic [2:0]                    id_dbg_used_regs_out [0:31];
 
 InsnDecodeStage #(
     .INSN_WIDTH(INSN_WIDTH),
@@ -211,7 +219,15 @@ InsnDecodeStage #(
     .dbg_x4(dbg_x4),
     .dbg_x5(dbg_x5),
     .dbg_x6(dbg_x6),
-    .dbg_x7(dbg_x7)
+    .dbg_x7(dbg_x7),
+    .dbg_x10(dbg_x10),
+    .dbg_x11(dbg_x11),
+    .dbg_x12(dbg_x12),
+    .dbg_x13(dbg_x13),
+    .dbg_x14(dbg_x14),
+    .dbg_x15(dbg_x15),
+    .dbg_x16(dbg_x16),
+    .dbg_x17(dbg_x17)
 );
 
 // EXECUTE STAGE

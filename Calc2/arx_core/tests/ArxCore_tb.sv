@@ -9,7 +9,7 @@ parameter ADDR_WIDTH = 32;
 parameter XLEN = 32;
 parameter INSN_WIDTH = 32;
 parameter CLK_PERIOD = 10; // ns
-parameter TIMEOUT = 568000;
+parameter TIMEOUT = 1700000;
 
 // CLOCK AND RESET
 logic                           clk;
@@ -22,7 +22,7 @@ initial begin
     clk <= 1'b0;
     forever begin
         #(CLK_PERIOD/2) clk <= ~clk;
-                $display("%h", rom_addr);
+        // $display("%h", rom_addr);
     end
 end
 
@@ -144,6 +144,14 @@ logic [31:0]        dbg_x4;
 logic [31:0]        dbg_x5;
 logic [31:0]        dbg_x6;
 logic [31:0]        dbg_x7;
+logic [31:0]        dbg_x10;
+logic [31:0]        dbg_x11;
+logic [31:0]        dbg_x12;
+logic [31:0]        dbg_x13;
+logic [31:0]        dbg_x14;
+logic [31:0]        dbg_x15;
+logic [31:0]        dbg_x16;
+logic [31:0]        dbg_x17;
 logic [31:0]        dbg_pc_fs;
 logic [31:0]        dbg_pc_id;
 logic [31:0]        dbg_pc_ex;
@@ -196,6 +204,14 @@ ArxCore p(
     .dbg_x5(dbg_x5),
     .dbg_x6(dbg_x6),
     .dbg_x7(dbg_x7),
+    .dbg_x10(dbg_x10),
+    .dbg_x11(dbg_x11),
+    .dbg_x12(dbg_x12),
+    .dbg_x13(dbg_x13),
+    .dbg_x14(dbg_x14),
+    .dbg_x15(dbg_x15),
+    .dbg_x16(dbg_x16),
+    .dbg_x17(dbg_x17),
     .dbg_pc_fs(dbg_pc_fs),
     .dbg_pc_id(dbg_pc_id),
     .dbg_pc_ex(dbg_pc_ex),

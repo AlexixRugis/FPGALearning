@@ -20,7 +20,15 @@ module RegisterFile #(
     output  logic [XLEN-1:0]  dbg_x4,
     output  logic [XLEN-1:0]  dbg_x5,
     output  logic [XLEN-1:0]  dbg_x6,
-    output  logic [XLEN-1:0]  dbg_x7
+    output  logic [XLEN-1:0]  dbg_x7,
+    output  logic [XLEN-1:0]  dbg_x10,
+    output  logic [XLEN-1:0]  dbg_x11,
+    output  logic [XLEN-1:0]  dbg_x12,
+    output  logic [XLEN-1:0]  dbg_x13,
+    output  logic [XLEN-1:0]  dbg_x14,
+    output  logic [XLEN-1:0]  dbg_x15,
+    output  logic [XLEN-1:0]  dbg_x16,
+    output  logic [XLEN-1:0]  dbg_x17
 );
 
 logic [XLEN-1:0] regs [0:31];
@@ -47,5 +55,13 @@ assign dbg_x4 = regs[4];
 assign dbg_x5 = regs[5];
 assign dbg_x6 = regs[6];
 assign dbg_x7 = regs[7];
+assign dbg_x10 = regs[10];
+assign dbg_x11 = regs[11];
+assign dbg_x12 = regs[12];
+assign dbg_x13 = regs[13];
+assign dbg_x14 = regs[14];
+assign dbg_x15 = regs[15];
+assign dbg_x16 = regs[16];
+assign dbg_x17 = regs[17];
 
 endmodule

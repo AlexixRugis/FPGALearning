@@ -59,7 +59,7 @@ module InsnDecodeStage
     input   logic [XLEN-1:0]            rd_val_in,
     input   logic                       rd_we_in,
 // -----------
-    output  logic [31:0]                dbg_used_regs_out,
+    output  logic [2:0]                 dbg_used_regs_out [0:31],
 
     output  logic [XLEN-1:0]            dbg_x0,
     output  logic [XLEN-1:0]            dbg_x1,
@@ -68,7 +68,15 @@ module InsnDecodeStage
     output  logic [XLEN-1:0]            dbg_x4,
     output  logic [XLEN-1:0]            dbg_x5,
     output  logic [XLEN-1:0]            dbg_x6,
-    output  logic [XLEN-1:0]            dbg_x7
+    output  logic [XLEN-1:0]            dbg_x7,
+    output  logic [XLEN-1:0]            dbg_x10,
+    output  logic [XLEN-1:0]            dbg_x11,
+    output  logic [XLEN-1:0]            dbg_x12,
+    output  logic [XLEN-1:0]            dbg_x13,
+    output  logic [XLEN-1:0]            dbg_x14,
+    output  logic [XLEN-1:0]            dbg_x15,
+    output  logic [XLEN-1:0]            dbg_x16,
+    output  logic [XLEN-1:0]            dbg_x17
 );
 
 // STAGE REGISTERS
@@ -155,21 +163,37 @@ RegisterFile #(
     .dbg_x4(dbg_x4),
     .dbg_x5(dbg_x5),
     .dbg_x6(dbg_x6),
-    .dbg_x7(dbg_x7)
+    .dbg_x7(dbg_x7),
+    .dbg_x10(dbg_x10),
+    .dbg_x11(dbg_x11),
+    .dbg_x12(dbg_x12),
+    .dbg_x13(dbg_x13),
+    .dbg_x14(dbg_x14),
+    .dbg_x15(dbg_x15),
+    .dbg_x16(dbg_x16),
+    .dbg_x17(dbg_x17)
 );
 
-logic [31:0]                            m_used_reg;
+logic [1:0]                             m_used_reg [0:31];
+
+logic                                   reg_write_sync;
+assign reg_write_sync = valid_out & ready_out & reg_write_out;
 
 always_ff @(posedge clk or negedge arstn) begin
     if (~arstn) begin
-        m_used_reg <= '0;
+        for (int i = 0; i < 32; i = i + 1) begin
+            m_used_reg[i] <= '0;
+        end
     end
     else begin
-        if (rd_we_in) begin
-            m_used_reg[rd_in] <= 1'b0;
-        end
-        if (valid_out & ready_out & reg_write_out) begin
-            m_used_reg[rd_out] <= 1'b1;
+        if (rd_in != rd_out | ~rd_we_in | ~reg_write_sync) begin
+            if (rd_we_in) begin
+                m_used_reg[rd_in] <= m_used_reg[rd_in] - 1'b1;
+            end
+
+            if (reg_write_sync) begin
+                m_used_reg[rd_out] <= m_used_reg[rd_out] + 1'b1;
+            end
         end
     end
 end
@@ -225,7 +249,7 @@ end
 
 always_comb begin
     if (~flush_in & ~halt_req_in) begin
-        valid_out = m_valid & (~m_used_reg[m_rs_1] & ~m_used_reg[m_rs_2]);
+        valid_out = m_valid & (m_used_reg[m_rs_1] == 2'b00 & m_used_reg[m_rs_2] == 2'b00);
         ready_in = ~m_valid | (valid_out & ready_out);
     end
     else begin
@@ -417,7 +441,11 @@ end
 
 // DEBUG
 
-assign dbg_used_regs_out = m_used_reg;
+always_comb begin
+    for (int i = 0; i < 32; i = i + 1) begin
+        dbg_used_regs_out[i] = m_used_reg[i];
+    end
+end
 
 // -----------
 
